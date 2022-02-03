@@ -121,9 +121,9 @@ Non-validation errors such as invalid request parameters or unexpected internal 
 
 ```json
 {
-  error: "MalformedRequestError",
-  status: 400,
-  message: "Missing query parameter: format"
+  "error": "MalformedRequestError",
+  "status": 400,
+  "message": "Missing query parameter: format"
 }
 ```
 
