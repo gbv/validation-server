@@ -1,0 +1,58 @@
+{
+  "name": "validation-service",
+  "version": "0.0.1",
+  "description": "Web service to validate data against schemas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gbv/validation-service.git"
+  },
+  "main": "server.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha --exit",
+    "start": "nodemon server.js",
+    "lint": "./node_modules/.bin/eslint './**/*.js'",
+    "fix": "./node_modules/.bin/eslint --fix './**/*.js'",
+    "lint-staged": "lint-staged",
+    "release": "git checkout dev && git pull && npm test && npm version $SEMVER && git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev",
+    "release:patch": "SEMVER=patch npm run release",
+    "release:minor": "SEMVER=minor npm run release",
+    "release:major": "SEMVER=major npm run release"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --fix"
+    ],
+    "*.js": [
+      "eslint --fix"
+    ]
+  },
+  "pre-commit": "lint-staged",
+  "author": "Jakob Voß",
+  "license": "MIT",
+  "devDependencies": {
+    "ajv": "^6.12.6",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-gbv": "^1.0.3",
+    "lint-staged": "^11.2.3",
+    "mocha": "^9.1.3",
+    "mocha-eslint": "^7.0.0",
+    "portfinder": "^1.0.28",
+    "pre-commit": "^1.2.2",
+    "proxyquire": "^2.1.3"
+  },
+  "dependencies": {
+    "axios": "^0.25.0",
+    "dotenv": "^8.6.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "ipaddr.js": "^2.0.1",
+    "jskos-validate": "^0.5.3",
+    "json-anystream": "^1.1.0",
+    "JSONStream": "^1.3.5",
+    "nocache": "^3.0.1",
+    "nodemon": "^2.0.14"
+  }
+}

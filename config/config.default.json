@@ -1,0 +1,10 @@
+{
+  "title": "Validation Service",
+  "description": null,
+  "version": null,
+  "port": 3700,
+  "proxies": [],
+  "verbosity": "warn",
+  "caching": false,
+  "formats": []
+}
