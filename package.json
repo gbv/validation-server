@@ -9,7 +9,7 @@
   "main": "server.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --exit",
-    "start": "nodemon server.js",
+    "start": "nodemon --ignore formats server.js",
     "lint": "./node_modules/.bin/eslint './**/*.js'",
     "fix": "./node_modules/.bin/eslint --fix './**/*.js'",
     "lint-staged": "lint-staged",

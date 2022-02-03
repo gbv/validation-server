@@ -1,6 +1,13 @@
+const axios = require("axios")
 const config = require("./config")
+const { MalformedRequestError } = require("./lib/errors.js")
+const ValidatorService = require("./lib/validator.js")
 
 config.log(`Running in ${config.env} mode.`)
+
+// Initialize formats registry
+config.baseDirectory = "./formats"
+const formatsRegistry = require("./lib/formats")(config)
 
 // Initialize express with settings
 const express = require("express")
@@ -53,10 +60,7 @@ app.get("/formats", (req, res) => {
 })
 
 // Setup Validation
-const { MalformedRequestError } = require("./lib/errors.js")
-const axios = require("axios")
-const ValidatorService = require("./lib/validator.js")
-const validator = new ValidatorService(config.formats)
+var validator
 
 async function validateHandler(req, res, next) {
   validator.validate(req.query)
@@ -104,6 +108,10 @@ const start = async () => {
     portfinder.basePort = config.port
     port = await portfinder.getPortPromise()
   }
+
+  const formats = await formatsRegistry
+  validator = new ValidatorService(formats)
+
   app.listen(port, () => {
     config.log(`Now listening on port ${port}`)
   })
