@@ -5,10 +5,6 @@ const ValidatorService = require("./lib/validator.js")
 
 config.log(`Running in ${config.env} mode.`)
 
-// Initialize formats registry
-config.baseDirectory = "./formats"
-const formatsRegistry = require("./lib/formats")(config)
-
 // Initialize express with settings
 const express = require("express")
 const app = express()
@@ -55,9 +51,7 @@ app.get("/", (req, res) => {
 })
 
 // List of formats
-app.get("/formats", (req, res) => {
-  res.json(config.formats)
-})
+app.get("/formats", require("./routes/formats.js"))
 
 // Setup Validation
 var validator
@@ -88,15 +82,16 @@ app.get("/validate", async (req, res, next) => {
 })
 
 // Error handling
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
   const response = {
     error: error.constructor.name,
     message: error.message,
     status: error.statusCode || 500,
   }
-  if (config.env === "development") {
+  if (config.env === "development" && error.stack) {
     response.stack = error.stack.split("\n")
   }
+  config.log(res)
   res.status(response.status).send(response)
 })
 
@@ -109,7 +104,9 @@ const start = async () => {
     port = await portfinder.getPortPromise()
   }
 
-  const formats = await formatsRegistry
+  // Initialize formats registry
+  const formats = await require("./lib/formats")(config)
+  app.set("formats", formats)
   validator = new ValidatorService(formats)
 
   app.listen(port, () => {

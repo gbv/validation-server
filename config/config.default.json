@@ -6,5 +6,6 @@
   "proxies": [],
   "verbosity": "warn",
   "caching": false,
-  "formats": []
+  "formats": [],
+  "baseDirectory": "./formats"
 }

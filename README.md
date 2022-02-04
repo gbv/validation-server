@@ -6,11 +6,14 @@
 
 > Web service to validate data against schemas
 
+This validation service provides methods to validate records against different kinds of schemas to ensure that they conform to known data formats.
+
 ## Table of Contents
 
 - [Install](#install)
   - [From GitHub](#from-github)
   - [Configuration](#configuration)
+  - [Formats](#formats)
 - [Usage](#usage)
   - [Run Server](#run-server)
   - [Run Tests](#run-tests)
@@ -38,7 +41,7 @@ npm ci
 
 ### Configuration
 
-The service must be customized via configuration files. By default, this configuration file resides in `config/config.json`. However, it is possible to adjust this path via the `CONFIG_FILE` environment variable. Missing keys are defaulted from `config/config.default.json`:
+The service must be customized via configuration files. By default, this configuration file resides in `config/config.json` (or `config/config.test.json` for tests). However, it is possible to adjust this path via the `CONFIG_FILE` environment variable. Missing keys are defaulted from `config/config.default.json`:
 
 ```json
 {
@@ -49,11 +52,22 @@ The service must be customized via configuration files. By default, this configu
   "proxies": [],
   "verbosity": "log",
   "caching": false,
-  "formats": []
+  "formats": [],
+  "baseDirectory": "./formats"
 }
 ```
 
 Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production` and `test`.
+
+### Formats
+
+A format, as specified in array `formats` of the specification must be a JSON Object with keys:
+
+* `id` format identifier
+* `schemas` an array of schemas, each with
+  * `version` optional version number or name
+  * `type` Schema type (`json-schema` or `xsd`)
+  * `url` where to retrieve the schema file from
 
 ## Usage
 
@@ -113,7 +127,19 @@ Endpoint to validate records like [POST /validate](#post-validate) but data is p
 
 ### GET /formats
 
-Lists all formats as JSON Array.
+Lists all [formats](#formats), optionally filtered by identifier, version, and/or schema type.
+
+* **URL Params**
+
+  `format=[id]` select format with given format identifier
+
+  `version=[string]` version to filter for
+
+  `type=[string]` schema type filter for
+
+* **Success Response**
+
+  JSON Array of format objects.
 
 ### Errors
 
