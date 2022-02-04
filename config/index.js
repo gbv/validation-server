@@ -17,6 +17,12 @@ try {
   console.warn(`Warning: Could not load configuration file from ${configFile}. Running with default settings.`)
 }
 
+// Hard-coded formats
+config.formats.unshift({
+  id: "json",
+})
+
+
 // Logging functions
 if (![true, false, "log", "warn", "error"].includes(config.verbosity)) {
   console.warn(`Invalid verbosity value "${config.verbosity}", defaulting to "${configDefault.verbosity}" instead.`)
