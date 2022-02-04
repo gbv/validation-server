@@ -16,7 +16,7 @@ describe("Server", () => {
 
   it("should list formats at /formats", done => {
     chai.request(server.app)
-      .get("/status")
+      .get("/formats")
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a("array")
