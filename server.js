@@ -39,6 +39,9 @@ app.use("/validate", require("./routes/validate.js"))
 // List of formats
 app.get("/formats", require("./routes/formats.js"))
 
+// Get a schema
+app.get("/schema", require("./routes/schema.js"))
+
 // Error handling
 app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
   const response = {

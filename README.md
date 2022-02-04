@@ -21,6 +21,7 @@ This validation service provides methods to validate records against different k
   - [POST /validate](#post-validate)
   - [GET /validate](#get-validate)
   - [GET /formats](#get-formats)
+  - [GET /schema](#get-schema)
   - [Errors](#errors)
 - [Deployment](#deployment)
 - [Maintainers](#maintainers)
@@ -139,6 +140,22 @@ Lists all [formats](#formats), optionally filtered by identifier, version, and/o
 * **Success Response**
 
   JSON Array of format objects.
+
+### GET /schema
+
+Return a known schema file.
+
+* **URL Params**
+
+  `format=[id]` format identifier
+
+  `version=[string]` optional version (set to `default` by default)
+
+  `type=[string]` optional schema type
+
+* **Success Response**
+
+  The schema file is served with corresponding content type.
 
 ### Errors
 

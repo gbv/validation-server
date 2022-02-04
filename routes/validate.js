@@ -1,32 +1,27 @@
 const express = require("express")
 const router = express.Router()
 const axios = require("axios")
-const { MalformedRequest, NotFound } = require("../lib/errors.js")
+const { MalformedRequest } = require("../lib/errors.js")
 const config = require("../config")
 const { URL } = require("url")
+
+// TODO: check query parameters
+// const versionPattern = /^[a-zA-Z0-9.-]+$/
+// const formatPattern = /^[a-zA-Z0-9-]+$/
+
+const querySpecificFormat = require("../lib/query-specific.js")
 
 async function validateHandler(req, res, next) {
   const { query } = req
 
-  if (!query.format) {
-    return next(new MalformedRequest("Missing query parameter: format"))
-  }
+  const selectedFormat = querySpecificFormat(req, res, next)
+  if (!selectedFormat) return
 
-  const formats = req.app.get("formats")
-
-  if (!query.version) {
-    query.version = "default"
-  }
-  const selectedFormats = formats.getFormats(query)
-
-  if (!selectedFormats.length) {
-    return next(new NotFound("Format not found"))
-  }
-
-  const { id, base, schemas } = selectedFormats[0]
+  const { id, base, schemas } = selectedFormat
   var result = []
 
   if (id === "json") {
+    // plain JSON
     if (typeof query.data === "object") {
       result = [true]
     } else {
@@ -42,6 +37,7 @@ async function validateHandler(req, res, next) {
     }
 
   } else if (base === "json") {
+    // JSON-based format
     var data = query.data
     if (typeof data !== "object") {
       try {
