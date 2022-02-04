@@ -51,7 +51,6 @@ The service must be customized via configuration files. By default, this configu
   "port": 3700,
   "proxies": [],
   "verbosity": "log",
-  "caching": false,
   "formats": [],
   "baseDirectory": "./formats"
 }

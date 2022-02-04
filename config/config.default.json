@@ -5,7 +5,6 @@
   "port": 3700,
   "proxies": [],
   "verbosity": "warn",
-  "caching": false,
   "formats": [],
   "baseDirectory": "./formats"
 }

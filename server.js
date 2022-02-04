@@ -27,16 +27,6 @@ app.use((req, res, next) => {
   next()
 })
 
-if (!config.caching) {
-  // Disable client side caching
-  const nocache = require("nocache")
-  app.use(nocache())
-
-  // Disable ETags
-  app.set("etag", false)
-  app.use(express.urlencoded({ extended: false }))
-}
-
 // Root path for static page
 app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html")
