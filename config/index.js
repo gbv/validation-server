@@ -28,10 +28,10 @@ const validators = require("../lib/validators.js")
 config.types.forEach(type => {
   const val = validators[type.id]
   if (val) {
+    // TODO: don't include file, just reference format ids
     ["title", "base", "for", "contentType", "schemas"]
       .filter(key => key in val)
       .forEach(key => type[key] = val[key])
-    // TODO: should these always be included?
     config.formats.push(type)
   } else {
     throw new Error(`Unknown schema type ${type.id} in configuration.`)

@@ -58,4 +58,37 @@ describe("Server", () => {
       })
   })
 
+  it("should require a format parameter at /validate", done => {
+    request("/validate")
+      .end((err, res) => {
+        res.should.have.status(400)
+        res.body.should.be.a("object")
+        done()
+      })
+  })
+
+  const validationTests = [
+    { format: "json", data: "[]", code: 200, result: [] },
+    { format: "json", data: "{}", code: 200, result: [true] },
+    { format: "json", data: "[false]", code: 200, result: [true] },
+    { format: "json", data: "null", code: 200, result: [true] },
+    { format: "json", data: "{", code: 200,
+      result: [[{error: "SyntaxError", message: "Unexpected end of JSON input" }]],
+    },
+    { format: "json-schema", data: "{", code: 200,
+      result: [[{error: "SyntaxError", message: "Unexpected end of JSON input" }]],
+    },
+  ]
+
+  validationTests.forEach(({format, data, code, result}) => {
+    it(`should validate ${format} data ${data}`, done => {
+      request(`/validate?format=${format}&data=${data}`)
+        .end((err, res) => {
+          res.should.have.status(code)
+          res.body.should.deep.equal(result)
+          done()
+        })
+    })
+  })
+
 })

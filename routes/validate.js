@@ -5,83 +5,51 @@ const { MalformedRequest } = require("../lib/errors.js")
 const config = require("../config")
 const { URL } = require("url")
 
-// TODO: check query parameters
-// const versionPattern = /^[a-zA-Z0-9.-]+$/
-// const formatPattern = /^[a-zA-Z0-9-]+$/
+const parsable = require("../lib/parsable-formats.js")
 
-const querySpecificFormat = require("../lib/query-specific.js")
+const formatFromQuery = require("../lib/format-from-query.js")
 
-async function validateHandler(req, res, next) {
-  const { query } = req
 
-  const selectedFormat = querySpecificFormat(req, res, next)
-  if (!selectedFormat) return
+async function validate(data, format) {
+  const { id, base, schemas } = format
 
-  const { id, base, schemas } = selectedFormat
-  var result = []
+  // Just use a parser for validating
+  if (id in parsable) {
+    return parsable[id].parse(data)
+      .then(result => result.map(() => true))
+      .catch(e => [[{ error: "SyntaxError", message: e.message }]])
+  }
 
-  if (id === "json") {
-    // plain JSON
-    if (typeof query.data === "object") {
-      result = [true]
-    } else {
-      try {
-        const data = JSON.parse(query.data)
-        result = Array.isArray(data) ? data.map(() => true) : [true]
-      } catch(e) {
-        result = [{
-          error: "SyntaxError",
-          message: e.message || "Failed to parse JSON data",
-        }]
-      }
-    }
-
-  } else if (base === "json") {
-    // JSON-based format
-    var data = query.data
-    if (typeof data !== "object") {
-      try {
-        data = JSON.parse(data)
-        data = Array.isArray(data) ? data : [data]
-      } catch(e) {
-        result = [{
-          error: "SyntaxError",
-          message: e.message || "Failed to parse JSON data",
-        }]
-        res.send(result)
-        return
-      }
-    }
-
+  if (base === "json") {
     // TODO: what if multiple schemas exist?
     const schema = schemas ? schemas[0] : null
 
-    result = data.map(record => {
-      if (schema && schema.validator) {
-        const { validator } = schema
-        if (validator(record)) {
-          return true
-        } else {
-          return validator.errors
-        }
-      } else {
-        // TODO: better return error if no schema available?
-        return null // unknown
-      }
-    })
+    if (schema && schema.validator) {
+      const { validator } = schema
+      return await parsable.json.parse(data)
+        .then(data => data.map(record => validator(record) ? true : validator.errors))
+        .catch(e => [[{ error: "SyntaxError", message: e.message }]])
+    } else {
+      throw new Error(`No schema available to validate ${id}`)
+    }
 
   } else {
-    result = [undefined]
+    throw new Error(`Validation of ${base} based formats is not supported`)
   }
+}
 
-  res.send(result)
+async function validateRoute(req, res, next) {
+  const format = formatFromQuery(req, res, next)
+  return validate(req.query.data, format)
+    .then(result => res.send(result))
+    .catch(error => next(error))
 }
 
 // HTTP POST
 router.post("/",
   async (req, res, next) => {
     req.query.data = req.body
-    validateHandler(req, res, next)
+    validateRoute(req, res, next)
   },
 )
 
@@ -126,7 +94,7 @@ router.get("/", async (req, res, next) => {
     return
   }
 
-  validateHandler(req, res, next)
+  validateRoute(req, res, next)
 })
 
 module.exports = router

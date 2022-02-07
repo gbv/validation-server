@@ -1,11 +1,11 @@
-const querySpecificFormat = require("../lib/query-specific.js")
 const { NotFound } = require("../lib/errors.js")
 const validators = require("../lib/validators.js")
 const config = require("../config")
+const formatFromQuery = require("../lib/format-from-query.js")
 
 module.exports = (req, res, next) => {
   req.query.withFile = true
-  const format = querySpecificFormat(req, res, next)
+  const format = formatFromQuery(req, res, next)
   if (format && format.schemas && format.schemas.length) {
     const { file, type } = format.schemas[0]
 
