@@ -166,6 +166,31 @@ Non-validation errors such as invalid request parameters or unexpected internal 
 
 A stack trace is included in development mode.
 
+## Deployment
+
+To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
+
+```
+	location /validate/ {
+		proxy_pass http://127.0.0.1:3700/;
+	}
+```
+
+We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service. To update an instance deployed with PM2:
+
+```
+# get updates from repository
+git pull
+
+# install dependencies
+npm ci
+
+# restart the process (adjust process name if needed)
+pm2 restart validation-service
+```
+
+Automatic update of formats and schemas has *not been implemented yet (<https://github.com/gbv/validation-service/issues/8>).*
+
 ## Maintainers
 
 - [@nichtich](https://github.com/nichtich)

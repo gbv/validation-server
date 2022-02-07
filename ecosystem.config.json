@@ -1,0 +1,4 @@
+{
+  "name": "validation-service",
+  "script": "./server.js"
+}
