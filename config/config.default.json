@@ -6,5 +6,5 @@
   "proxies": [],
   "verbosity": "warn",
   "formats": [],
-  "baseDirectory": "./formats"
+  "formatsDirectory": "./formats"
 }

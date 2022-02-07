@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     const { file, type } = format.schemas[0]
 
     const headers = { "Content-Type": validators[type].contentType }
-    res.sendFile(file, { headers, root: config.baseDirectory })
+    res.sendFile(file, { headers, root: config.formatsDirectory })
   } else {
     next(new NotFound("Schema not found"))
   }

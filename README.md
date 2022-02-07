@@ -53,7 +53,7 @@ The service must be customized via configuration files. By default, this configu
   "proxies": [],
   "verbosity": "log",
   "formats": [],
-  "baseDirectory": "./formats"
+  "formatsDirectory": "./formats"
 }
 ```
 
