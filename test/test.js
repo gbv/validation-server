@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
 
+const fs = require("fs")
 const chai = require("chai")
 const chaiAsPromised = require("chai-as-promised")
 chai.use(chaiAsPromised)
@@ -11,6 +12,8 @@ const should = chai.should()
 const server = require("../server")
 const config = require("../config")
 
+const request = path => chai.request(server.app).get(path)
+
 describe("Server", () => {
 
   before(async () => {
@@ -19,7 +22,7 @@ describe("Server", () => {
   })
 
   it("should show HTML on base URL", done => {
-    chai.request(server.app).get("/")
+    request("/")
       .end((err, res) => {
         res.should.have.status(200)
         res.text.should.match(/<body/)
@@ -28,11 +31,20 @@ describe("Server", () => {
   })
 
   it("should list formats at /formats", done => {
-    chai.request(server.app)
-      .get("/formats")
+    request("/formats")
       .end((err, res) => {
         res.should.have.status(200)
         res.body.should.be.a("array")
+        done()
+      })
+  })
+
+  it("should return a schemas at /schema", done => {
+    request("/schema?format=json-schema&version=draft-07")
+      .end((err, res) => {
+        res.should.have.status(200)
+        const draft7 = "test/formats/json-schema/draft-07/schema.json"
+        res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
         done()
       })
   })

@@ -9,6 +9,7 @@
   "main": "server.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --exit",
+    "debug": "NODE_ENV=debug mocha --exit",
     "start": "nodemon --ignore formats server.js",
     "lint": "./node_modules/.bin/eslint './**/*.js'",
     "fix": "./node_modules/.bin/eslint --fix './**/*.js'",
@@ -43,6 +44,7 @@
     "pre-commit": "^1.2.2"
   },
   "dependencies": {
+    "ajv-formats": "^2.1.1",
     "axios": "^0.25.0",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",

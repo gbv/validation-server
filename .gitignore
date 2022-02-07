@@ -6,6 +6,7 @@ config*.json
 !config/config.test.json
 
 formats/
+!test/formats/
 
 npm-debug.log*
 yarn-debug.log*

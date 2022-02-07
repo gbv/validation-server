@@ -1,7 +1,8 @@
 // Prepare environment
 require("dotenv").config()
 const env = process.env.NODE_ENV || "development"
-const configFile = process.env.CONFIG_FILE || (env === "test" ? "./config.test.json" : "./config.json")
+const configFile = process.env.CONFIG_FILE
+  || (env === "test" || env === "debug" ? `./config.${env}.json` : "./config.json")
 
 // Load default config
 const configDefault = require("./config.default.json")
