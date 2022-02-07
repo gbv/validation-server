@@ -42,6 +42,9 @@ app.get("/formats", require("./routes/formats.js"))
 // Get a schema
 app.get("/schema", require("./routes/schema.js"))
 
+// List of schema languages
+app.get("/types", require("./routes/types.js"))
+
 // Error handling
 app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
   const response = {

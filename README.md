@@ -54,7 +54,10 @@ The service must be customized via configuration files. By default, this configu
   "verbosity": "log",
   "formats": [],
   "formatsDirectory": "./formats",
-  "update": "startup"
+  "update": "startup",
+  "types": [
+    { "id": "json-schema" }
+  ]
 }
 ```
 
@@ -69,6 +72,11 @@ A format, as specified in array `formats` of the specification must be a JSON Ob
   * `version` optional version number or name
   * `type` Schema type (`json-schema` or `xsd`)
   * `url` where to retrieve the schema file from
+  * `title` optional title
+  * `title` optional short title
+  * `contentType` optional content type
+  * `base` optional base format (e.g. "json" for JSON-based formats)
+  * `for` optional serialization format (for schema languages)
 
 ## Usage
 
@@ -92,6 +100,8 @@ npm test
 
 ## API
 
+The response status code should always be 200 (also when validation resulted in invalid data), unless there was an [error](#errors) such as wrong request parameters or unexpected internal failures:
+
 ### POST /validate
 
 Endpoint to validate records.
@@ -103,8 +113,6 @@ Endpoint to validate records.
 * **Success Response**
 
   Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of errors when the object failed validation. Data format of error objects may change in future versions but there is always at least field `message`.
-
-  The response status code does not indicate whether records passed validation but it is always 200.
 
 ### GET /validate
 
@@ -138,7 +146,7 @@ Lists all [formats](#formats), optionally filtered by identifier, version, and/o
 
 ### GET /schema
 
-Return a known schema file.
+Get a schema file.
 
 * **URL Params**
 
@@ -152,9 +160,21 @@ Return a known schema file.
 
   The schema file is served with corresponding content type.
 
+### GET /types
+
+List schema types as array of [formats](#formats).
+
+* **URL Params**
+
+  `type=[string]` optional schema type
+
+* **Success Response**
+
+  JSON Array of format objects.
+
 ### Errors
 
-Non-validation errors such as invalid request parameters or unexpected internal failures are returned as JSON object such as the following:
+Non-validation errors such as wrong request parameters or unexpected internal failures are returned as JSON object such as the following:
 
 ```json
 {
@@ -176,9 +196,15 @@ To provide the service behind a nginx web server at path `/validate/` (like at <
 	}
 ```
 
-We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service. To update an instance deployed with PM2:
+We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service:
 
+```bash
+pm2 start ecosystem.config.json
 ```
+
+To update an instance deployed with PM2:
+
+```bash
 # get updates from repository
 git pull
 

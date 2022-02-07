@@ -15,6 +15,9 @@
     a:hover, a:active {
       text-decoration: underline;
     }
+    .id {
+      font-family: monospace;
+    }
     </style>
   </head>
   <body>
@@ -30,7 +33,28 @@
       <li>POST /validate - validate data (<a href="https://github.com/gbv/validation-service#post-validate" target="_blank">documentation</a>)</li>
       <li>GET <a href="validate">/validate</a> - validate data (<a href="https://github.com/gbv/validation-service#get-validate" target="_blank">documentation</a>)</li>
       <li>GET <a href="formats">/formats</a> - list supported data formats (<a href="https://github.com/gbv/validation-service#get-formats" target="_blank">documentation</a>)</li>
-      <li>GET <a href="schema">/schema</a> - get a known schema (<a href="https://github.com/gbv/validation-service#get-schema" target="_blank">documentation</a>)</li>
+      <li>GET <a href="schema">/schema</a> - get a schema file (<a href="https://github.com/gbv/validation-service#get-schema" target="_blank">documentation</a>)</li>
+      <li>GET <a href="types">/types</a> - list supported schema types (<a href="https://github.com/gbv/validation-service#get-types" target="_blank">documentation</a>)</li>
+    </ul>
+    <h3>Supported Formats</h3>
+    <p>The following data formats are known:</p>
+    <ul>
+      <% for (var format of config.formats) { %>
+        <li>
+          <a href="formats?format=<%= format.id %>" class="id"><%= format.id %></a>
+          <% if (format.title) { %> (<%= format.title %>)<% } %>
+        </li>
+      <% } %>
+    </ul>
+    <h3>Supported Schema types</h3>
+    <p>The following schema languages can be used:</p>
+    <ul>
+      <% for (var type of config.types) { %>
+        <li>
+          <a href="types?type=<%= type.id %>" class="id"><%= type.id %></a>
+          <% if (type.title) { %> (<%= type.title %>)<% } %>
+        </li>
+      <% } %>
     </ul>
   </body>
   <footer>

@@ -23,6 +23,16 @@ config.formats.unshift({
   id: "json",
 })
 
+// validate configuration
+const validators = require("../lib/validators.js")
+config.types.forEach(type => {
+  const val = validators[type.id]
+  if (val) {
+    ["title", "base", "for", "contentType"].forEach(key => type[key] = val[key])
+  } else {
+    throw new Error(`Unknown schema type ${type.id} in configuration.`)
+  }
+})
 
 // Logging functions
 if (![true, false, "log", "warn", "error"].includes(config.verbosity)) {
