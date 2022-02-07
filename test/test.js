@@ -48,4 +48,14 @@ describe("Server", () => {
         done()
       })
   })
+
+  it("should list schema types at /types", done => {
+    request("/types")
+      .end((err, res) => {
+        res.should.have.status(200)
+        res.body.should.be.a("array")
+        done()
+      })
+  })
+
 })
