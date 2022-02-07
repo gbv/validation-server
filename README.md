@@ -82,6 +82,8 @@ npm run start
 NODE_ENV=production node ./server.js
 ```
 
+On startup all configured schemas are downloaded to `formatsDirectory` (set `update` to `"missing"` will only download missing schema files) and compiled. Addition and updates require to restart the server.
+
 ### Run Tests
 
 ```bash
@@ -89,16 +91,6 @@ npm test
 ```
 
 ## API
-
-Unless otherwise specified:
-- `GET` requests will return code 200 on success.
-- `POST` requests will return code 201 on success.
-- `DELETE` requests will return code 204 on success.
-- `POST`/`PUT`/`PATCH` requests require a JSON body.
-- Alternatively, `POST` can also receive the following inputs:
-  - any kind of JSON stream
-  - mutlipart/form-data with the file in `data`
-  - a URL with JSON data as `url` in the request params
 
 ### POST /validate
 
@@ -111,6 +103,8 @@ Endpoint to validate records.
 * **Success Response**
 
   Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of errors when the object failed validation. Data format of error objects may change in future versions but there is always at least field `message`.
+
+  The response status code does not indicate whether records passed validation but it is always 200.
 
 ### GET /validate
 
