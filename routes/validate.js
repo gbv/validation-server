@@ -5,19 +5,17 @@ const { MalformedRequest } = require("../lib/errors.js")
 const config = require("../config")
 const { URL } = require("url")
 
-const parsable = require("../lib/parsable-formats.js")
-
+const parsers = require("../lib/parsers.js")
 const formatFromQuery = require("../lib/format-from-query.js")
-
 
 async function validate(data, format) {
   const { id, base, schemas } = format
 
   // Just use a parser for validating
-  if (id in parsable) {
-    return parsable[id].parse(data)
+  if (id in parsers) {
+    return parsers[id].parse(data)
       .then(result => result.map(() => true))
-      .catch(e => [[{ error: "SyntaxError", message: e.message }]])
+      .catch(e => [[e]])
   }
 
   if (base === "json") {
@@ -26,9 +24,9 @@ async function validate(data, format) {
 
     if (schema && schema.validator) {
       const { validator } = schema
-      return await parsable.json.parse(data)
+      return await parsers.json.parse(data)
         .then(data => data.map(record => validator(record) ? true : validator.errors))
-        .catch(e => [[{ error: "SyntaxError", message: e.message }]])
+        .catch(e => [[e]])
     } else {
       throw new Error(`No schema available to validate ${id}`)
     }

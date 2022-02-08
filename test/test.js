@@ -72,11 +72,22 @@ describe("Server", () => {
     { format: "json", data: "{}", code: 200, result: [true] },
     { format: "json", data: "[false]", code: 200, result: [true] },
     { format: "json", data: "null", code: 200, result: [true] },
-    { format: "json", data: "{", code: 200,
-      result: [[{error: "SyntaxError", message: "Unexpected end of JSON input" }]],
-    },
-    { format: "json-schema", data: "{", code: 200,
-      result: [[{error: "SyntaxError", message: "Unexpected end of JSON input" }]],
+    { format: "json", data: "{", code: 200, result: [[{
+      message: "Unexpected end of JSON input",
+      position: "char=1",
+      positionFormat: "rfc5147",
+    }]] },
+    { format: "json", data: "{ 1", code: 200, result: [[{
+      message: "Unexpected number in JSON at position 2",
+      position: "char=2",
+      positionFormat: "rfc5147",
+    }]] },
+    { format: "json-schema", data: "{\"properties\":0}", code: 200,
+      result: [[{
+        message: "must be object",
+        position: "/properties",
+        positionFormat: "jsonpointer",
+      }]],
     },
   ]
 

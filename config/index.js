@@ -19,9 +19,8 @@ try {
 }
 
 // Hard-coded formats
-config.formats.unshift({
-  id: "json",
-})
+const parsers = require("../lib/parsers.js")
+config.formats.push(...Object.values(parsers))
 
 // validate configuration
 const validators = require("../lib/validators.js")

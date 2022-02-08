@@ -18,11 +18,12 @@ This validation service provides methods to validate records against different k
   - [Run Server](#run-server)
   - [Run Tests](#run-tests)
 - [API](#api)
-  - [POST /validate](#post-validate)
   - [GET /validate](#get-validate)
+  - [POST /validate](#post-validate)
   - [GET /formats](#get-formats)
   - [GET /schema](#get-schema)
-  - [Errors](#errors)
+  - [Validation errors](#validation-errors)
+  - [API errors](#api-errors)
 - [Deployment](#deployment)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
@@ -100,29 +101,29 @@ npm test
 
 ## API
 
-The response status code should always be 200 (also when validation resulted in invalid data), unless there was an [error](#errors) such as wrong request parameters or unexpected internal failures:
-
-### POST /validate
-
-Endpoint to validate records.
-
-* **URL Params**
-
-  `format=[string]` a known data format (required)
-
-* **Success Response**
-
-  Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of errors when the object failed validation. Data format of error objects may change in future versions but there is always at least field `message`.
+The response status code should always be 200 (possibly including [validation errors](#validation-errors), unless there was an [API error](#api-errors) such as wrong request parameters or unexpected internal failures.
 
 ### GET /validate
 
-Endpoint to validate records like [POST /validate](#post-validate) but data is passed via URL or query parameter.
+Endpoint to validate records passed via query parameter or URL.
 
 * **URL Params**
 
   `url=[url]` URL to load data from
 
   `data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
+
+* **Success Response**
+
+  Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of [validation errors](#validation-errors) when the object failed validation.
+
+### POST /validate
+
+Endpoint to validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
+
+* **URL Params**
+
+  `format=[string]` a known data format (required)
 
 * **Success Response**
 
@@ -172,7 +173,18 @@ List schema types as array of [formats](#formats).
 
   JSON Array of format objects.
 
-### Errors
+### Validation errors
+
+Validation results (see [GET /validate](#get-validate) and [POST /validate](#post-validate)) can include validation errors. Each error is a JSON object with
+
+* `message` mandatory error message
+* `error` optional type of error
+* `position` optional locator of the error
+* `positionFormat` optional locator format (e.g. `rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
+
+Errors may contain additional keys but these may change with future versions of the service.
+
+### API errors
 
 Non-validation errors such as wrong request parameters or unexpected internal failures are returned as JSON object such as the following:
 
