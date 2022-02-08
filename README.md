@@ -70,8 +70,8 @@ A format, as specified in array `formats` of the specification must be a JSON Ob
 
 * `id` format identifier
 * `schemas` an array of schemas, each with
-  * `version` optional version number or name
-  * `type` Schema type (`json-schema` or `xsd`)
+  * `version` version number or name (set to `"default"` if missing)
+  * `type` Schema type (e.g. `json-schema`)
   * `url` where to retrieve the schema file from
   * `title` optional title
   * `title` optional short title

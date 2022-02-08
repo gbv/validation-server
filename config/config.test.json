@@ -1,17 +1,4 @@
 {
   "update": "missing",
-  "formatsDirectory": "test/formats",
-  "formats": [
-    {
-      "id": "json-schema",
-      "base": "json",
-      "schemas": [
-        {
-          "version": "draft-07",
-          "url": "https://json-schema.org/draft-07/schema",
-          "type": "json-schema"
-        }
-      ]
-    }
-  ]
+  "formatsDirectory": "test/formats"
 }
