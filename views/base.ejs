@@ -35,8 +35,8 @@
       <li>GET <a href="schema">/schema</a> - get a schema file (<a href="https://github.com/gbv/validation-service#get-schema" target="_blank">documentation</a>)</li>
       <li>GET <a href="types">/types</a> - list supported schema types (<a href="https://github.com/gbv/validation-service#get-types" target="_blank">documentation</a>)</li>
     </ul>
-    <h3>Supported Formats</h3>
-    <p>The following data formats are known:</p>
+    <h3>Formats</h3>
+    <p>The following data formats can be validated:</p>
     <ul>
       <% for (var format of config.formats) { %>
         <li>
@@ -45,8 +45,8 @@
         </li>
       <% } %>
     </ul>
-    <h3>Supported Schema types</h3>
-    <p>The following schema languages can be used:</p>
+    <h3>Schema types</h3>
+    <p>Validation can be perfomed based on schemas in the following schema languages:</p>
     <ul>
       <% for (var type of config.types) { %>
         <li>

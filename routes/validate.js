@@ -37,8 +37,8 @@ async function validate(data, format) {
 }
 
 async function validateRoute(req, res, next) {
-  const format = formatFromQuery(req, res, next)
-  return validate(req.query.data, format)
+  formatFromQuery(req)
+    .then(format => validate(req.query.data, format))
     .then(result => res.send(result))
     .catch(error => next(error))
 }
@@ -46,7 +46,7 @@ async function validateRoute(req, res, next) {
 // HTTP POST
 router.post("/",
   async (req, res, next) => {
-    req.query.data = req.body
+    req.query.data = req.body // FIXME: this should be a raw string
     validateRoute(req, res, next)
   },
 )

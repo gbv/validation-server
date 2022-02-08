@@ -39,12 +39,11 @@ describe("Server", () => {
       })
   })
 
-  it("should return a schemas at /schema", done => {
-    request("/schema?format=json-schema&version=draft-07")
+  it("should allow unknown format name at /formats", done => {
+    request("/formats?format=xxxx")
       .end((err, res) => {
         res.should.have.status(200)
-        const draft7 = "test/formats/json-schema/draft-07/schema.json"
-        res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
+        res.body.should.deep.equal([])
         done()
       })
   })
@@ -58,13 +57,34 @@ describe("Server", () => {
       })
   })
 
-  it("should require a format parameter at /validate", done => {
-    request("/validate")
+  it("should return a schemas at /schema", done => {
+    request("/schema?format=json-schema&version=draft-07")
       .end((err, res) => {
-        res.should.have.status(400)
-        res.body.should.be.a("object")
+        res.should.have.status(200)
+        const draft7 = "test/formats/json-schema/draft-07/schema.json"
+        res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
         done()
       })
+  })
+
+  it("should require a format parameter at /validate", done => {
+    request("/validate?data=0")
+      .end((err, res) => {
+        res.should.have.status(400)
+        res.body.message.should.equals("Missing query parameter: format")
+        done()
+      })
+  })
+
+  ;["/validate","/schema"].forEach(endpoint => {
+    it(`should complain about unknown format at ${endpoint}`, done => {
+      request(endpoint)
+        .end((err, res) => {
+          res.should.have.status(400)
+          res.body.should.be.a("object")
+          done()
+        })
+    })
   })
 
   const validationTests = [
@@ -102,4 +122,14 @@ describe("Server", () => {
     })
   })
 
+  it("should detect invalid JSON with POST at /validate", done => {
+    chai.request(server.app)
+      .post("/validate?format=json")
+      .set("content-type", "text/plain")
+      .send("???")
+      .end((err, res) => {
+        res.should.have.status(400)
+        done()
+      })
+  })
 })

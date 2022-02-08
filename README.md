@@ -107,39 +107,79 @@ The response status code should always be 200 (possibly including [validation er
 
 Endpoint to validate records passed via query parameter or URL.
 
-* **URL Params**
+**URL Params**
 
-  `url=[url]` URL to load data from
+`url=[url]` URL to load data from
 
-  `data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
+`data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
 
-* **Success Response**
+**Success Response**
 
-  Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of [validation errors](#validation-errors) when the object failed validation.
+Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of [validation errors](#validation-errors) when the object failed validation.
+
+**Examples**
+
+Check whether a simple string such as `{}` or `[x]` is valid or invalid JSON:
+
+```sh
+curl -g 'http://format.gbv.de/validate/validate?format=json&data={}'
+```
+
+```json
+[
+  true
+]
+```
+
+```sh
+curl -g 'http://format.gbv.de/validate/validate?format=json&data=[x]'
+```
+
+```json
+[
+  [
+    {
+      "message": "Unexpected token x in JSON at position 1",
+      "position": "char=1",
+      "positionFormat": "rfc5147"
+    }
+  ]
+]
+```
+
+JSON parsing errors are returned with character position in [RFC 5147](https://datatracker.ietf.org/doc/html/rfc5147) format.
 
 ### POST /validate
 
 Endpoint to validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
 
-* **URL Params**
+**Query Parameters**
 
-  `format=[string]` a known data format (required)
+* `format=[string]` a known data format (required)
 
-* **Success Response**
+**Success Response**
 
-  Same as response of [POST /validate](#post-validate).
+Same as response of [POST /validate](#post-validate).
+
+**Examples**
+
+```sh
+curl -X POST 'http://format.gbv.de/validate/validate?format=json' -d '[]'
+```
+
+...
 
 ### GET /formats
 
 Lists all [formats](#formats), optionally filtered by identifier, version, and/or schema type.
 
-* **URL Params**
+**Query Parameters**
 
-  `format=[id]` select format with given format identifier
+* `format=[id]` select format with given format identifier
 
-  `version=[string]` version to filter for
+* `version=[string]` version to filter for
 
-  `type=[string]` schema type filter for
+* `type=[string]` schema type filter for
 
 * **Success Response**
 
@@ -149,29 +189,33 @@ Lists all [formats](#formats), optionally filtered by identifier, version, and/o
 
 Get a schema file.
 
-* **URL Params**
+**Query Parameters**
 
-  `format=[id]` format identifier
+* `format=[id]` format identifier
 
-  `version=[string]` optional version (set to `default` by default)
+* `version=[string]` optional version (set to `default` by default)
 
-  `type=[string]` optional schema type
+* `type=[string]` optional schema type
 
-* **Success Response**
+**Success Response**
 
-  The schema file is served with corresponding content type.
+The schema file is served with corresponding content type.
+
+**Error Resonse**
+
+An [API error](#api-errors) with status code 404 is returned in no corresponding schema was found.
 
 ### GET /types
 
 List schema types as array of [formats](#formats).
 
-* **URL Params**
+**Query Parameters**
 
-  `type=[string]` optional schema type
+* `type=[string]` optional schema type
 
-* **Success Response**
+**Success Response**
 
-  JSON Array of format objects.
+JSON Array of format objects.
 
 ### Validation errors
 
