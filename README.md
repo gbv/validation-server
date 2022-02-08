@@ -13,10 +13,13 @@ This validation service provides methods to validate records against different k
 - [Install](#install)
   - [From GitHub](#from-github)
   - [Configuration](#configuration)
+- [Background](#background)
   - [Formats](#formats)
+  - [Schema languages](#schema-languages)
 - [Usage](#usage)
   - [Run Server](#run-server)
   - [Run Tests](#run-tests)
+- [Data model](#data-model)
 - [API](#api)
   - [GET /validate](#get-validate)
   - [POST /validate](#post-validate)
@@ -64,20 +67,47 @@ The service must be customized via configuration files. By default, this configu
 
 Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production` and `test`.
 
+Key `formats` and `types` must contain arrays of [formats](#formats) or [schema languages](#schema-languages), respectively. The arrays are automatically extended by some hardcoded formats automatically included in every instance of validation service.
+
+## Background
+
+Large parts of practical data science or other data processing work is spent by cleaning dirty data. To detect errors in data or to ensure that data is good enough, it must be **validated** against some critera. A **data format** is a set of digital objects (aka records) that meet some defined criteria. This application helps to check whether records conform to known data formats. [Validation errors](#validation-errors) show when and how a format is violated so data can be cleaned or rejected.
+
 ### Formats
 
-A format, as specified in array `formats` of the specification must be a JSON Object with keys:
+A format, as specified in array `formats` and/or `types` of [configuration](#configuration) must be a JSON Object with keys:
 
 * `id` format identifier
-* `schemas` an array of schemas, each with
+* `title` optional title
+* `short` optional short title
+* `contentType` optional content type
+* `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
+* `schemas` an optional array of schemas, each with
   * `version` version number or name (set to `"default"` if missing)
-  * `type` Schema type (e.g. `json-schema`)
+  * `type` Schema type (identifier of a schema language, e.g. `json-schema`)
   * `url` where to retrieve the schema file from
-  * `title` optional title
-  * `title` optional short title
-  * `contentType` optional content type
-  * `base` optional base format (e.g. "json" for JSON-based formats)
-  * `for` optional serialization format (for schema languages)
+
+API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation service.
+
+### Schema languages
+
+Some formats are also schema languages (aka schema types). Records in a schema language (aka schemas) define other data formats that all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats.
+
+This service supports some known schema languages:
+
+* JSON Schema (`json-schema`)
+* XML Schema (*not implemented yet*)
+* ...
+
+These schema languages are automatically included as [formats](#formats) with an additional key:
+
+* `for` identifier of the base format of formats defined by the schema language
+
+API endpoint [/types](#get-types) can be used to list schema languages supported by an instance of validation service.
+
+### See Also
+
+The format registry <http://format.gbv.de/> (mostly German) lists data formats relevant to cultural heritage institutions. The thesis described at <http://aboutdata.org> includes some theoretical background.
 
 ## Usage
 
