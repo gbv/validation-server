@@ -12,7 +12,7 @@ This validation service provides methods to validate records against different k
 
 - [Background](#background)
   - [Formats](#formats)
-  - [Schema languages](#schema-languages)
+  - [Schema Languages](#schema-languages)
 - [Install](#install)
   - [From GitHub](#from-github)
   - [Configuration](#configuration)
@@ -25,8 +25,8 @@ This validation service provides methods to validate records against different k
   - [POST /validate](#post-validate)
   - [GET /formats](#get-formats)
   - [GET /schema](#get-schema)
-  - [Validation errors](#validation-errors)
-  - [API errors](#api-errors)
+  - [Validation Errors](#validation-errors)
+  - [API Errors](#api-errors)
 - [Maintainers](#maintainers)
 - [Contributing](#contributing)
 - [License](#license)
@@ -51,7 +51,7 @@ A format, as specified in array `formats` and/or `types` of [configuration](#con
 
 API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation service.
 
-### Schema languages
+### Schema Languages
 
 Some formats are also schema languages (aka schema types). Records in a schema language (aka schemas) define other data formats that all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats.
 
@@ -127,6 +127,8 @@ On startup all configured schemas are downloaded to `formatsDirectory` (set `upd
 
 ```bash
 npm test
+npm run debug    # test with logging enabled
+npm run coverage # test with code coverage report
 ```
 
 ## Deployment
@@ -134,9 +136,9 @@ npm test
 To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
 
 ```
-	location /validate/ {
-		proxy_pass http://127.0.0.1:3700/;
-	}
+location /validate/ {
+    proxy_pass http://127.0.0.1:3700/;
+}
 ```
 
 We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service:
@@ -278,7 +280,7 @@ List schema types as array of [formats](#formats).
 
 JSON Array of format objects.
 
-### Validation errors
+### Validation Errors
 
 Validation results (see [GET /validate](#get-validate) and [POST /validate](#post-validate)) can include validation errors. Each error is a JSON object with
 
@@ -289,7 +291,7 @@ Validation results (see [GET /validate](#get-validate) and [POST /validate](#pos
 
 Errors may contain additional keys but these may change with future versions of the service.
 
-### API errors
+### API Errors
 
 Non-validation errors such as wrong request parameters or unexpected internal failures are returned as JSON object such as the following:
 
