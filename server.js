@@ -14,6 +14,18 @@ if (config.proxies && config.proxies.length) {
 app.set("views", __dirname + "/views")
 app.set("view engine", "ejs")
 
+// Middleware to parse the raw body
+app.use(
+  express.raw({
+    verify: (req, res, buf, encoding) => {
+      if (buf && buf.length) {
+        req.rawBody = buf.toString(encoding || "utf8")
+      }
+    },
+    type: "*/*",
+  }),
+)
+
 // Add default headers
 app.use((req, res, next) => {
   if (req.headers.origin) {

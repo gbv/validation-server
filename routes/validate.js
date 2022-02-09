@@ -46,7 +46,7 @@ async function validateRoute(req, res, next) {
 // HTTP POST
 router.post("/",
   async (req, res, next) => {
-    req.query.data = req.body // FIXME: this should be a raw string
+    req.query.data = req.rawBody
     validateRoute(req, res, next)
   },
 )
