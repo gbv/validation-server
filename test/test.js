@@ -112,24 +112,24 @@ describe("Server", () => {
   ]
 
   validationTests.forEach(({format, data, code, result}) => {
-    it(`should validate ${format} data ${data}`, done => {
+    const resultCheck = done =>
+      ((err, res) => {
+        res.should.have.status(code)
+        res.body.should.deep.equal(result)
+        done()
+      })
+
+    it(`should validate ${format} data ${data} (GET)`, done => {
       request(`/validate?format=${format}&data=${data}`)
-        .end((err, res) => {
-          res.should.have.status(code)
-          res.body.should.deep.equal(result)
-          done()
-        })
+        .end(resultCheck(done))
+    })
+
+    it(`should validate ${format} data ${data} (POST)`, done => {
+      chai.request(server.app)
+        .post(`/validate?format=${format}`)
+        .send(data)
+        .end(resultCheck(done))
     })
   })
 
-  it("should detect invalid JSON with POST at /validate", done => {
-    chai.request(server.app)
-      .post("/validate?format=json")
-      .set("content-type", "text/plain")
-      .send("???")
-      .end((err, res) => {
-        res.should.have.status(400)
-        done()
-      })
-  })
 })
