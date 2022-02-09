@@ -58,6 +58,7 @@ Some formats are also schema languages (aka schema types). Records in a schema l
 This service supports some known schema languages:
 
 * JSON Schema (`json-schema`)
+  * Supports `draft-04`, `draft-06`, and `draft-07`
 * XML Schema (*not implemented yet*)
 * ...
 

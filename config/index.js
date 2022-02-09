@@ -18,31 +18,6 @@ try {
   console.warn(`Warning: Could not load configuration file from ${configFile}. Running with default settings.`)
 }
 
-// load formats from file
-if (typeof config.formats === "string") {
-  config.formats = require(config.formats)
-}
-
-// Hard-coded formats
-const parsers = require("../lib/parsers.js")
-config.formats.push(...Object.values(parsers))
-
-// validate configuration
-const validators = require("../lib/validators.js")
-config.types.forEach(type => {
-  const val = validators[type.id]
-  if (val) {
-    // TODO: don't include file, just reference format ids
-    ["title", "base", "for", "contentType", "schemas"]
-      .filter(key => key in val)
-      .forEach(key => type[key] = val[key])
-    config.formats.push(type)
-  } else {
-    throw new Error(`Unknown schema type ${type.id} in configuration.`)
-  }
-})
-
-
 // Logging functions
 if (![true, false, "log", "warn", "error"].includes(config.verbosity)) {
   console.warn(`Invalid verbosity value "${config.verbosity}", defaulting to "${configDefault.verbosity}" instead.`)
@@ -64,5 +39,32 @@ config.error = (...args) => {
     console.error(new Date(), ...args)
   }
 }
+
+// load formats from file
+if (typeof config.formats === "string") {
+  const filename = config.formats
+  config.formats = require(filename)
+  config.log(`Formats loaded from ${filename}`)
+}
+
+// Hard-coded formats
+const parsers = require("../lib/parsers.js")
+config.formats.push(...Object.values(parsers))
+
+// validate configuration
+const validators = require("../lib/validators.js")
+config.types.forEach(type => {
+  const val = validators[type.id]
+  if (val) {
+    // TODO: don't include file, just reference format ids
+    ["title", "base", "for", "contentType", "schemas"]
+      .filter(key => key in val)
+      .forEach(key => type[key] = val[key])
+    config.formats.push(type)
+  } else {
+    throw new Error(`Unknown schema type ${type.id} in configuration.`)
+  }
+})
+
 
 module.exports = config
