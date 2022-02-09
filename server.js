@@ -75,7 +75,7 @@ const start = async () => {
 
   // Find available port on test
   let port = config.port
-  if (config.env == "test") {
+  if (config.env == "test" || config.env === "debug") {
     const portfinder = require("portfinder")
     portfinder.basePort = config.port
     port = await portfinder.getPortPromise()

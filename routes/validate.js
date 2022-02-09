@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const axios = require("axios")
-const { MalformedRequest } = require("../lib/errors.js")
+const { MalformedRequest, MalformedConfiguration } = require("../lib/errors.js")
 const config = require("../config")
 const { URL } = require("url")
 
@@ -9,7 +9,9 @@ const parsers = require("../lib/parsers.js")
 const formatFromQuery = require("../lib/format-from-query.js")
 
 async function validate(data, format) {
-  const { id, base, schemas } = format
+  const { id, schemas } = format
+
+  // TODO: take into account base format
 
   // Just use a parser for validating
   if (id in parsers) {
@@ -18,21 +20,16 @@ async function validate(data, format) {
       .catch(e => [[e]])
   }
 
-  if (base === "json") {
-    // TODO: what if multiple schemas exist?
-    const schema = schemas ? schemas[0] : null
+  // TODO: what if multiple schemas exist?
+  const schema = schemas ? schemas[0] : null
 
-    if (schema && schema.validator) {
-      const { validator } = schema
-      return await parsers.json.parse(data)
-        .then(data => data.map(record => validator(record) ? true : validator.errors))
-        .catch(e => [[e]])
-    } else {
-      throw new Error(`No schema available to validate ${id}`)
-    }
-
+  if (schema && schema.validator) {
+    const { validator } = schema
+    return await parsers.json.parse(data)
+      .then(data => data.map(record => validator(record) ? true : validator.errors))
+      .catch(e => [[e]])
   } else {
-    throw new Error(`Validation of ${base} based formats is not supported`)
+    throw new MalformedConfiguration(`No schema or parser available to validate ${id}`)
   }
 }
 

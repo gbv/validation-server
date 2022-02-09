@@ -4,6 +4,7 @@ node_modules/
 config*.json
 !config/config.default.json
 !config/config.test.json
+!config/config.debug.json
 
 formats/
 !test/formats/
