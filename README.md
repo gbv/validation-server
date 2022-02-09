@@ -1,4 +1,4 @@
-# Validation Service
+# Validation-Service
 
 [![Test](https://github.com/gbv/validation-service/actions/workflows/test.yml/badge.svg)](https://github.com/gbv/validation-service/actions/workflows/test.yml)
 [![GitHub package version](https://img.shields.io/github/package-json/v/gbv/validation-service.svg?label=version)](https://github.com/gbv/validation-service)
@@ -10,16 +10,16 @@ This validation service provides methods to validate records against different k
 
 ## Table of Contents
 
-- [Install](#install)
-  - [From GitHub](#from-github)
-  - [Configuration](#configuration)
 - [Background](#background)
   - [Formats](#formats)
   - [Schema languages](#schema-languages)
+- [Install](#install)
+  - [From GitHub](#from-github)
+  - [Configuration](#configuration)
 - [Usage](#usage)
   - [Run Server](#run-server)
   - [Run Tests](#run-tests)
-- [Data model](#data-model)
+- [Deployment](#deployment)
 - [API](#api)
   - [GET /validate](#get-validate)
   - [POST /validate](#post-validate)
@@ -27,47 +27,9 @@ This validation service provides methods to validate records against different k
   - [GET /schema](#get-schema)
   - [Validation errors](#validation-errors)
   - [API errors](#api-errors)
-- [Deployment](#deployment)
 - [Maintainers](#maintainers)
-- [Contribute](#contribute)
+- [Contributing](#contributing)
 - [License](#license)
-
-## Install
-
-Requires at least Node 12.
-
-### From GitHub
-
-```bash
-git clone https://github.com/gbv/jskos-server.git
-cd jskos-server
-npm ci
-```
-
-### Configuration
-
-The service must be customized via configuration files. By default, this configuration file resides in `config/config.json` (or `config/config.test.json` for tests). However, it is possible to adjust this path via the `CONFIG_FILE` environment variable. Missing keys are defaulted from `config/config.default.json`:
-
-```json
-{
-  "title": "Validation Service",
-  "description": null,
-  "version": null,
-  "port": 3700,
-  "proxies": [],
-  "verbosity": "log",
-  "formats": [],
-  "formatsDirectory": "./formats",
-  "update": "startup",
-  "types": [
-    { "id": "json-schema" }
-  ]
-}
-```
-
-Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production` and `test`.
-
-Key `formats` and `types` must contain arrays of [formats](#formats) or [schema languages](#schema-languages), respectively. The arrays are automatically extended by some hardcoded formats automatically included in every instance of validation service.
 
 ## Background
 
@@ -109,6 +71,44 @@ API endpoint [/types](#get-types) can be used to list schema languages supported
 
 The format registry <http://format.gbv.de/> (mostly German) lists data formats relevant to cultural heritage institutions. The thesis described at <http://aboutdata.org> includes some theoretical background.
 
+
+## Install
+
+Requires at least Node 12.
+
+### From GitHub
+
+```bash
+git clone https://github.com/gbv/jskos-server.git
+cd jskos-server
+npm ci
+```
+
+### Configuration
+
+The service must be customized via configuration files. By default, this configuration file resides in `config/config.json` (or `config/config.test.json` for tests). However, it is possible to adjust this path via the `CONFIG_FILE` environment variable. Missing keys are defaulted from `config/config.default.json`:
+
+```json
+{
+  "title": "Validation Service",
+  "description": null,
+  "version": null,
+  "port": 3700,
+  "proxies": [],
+  "verbosity": "log",
+  "formats": [],
+  "formatsDirectory": "./formats",
+  "update": "startup",
+  "types": [
+    { "id": "json-schema" }
+  ]
+}
+```
+
+Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production`, `test`, and `debug`.
+
+Key `formats` and `types` must contain arrays of [formats](#formats) or [schema languages](#schema-languages), respectively. The arrays are automatically extended by some hardcoded formats automatically included in every instance of validation service.
+
 ## Usage
 
 ### Run Server
@@ -128,6 +128,37 @@ On startup all configured schemas are downloaded to `formatsDirectory` (set `upd
 ```bash
 npm test
 ```
+
+## Deployment
+
+To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
+
+```
+	location /validate/ {
+		proxy_pass http://127.0.0.1:3700/;
+	}
+```
+
+We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service:
+
+```bash
+pm2 start ecosystem.config.json
+```
+
+To update an instance deployed with PM2:
+
+```bash
+# get updates from repository
+git pull
+
+# install dependencies
+npm ci
+
+# restart the process (adjust process name if needed)
+pm2 restart validation-service
+```
+
+Automatic update of formats and schemas has *not been implemented yet (<https://github.com/gbv/validation-service/issues/8>).*
 
 ## API
 
@@ -272,43 +303,12 @@ Non-validation errors such as wrong request parameters or unexpected internal fa
 
 A stack trace is included in development mode.
 
-## Deployment
-
-To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
-
-```
-	location /validate/ {
-		proxy_pass http://127.0.0.1:3700/;
-	}
-```
-
-We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service:
-
-```bash
-pm2 start ecosystem.config.json
-```
-
-To update an instance deployed with PM2:
-
-```bash
-# get updates from repository
-git pull
-
-# install dependencies
-npm ci
-
-# restart the process (adjust process name if needed)
-pm2 restart validation-service
-```
-
-Automatic update of formats and schemas has *not been implemented yet (<https://github.com/gbv/validation-service/issues/8>).*
-
 ## Maintainers
 
 - [@nichtich](https://github.com/nichtich)
 - [@stefandesu](https://github.com/stefandesu)
 
-## Contribute
+## Contributing
 
 PRs accepted against the `dev` branch. Never directly work on the main branch.
 

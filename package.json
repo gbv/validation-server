@@ -11,9 +11,9 @@
     "test": "NODE_ENV=test mocha --exit",
     "debug": "NODE_ENV=debug mocha --exit",
     "start": "nodemon --ignore formats server.js",
-    "lint": "./node_modules/.bin/eslint './**/*.js'",
+    "lint": "./node_modules/.bin/eslint './**/*.js';",
     "fix": "./node_modules/.bin/eslint --fix './**/*.js'",
-    "lint-staged": "lint-staged",
+    "lint-staged": "standard-readme && lint-staged",
     "release": "git checkout dev && git pull && npm test && npm version $SEMVER && git push && git checkout master && git merge dev && git push --follow-tags && git checkout dev",
     "release:patch": "SEMVER=patch npm run release",
     "release:minor": "SEMVER=minor npm run release",
@@ -41,7 +41,8 @@
     "mocha": "^9.2.0",
     "mocha-eslint": "^7.0.0",
     "portfinder": "^1.0.28",
-    "pre-commit": "^1.2.2"
+    "pre-commit": "^1.2.2",
+    "standard-readme": "^2.0.3"
   },
   "dependencies": {
     "ajv-formats": "^2.1.1",
