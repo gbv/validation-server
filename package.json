@@ -1,6 +1,6 @@
 {
   "name": "validation-service",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Web service to validate data against schemas",
   "repository": {
     "type": "git",
