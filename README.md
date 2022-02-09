@@ -19,7 +19,8 @@ This validation service provides methods to validate records against different k
 - [Usage](#usage)
   - [Run Server](#run-server)
   - [Run Tests](#run-tests)
-- [Deployment](#deployment)
+  - [Deployment](#deployment)
+  - [Updates](#updates)
 - [API](#api)
   - [GET /validate](#get-validate)
   - [POST /validate](#post-validate)
@@ -112,6 +113,8 @@ Key `formats` and `types` must contain arrays of [formats](#formats) or [schema 
 
 ## Usage
 
+See [API Reference](#api) for usage of a running instance.
+
 ### Run Server
 
 ```bash
@@ -132,7 +135,7 @@ npm run debug    # test with logging enabled
 npm run coverage # test with code coverage report
 ```
 
-## Deployment
+### Deployment
 
 To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
 
@@ -148,6 +151,8 @@ We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the se
 pm2 start ecosystem.config.json
 ```
 
+### Updates
+
 To update an instance deployed with PM2:
 
 ```bash
@@ -161,7 +166,7 @@ npm ci
 pm2 restart validation-service
 ```
 
-Automatic update of formats and schemas has *not been implemented yet (<https://github.com/gbv/validation-service/issues/8>).*
+The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported.
 
 ## API
 
@@ -227,11 +232,43 @@ Same as response of [POST /validate](#post-validate).
 
 **Examples**
 
-```sh
-curl -X POST 'http://format.gbv.de/validate/validate?format=json' -d '[]'
+This file `articles.json` contains two records in vzg-article format, one invalid and one valid:
+
+```json
+[
+  { },
+  {
+    "primary_id": {
+      "id": "123",
+      "type": "unknown"
+    },
+    "title": "An example article",
+    "lang_code": [ "ger" ],
+    "journal": {
+      "title": "Journal of Examples",
+      "year": "2022"
+    }
+  }
+]
+
 ```
 
-...
+```sh
+curl -X POST 'http://format.gbv.de/validate/validate?format=vzg-article' -d @articles.json
+```
+
+```json
+[
+  [
+    {
+      "message": "must have required property 'primary_id'",
+      "position": "",
+      "positionFormat": "jsonpointer"
+    }
+  ],
+  true
+]
+```
 
 ### GET /formats
 
