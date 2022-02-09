@@ -18,6 +18,11 @@ try {
   console.warn(`Warning: Could not load configuration file from ${configFile}. Running with default settings.`)
 }
 
+// load formats from file
+if (typeof config.formats === "string") {
+  config.formats = require(config.formats)
+}
+
 // Hard-coded formats
 const parsers = require("../lib/parsers.js")
 config.formats.push(...Object.values(parsers))

@@ -107,7 +107,7 @@ The service must be customized via configuration files. By default, this configu
 
 Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production`, `test`, and `debug`.
 
-Key `formats` and `types` must contain arrays of [formats](#formats) or [schema languages](#schema-languages), respectively. The arrays are automatically extended by some hardcoded formats automatically included in every instance of validation service.
+Key `formats` and `types` must contain arrays of [formats](#formats) or [schema languages](#schema-languages), respectively. Alternatively `formats` can reference a file with a JSON array. The arrays are automatically extended by some hardcoded formats automatically included in every instance of validation service.
 
 ## Usage
 
