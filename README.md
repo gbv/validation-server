@@ -97,6 +97,7 @@ The service must be customized via configuration files. By default, this configu
   "version": null,
   "port": 3700,
   "proxies": [],
+  "postLimit": "20MB",
   "verbosity": "log",
   "formats": [],
   "formatsDirectory": "./formats",

@@ -17,7 +17,7 @@ app.set("view engine", "ejs")
 // Middleware to parse the raw body
 app.use(
   express.raw({
-    limit: "20mb",
+    limit: config.postLimit,
     verify: (req, res, buf, encoding) => {
       if (buf && buf.length) {
         req.rawBody = buf.toString(encoding || "utf8")

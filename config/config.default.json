@@ -4,6 +4,7 @@
   "version": null,
   "port": 3700,
   "proxies": [],
+  "postLimit": "20MB",
   "verbosity": "warn",
   "formats": [],
   "formatsDirectory": "./formats",
