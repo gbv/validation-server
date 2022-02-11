@@ -1,7 +1,6 @@
-
 name: Test
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -10,13 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 12.x, 14.x ]
-
-    services:
-      mongodb:
-        image: mongo:4
-        ports:
-          - 27017:27017
+        node-version: [ 12.x, 14.x, 16.x ]
 
     steps:
     - uses: actions/checkout@v2
