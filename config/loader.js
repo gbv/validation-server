@@ -75,7 +75,7 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
   // additional fields for internal use
   config.configFile = configFile
   config.env = env
-  config.types = config.formats.filter(format => format.for)
+  config.types = config.formats.filter(({id}) => id in validators)
 
   return config
 }
