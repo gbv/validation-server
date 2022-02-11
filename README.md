@@ -1,6 +1,6 @@
 # Validation-Service
 
-[![Test](https://github.com/gbv/validation-service/actions/workflows/test.yml/badge.svg)](https://github.com/gbv/validation-service/actions/workflows/test.yml)
+[![Test](https://github.com/gbv/validation-service/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/gbv/validation-service/actions/workflows/test.yml)
 [![GitHub package version](https://img.shields.io/github/package-json/v/gbv/validation-service.svg?label=version)](https://github.com/gbv/validation-service)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
