@@ -1,5 +1,4 @@
 /* eslint-env node, mocha */
-
 const fs = require("fs")
 const chai = require("chai")
 const chaiAsPromised = require("chai-as-promised")
@@ -9,8 +8,8 @@ chai.use(chaiHttp)
 // eslint-disable-next-line no-unused-vars
 const should = chai.should()
 
-const server = require("../server")
 const config = require("../config")
+const server = require("../server")
 
 describe("Server", () => {
 
@@ -20,6 +19,8 @@ describe("Server", () => {
   })
 
   const requestTests = [
+
+    // Non-API resources
     {
       what: "show HTML on base URL",
       path: "/",

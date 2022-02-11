@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
       if (format && format.schemas && format.schemas.length) {
         const { file, type } = format.schemas[0]
 
-        const headers = { "Content-Type": validators[type].contentType }
+        const headers = { "Content-Type": validators[type].mimetype }
         res.sendFile(file, { headers, root: config.formatsDirectory })
       } else {
         throw new NotFound("Schema not found")

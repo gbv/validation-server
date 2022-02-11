@@ -1,7 +1,7 @@
 .DS_Store
 node_modules/
 .env
-config*.json
+config.json
 !config/config.default.json
 !config/config.test.json
 !config/config.debug.json

@@ -64,9 +64,9 @@ router.get("/", async (req, res, next) => {
         format = "json"
       } else {
         const formats = req.app.get("formats")
-        const contentType = headers["content-type"]
+        const mimetype = headers["content-type"]
         if (formats) {
-          format = formats.guessFromContentType(contentType)
+          format = formats.guessFromContentType(mimetype)
         }
       }
 

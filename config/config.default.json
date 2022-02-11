@@ -8,8 +8,5 @@
   "verbosity": "warn",
   "formats": [],
   "formatsDirectory": "./formats",
-  "update": "startup",
-  "types": [
-    { "id": "json-schema" }
-  ]
+  "update": "startup"
 }

@@ -38,17 +38,19 @@ Large parts of practical data science or other data processing work is spent by 
 
 ### Formats
 
-A format, as specified in array `formats` and/or `types` of [configuration](#configuration) must be a JSON Object with keys:
+A format, as specified in array `formats` of [configuration](#configuration) must be a JSON Object with keys:
 
 * `id` format identifier
 * `title` optional title
 * `short` optional short title
-* `contentType` optional content type
+* `mimetype` optional content type
 * `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
 * `schemas` an optional array of schemas, each with
-  * `version` version number or name (set to `"default"` if missing)
+  * `version` optional version number or name (set to `"default"` if missing)
   * `type` Schema type (identifier of a schema language, e.g. `json-schema`)
   * `url` where to retrieve the schema file from
+
+A JSON Schema to validate configuration is included at [`config/schema.json`](config/schema.json).
 
 API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation service.
 
@@ -60,19 +62,19 @@ This service supports some known schema languages:
 
 * JSON Schema (`json-schema`)
   * Supports `draft-04`, `draft-06`, and `draft-07`
+  * Supports format keywords from <https://github.com/ajv-validator/ajv-formats> and <https://github.com/luzlab/ajv-formats-draft2019>
 * XML Schema (*not implemented yet*)
 * ...
 
 These schema languages are automatically included as [formats](#formats) with an additional key:
 
-* `for` identifier of the base format of formats defined by the schema language
+* `for` identifier (or list of identifiers) of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
 
 API endpoint [/types](#get-types) can be used to list schema languages supported by an instance of validation service.
 
 ### See Also
 
 The format registry <http://format.gbv.de/> (mostly German) lists data formats relevant to cultural heritage institutions. The thesis described at <http://aboutdata.org> includes some theoretical background.
-
 
 ## Install
 
@@ -93,24 +95,21 @@ The service must be customized via configuration files. By default, this configu
 ```json
 {
   "title": "Validation Service",
-  "description": null,
-  "version": null,
+  "description": "Web service to validate data against schemas",
+  "version": "X.X.X",
   "port": 3700,
   "proxies": [],
   "postLimit": "20MB",
   "verbosity": "log",
   "formats": [],
   "formatsDirectory": "./formats",
-  "update": "startup",
-  "types": [
-    { "id": "json-schema" }
-  ]
+  "update": "startup"
 }
 ```
 
 Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production`, `test`, and `debug`.
 
-Key `formats` and `types` must contain arrays of [formats](#formats) or [schema languages](#schema-languages), respectively. Alternatively `formats` can reference a file with a JSON array. The arrays are automatically extended by some hardcoded formats automatically included in every instance of validation service.
+Key `formats` must contain an array of [formats](#formats) or a file containing such array. The list of formats is automatically extended by some hardcoded formats and schema languages.
 
 ## Usage
 

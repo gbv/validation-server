@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://format.gbv.de/validate/config-schema.json",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "formats": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/format"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "formatsDirectory": {
+      "type": "string"
+    },
+    "port": {
+      "type": "integer"
+    },
+    "postLimit": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]+[kKmMgG][bB]$"
+    },
+    "proxies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "update": {
+      "type": "string",
+      "enum": [
+        "startup",
+        "missing"
+      ]
+    },
+    "verbosity": {
+      "type": "string",
+      "enum": [
+        "log",
+        "warn",
+        "error",
+        "silent"
+      ]
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "format": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "short": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "homepage": {
+          "$ref": "#/definitions/url"
+        },
+        "base": {
+          "$ref": "#/definitions/id"
+        },
+        "for": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/id"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/id"
+              }
+            }
+          ]
+        },
+        "mimetype": {
+          "type": "string"
+        },
+        "schemas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/schema"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-z_/-]+$"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://"
+    },
+    "schema": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/id"
+        },
+        "url": {
+          "$ref": "#/definitions/url"
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

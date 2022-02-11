@@ -1,7 +1,8 @@
 /* eslint-env node, mocha */
 const chai = require("chai")
-const config = require("../config")
 const expect = chai.expect
+
+const config = require("../config/loader.js")(process.env)
 
 var formats
 
