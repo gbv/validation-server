@@ -2,9 +2,7 @@
 node_modules/
 .env
 config.json
-!config/config.default.json
-!config/config.test.json
-!config/config.debug.json
+config/formats.json
 
 formats/
 !test/formats/

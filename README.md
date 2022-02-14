@@ -166,7 +166,7 @@ npm ci
 pm2 restart validation-service
 ```
 
-The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported.
+The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported. Script `bin/update.js` can help to updating formats and local schema files without breaking things.
 
 ## API
 

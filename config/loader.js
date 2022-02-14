@@ -17,7 +17,12 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
     let configLocal = require(configFile)
     config = { ...config, ...configLocal }
   } catch(error) {
-    console.warn(`Warning: Could not load configuration file from ${configFile}. Running with default settings.`)
+    const msg = `Could not load configuration file from ${configFile}.`
+    if (CONFIG_FILE) {
+      throw new Error(msg)
+    } else {
+      console.warn(`Warning: ${msg} Running with default settings.`)
+    }
   }
 
   // Set up logging function
@@ -37,14 +42,15 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
     }
   }
 
+
   // Optionally load formats from file
-  if (typeof config.formats === "string") {
-    const filename = config.formats
-    config.formats = require(filename)
+  const formatsFile = typeof config.formats === "string" ? config.formats : null
+  if (formatsFile) {
+    config.formats = require(formatsFile)
       // remove prefix "schema/" from schema languages
       .map(({id, ...format}) => ({id: id.replace(/^schema[/]/,""), ...format}))
 
-    config.log(`Formats loaded from ${filename}`)
+    config.log(`Formats loaded from ${formatsFile}`)
   }
 
   // Add or override hard-coded formats and schema languages
@@ -53,7 +59,7 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
 
   config.formats = config.formats.filter(({id}) => {
     if (id in parsers || id in validators) {
-      console.warn(`Configured format ${id} is overridden!`)
+      console.warn(`Configured format ${id} is overridden by hardcoded format!`)
     } else {
       return true
     }
@@ -66,7 +72,8 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
   // validate configuration
   const compileJSONSchema = require("../lib/json-schema.js")
   const validate = compileJSONSchema(path.resolve(__dirname, "schema.json"))
-  const rawConfig = JSON.parse(JSON.stringify(config)) // remove methods
+  const rawConfig = JSON.parse(JSON.stringify(config))
+
   if (!validate(rawConfig)) {
     const msg =`Invalid configuration from ${configFile}`
     config.error(msg)
@@ -76,9 +83,15 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
   }
 
   // additional fields for internal use
-  config.configFile = configFile
+  config.configFile = path.resolve(__dirname, configFile)
+  if (formatsFile) {
+    config.formatsFile = path.resolve(__dirname, formatsFile)
+  }
   config.env = env
   config.types = config.formats.filter(({id}) => id in validators)
+
+  // get full path
+  config.formatsDirectory = path.resolve(__dirname, config.formatsDirectory || "formats")
 
   return config
 }
