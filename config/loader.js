@@ -41,6 +41,9 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
   if (typeof config.formats === "string") {
     const filename = config.formats
     config.formats = require(filename)
+      // remove prefix "schema/" from schema languages
+      .map(({id, ...format}) => ({id: id.replace(/^schema[/]/,""), ...format}))
+
     config.log(`Formats loaded from ${filename}`)
   }
 
