@@ -25,12 +25,10 @@
     <p>
       <%= config.description %>
     </p>
-    <p>
-      See documentation <a href="https://github.com/gbv/validation-service" target="_blank">on GitHub</a> for details.
-    </p>
     <h3>API Endpoints</h3>
     <ul>
-      <li>GET/POST <a href="validate">/validate</a> - validate data (<a href="https://github.com/gbv/validation-service#get-validate" target="_blank">documentation</a>)</li>
+      <li>GET <a href="validate">/validate</a> - validate data (<a href="https://github.com/gbv/validation-service#get-validate" target="_blank">documentation</a>)</li>
+      <li>POST /validate - validate data (<a href="https://github.com/gbv/validation-service#post-validate" target="_blank">documentation</a>)</li>
       <li>GET <a href="formats">/formats</a> - list supported data formats (<a href="https://github.com/gbv/validation-service#get-formats" target="_blank">documentation</a>)</li>
       <li>GET <a href="schema">/schema</a> - get a schema file (<a href="https://github.com/gbv/validation-service#get-schema" target="_blank">documentation</a>)</li>
       <li>GET <a href="types">/types</a> - list supported schema types (<a href="https://github.com/gbv/validation-service#get-types" target="_blank">documentation</a>)</li>
@@ -41,12 +39,18 @@
       <% for (var format of config.formats) { %>
         <li>
           <a href="formats?format=<%= format.id %>" class="id"><%= format.id %></a>
-          <% if (format.title) { %> (<%= format.title %>)<% } %>
+          <% if (format.title) { %>
+            <% if (format.homepage) { %>
+              (<a href="<%= format.homepage %>" target="_blank"><%= format.title %></a>)
+            <% } else { %>
+              (<%= format.title %>)<% } %>
+            <% } %>
         </li>
       <% } %>
     </ul>
     <h3>Schema types</h3>
-    <p>Validation can be perfomed based on schemas in the following schema languages:</p>
+    <p>
+      The following schema languages are supported for specification of data formats:</p>
     <ul>
       <% for (var type of config.types) { %>
         <li>
@@ -58,7 +62,8 @@
   </body>
   <footer>
     <p>
-      validation-service version <%= config.version %>
+      Powered by <a href="https://github.com/gbv/validation-service" target="_blank">validation-service</a> version <%= config.version %>.
+    </p>
     </p>
   </footer>
 </html>
