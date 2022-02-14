@@ -109,7 +109,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"require a data or urlt parameter at /validate",
+      what:"require a data or url parameter at /validate",
       path: "/validate?format=json",
       code: 400,
       response(res) {
@@ -126,11 +126,27 @@ describe("Server", () => {
       },
     },
 
+    // POST /validate
+    {
+      what:"require a request body at /validate",
+      path: "/validate?format=json",
+      post: "",
+      code: 400,
+      response(res) {
+        res.body.message.should.equals("Missing HTTP POST request body!")
+      },
+    },
   ]
 
-  requestTests.forEach(({what, path, code, response, error}) => {
+  requestTests.forEach(({what, path, code, response, error, post}) => {
     it(`should ${what}`, done => {
-      chai.request(server.app).get(path)
+      var request = chai.request(server.app)
+      if (post !== undefined) {
+        request = request.post(path).send(post)
+      } else {
+        request = request.get(path)
+      }
+      request
         .end((err, res) => {
           res.should.have.status(error ? error.status : code)
           if (error) {
@@ -142,6 +158,7 @@ describe("Server", () => {
         })
     })
   })
+
 
   const validationTests = [
     { format: "json", data: "[]", code: 200, result: [] },

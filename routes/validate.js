@@ -43,7 +43,11 @@ async function validateRoute(req, res, next) {
 // HTTP POST
 router.post("/",
   async (req, res, next) => {
-    req.query.data = req.rawBody
+    if (req.rawBody) {
+      req.query.data = req.rawBody
+    } else {
+      next(new MalformedRequest("Missing HTTP POST request body!"))
+    }
     validateRoute(req, res, next)
   },
 )
