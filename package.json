@@ -45,7 +45,7 @@
     "nyc": "^15.1.0",
     "portfinder": "^1.0.28",
     "pre-commit": "^1.2.2",
-    "standard-readme": "^2.0.3"
+    "standard-readme": "^2.0.4"
   },
   "dependencies": {
     "ajv-formats": "^2.1.1",
