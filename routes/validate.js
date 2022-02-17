@@ -13,7 +13,7 @@ async function validate(data, format) {
 
   // TODO: take into account base format
 
-  // Just use a parser for validating
+  // Just use a parser for validating (TODO: move to formats object)
   if (id in parsers) {
     return parsers[id].parse(data)
       .then(result => result.map(() => true))

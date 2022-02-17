@@ -173,12 +173,28 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 
 ### Use as Module
 
-*The package has not been released yet so this will not work*
-
 ```
 const { createService } = require("validation-server")'
-const formats = createService(config)
+
+createService(config).then(service => {
+  const format = service.getFormat({ format: "json-schema", version: "draft-07" })
+
+  const { validator } = format.schemas[0]
+
+  const result = validator(data)
+  if (!result) {
+    console.error(validator.errors)
+  }
+})
 ```
+
+Given a [configuration](#configuration) object, `createService` returns a promise to an initialized service object. The object provides method:
+
+- `getFormat` - get a format by `format` identifier and optional `version` (set to `default` if not specified)
+
+- `listFormats` - get a (possibly empty) list of formats, optionally filtered (see [GET /formats](#get-formats) for query parameters)
+
+Schemas of format objects contain can contain an additional `validator` method to validate data in this format.
 
 ## API
 
