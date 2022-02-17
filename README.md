@@ -1,7 +1,7 @@
 # Validation-Server
 
 [![Test](https://github.com/gbv/validation-server/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/gbv/validation-server/actions/workflows/test.yml)
-[![GitHub package version](https://img.shields.io/github/package-json/v/gbv/validation-server.svg?label=version)](https://github.com/gbv/validation-server)
+[![NPM package version](https://img.shields.io/npm/v/validation-server.svg)](https://www.npmjs.com/package/validation-server)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
 > Web service to validate data against schemas
