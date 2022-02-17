@@ -2,6 +2,7 @@
 const chai = require("chai")
 const expect = chai.expect
 
+const { createService } = require("../index.js")
 const config = require("../config/loader.js")(process.env)
 
 var formats
@@ -9,7 +10,7 @@ var formats
 describe("Formats", () => {
 
   before(async () => {
-    formats = await require("../lib/formats")(config)
+    formats = await createService(config)
   })
 
   it("should get specific version", () => {

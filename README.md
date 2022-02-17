@@ -22,6 +22,7 @@ This validation service provides methods to validate records against different k
   - [Run Tests](#run-tests)
   - [Deployment](#deployment)
   - [Updates](#updates)
+  - [Use as Module](#use-as-module)
 - [API](#api)
   - [GET /validate](#get-validate)
   - [POST /validate](#post-validate)
@@ -82,7 +83,7 @@ The format registry <http://format.gbv.de/> (mostly German) lists data formats r
 
 ## Install
 
-Requires at least Node 12.
+Requires at least Node 14.
 
 ### From GitHub
 
@@ -119,7 +120,9 @@ A JSON Schema to validate configuration is included at [`config/schema.json`](co
 
 ## Usage
 
-See [API Reference](#api) for usage of a running instance.
+This node package is mainily designed to be run as web service but it can also be [used as module](#use-as-module).
+
+See [API Reference](#api) for usage of a running server instance.
 
 ### Run Server
 
@@ -173,6 +176,15 @@ pm2 restart validation-service
 ```
 
 The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported. Script `bin/update.js` can help to updating formats and local schema files without breaking things.
+
+### Use as Module
+
+*The package has not been released yet so this will not work*
+
+```
+const { createService } = require("validation-server")'
+const formats = createService(config)
+```
 
 ## API
 

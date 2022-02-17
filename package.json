@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/gbv/validation-service.git"
   },
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "nodemon --ignore formats server.js",
     "update": "node bin/update.js",
