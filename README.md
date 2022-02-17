@@ -173,7 +173,7 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 
 ### Use as Module
 
-```
+```js
 const { createService } = require("validation-server")'
 
 createService(config).then(service => {
@@ -188,13 +188,13 @@ createService(config).then(service => {
 })
 ```
 
-Given a [configuration](#configuration) object, `createService` returns a promise to an initialized service object. The object provides method:
+Given a [configuration](#configuration) object, `createService` returns a promise to an initialized service object with methods:
 
-- `getFormat` - get a format by `format` identifier and optional `version` (set to `default` if not specified)
+- `getFormat` returns format (or `undefined`), queried by `format` identifier and optional `version` (set to `default` if not specified)
 
-- `listFormats` - get a (possibly empty) list of formats, optionally filtered (see [GET /formats](#get-formats) for query parameters)
+- `listFormats` returns a list of formats, optionally filtered (see [GET /formats](#get-formats) for query parameters)
 
-Schemas of format objects contain can contain an additional `validator` method to validate data in this format.
+Schemas of format objects can have an additional `validator` method to validate data in this format.
 
 ## API
 
