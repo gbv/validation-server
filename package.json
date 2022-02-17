@@ -1,10 +1,10 @@
 {
-  "name": "validation-service",
+  "name": "validation-server",
   "version": "0.1.1",
   "description": "Web service to validate data against schemas",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gbv/validation-service.git"
+    "url": "https://github.com/gbv/validation-server.git"
   },
   "main": "index.js",
   "scripts": {

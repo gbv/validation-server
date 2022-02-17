@@ -1,12 +1,12 @@
-# Validation-Service
+# Validation-Server
 
-[![Test](https://github.com/gbv/validation-service/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/gbv/validation-service/actions/workflows/test.yml)
-[![GitHub package version](https://img.shields.io/github/package-json/v/gbv/validation-service.svg?label=version)](https://github.com/gbv/validation-service)
+[![Test](https://github.com/gbv/validation-server/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/gbv/validation-server/actions/workflows/test.yml)
+[![GitHub package version](https://img.shields.io/github/package-json/v/gbv/validation-server.svg?label=version)](https://github.com/gbv/validation-server)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
 > Web service to validate data against schemas
 
-This validation service provides methods to validate records against different kinds of schemas to ensure that they conform to known data formats.
+Provides methods to validate records against different kinds of schemas to ensure that they conform to known data formats.
 
 ## Table of Contents
 
@@ -40,7 +40,7 @@ Large parts of practical data science or other data processing work is spent by 
 
 ### Formats
 
-Data formats are described in this service as JSON Object with keys:
+Data formats are described as JSON Object with keys:
 
 - `id` mandatory format identifier
 - `title` optional title
@@ -59,23 +59,17 @@ Data formats are described in this service as JSON Object with keys:
 
 A JSON Schema of this object is included in the configuration schema at [`config/schema.json`](config/schema.json).
 
-API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation service.
+API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation server.
 
 ### Schema Languages
 
 Schem languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats. Schema languages must reference this base formats with description key `for`.
 
-This service supports some known schema languages:
+The following schema languages are supported for validation of other formats. The list is available via API endpoint [/types](#get-types) and the languages are also included as formats via API endpoint [/formats](#get-formats):
 
 - JSON Schema (`json-schema`)
   - Supports `draft-04`, `draft-06`, and `draft-07`
   - Supports format keywords from <https://github.com/ajv-validator/ajv-formats> and <https://github.com/luzlab/ajv-formats-draft2019>
-
-- XML Schema (*not implemented yet*)
-
-- ...
-
-Schema languages are automatically included as [formats](#formats) with an additional key `for` at API endpoint [/formats](#get-formats). API endpoint [/types](#get-types) only lists schema language supported by this service instance.
 
 ### See Also
 
@@ -154,7 +148,7 @@ location /validate/ {
 }
 ```
 
-We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the service:
+We recommend to use [PM2](https://pm2.keymetrics.io/) to start and update the server:
 
 ```bash
 pm2 start ecosystem.config.json
@@ -172,7 +166,7 @@ git pull
 npm ci
 
 # restart the process (adjust process name if needed)
-pm2 restart validation-service
+pm2 restart validation-server
 ```
 
 The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported. Script `bin/update.js` can help to updating formats and local schema files without breaking things.

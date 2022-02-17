@@ -55,7 +55,7 @@ const formats = flags.formats
   : config.formatsFile
 
 const formatsDirectory = flags.directory === "-"
-  ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-service-"))
+  ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
   : (flags.directory || config.formatsDirectory)
 
 const update = "startup"

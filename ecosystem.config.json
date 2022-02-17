@@ -1,4 +1,4 @@
 {
-  "name": "validation-service",
+  "name": "validation-server",
   "script": "./server.js"
 }
