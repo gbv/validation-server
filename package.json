@@ -29,7 +29,10 @@
       "eslint --fix"
     ]
   },
-  "pre-commit": "lint-staged",
+  "pre-commit": [
+    "lint-staged",
+    "test"
+  ],
   "author": "Jakob Voß",
   "license": "MIT",
   "devDependencies": {
