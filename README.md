@@ -13,6 +13,7 @@ This validation service provides methods to validate records against different k
 - [Background](#background)
   - [Formats](#formats)
   - [Schema Languages](#schema-languages)
+  - [See Also](#see-also)
 - [Install](#install)
   - [From GitHub](#from-github)
   - [Configuration](#configuration)
@@ -38,39 +39,42 @@ Large parts of practical data science or other data processing work is spent by 
 
 ### Formats
 
-A format, as specified in array `formats` of [configuration](#configuration) must be a JSON Object with keys:
+Data formats are described in this service as JSON Object with keys:
 
-* `id` format identifier
-* `title` optional title
-* `short` optional short title
-* `mimetype` optional content type
-* `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
-* `schemas` an optional array of schemas, each with
-  * `version` optional version number or name (set to `"default"` if missing)
-  * `type` Schema type (identifier of a schema language, e.g. `json-schema`)
-  * `url` where to retrieve the schema file from
+- `id` mandatory format identifier
+- `title` optional title
+- `short` optional short title
+- `homepage` optional URL with information about the format
+- `mimetype` optional content type
+- `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
+- `schemas` an optional array of schemas, each with
+  - `version` optional version number or name (set to `"default"` if missing)
+  - `type` Schema type (identifier of a schema language, e.g. `json-schema`)
+  - `url` where to retrieve the schema file from
+- `for` identifier or list of identifiers of base format(s) of formats defined by this schema language (only for [schema formats](#schema-languages))
 
-A JSON Schema to validate configuration is included at [`config/schema.json`](config/schema.json).
+ of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
+
+
+A JSON Schema of this object is included in the configuration schema at [`config/schema.json`](config/schema.json).
 
 API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation service.
 
 ### Schema Languages
 
-Some formats are also schema languages (aka schema types). Records in a schema language (aka schemas) define other data formats that all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats.
+Schem languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats. Schema languages must reference this base formats with description key `for`.
 
 This service supports some known schema languages:
 
-* JSON Schema (`json-schema`)
-  * Supports `draft-04`, `draft-06`, and `draft-07`
-  * Supports format keywords from <https://github.com/ajv-validator/ajv-formats> and <https://github.com/luzlab/ajv-formats-draft2019>
-* XML Schema (*not implemented yet*)
-* ...
+- JSON Schema (`json-schema`)
+  - Supports `draft-04`, `draft-06`, and `draft-07`
+  - Supports format keywords from <https://github.com/ajv-validator/ajv-formats> and <https://github.com/luzlab/ajv-formats-draft2019>
 
-These schema languages are automatically included as [formats](#formats) with an additional key:
+- XML Schema (*not implemented yet*)
 
-* `for` identifier (or list of identifiers) of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
+- ...
 
-API endpoint [/types](#get-types) can be used to list schema languages supported by an instance of validation service.
+Schema languages are automatically included as [formats](#formats) with an additional key `for` at API endpoint [/formats](#get-formats). API endpoint [/types](#get-types) only lists schema language supported by this service instance.
 
 ### See Also
 
@@ -110,6 +114,8 @@ The service must be customized via configuration files. By default, this configu
 Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production`, `test`, and `debug`.
 
 Key `formats` must contain an array of [formats](#formats) or a file containing such array. The list of formats is automatically extended by some hardcoded formats and schema languages.
+
+A JSON Schema to validate configuration is included at [`config/schema.json`](config/schema.json).
 
 ## Usage
 
@@ -217,6 +223,8 @@ curl -g 'http://format.gbv.de/validate/validate?format=json&data=[x]'
 ```
 
 JSON parsing errors are returned with character position in [RFC 5147](https://datatracker.ietf.org/doc/html/rfc5147) format.
+
+The service does not guarantee to return all validation errors but it may stop at the first error.
 
 ### POST /validate
 
@@ -328,6 +336,16 @@ Validation results (see [GET /validate](#get-validate) and [POST /validate](#pos
 * `positionFormat` optional locator format (e.g. `rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
 
 Errors may contain additional keys but these may change with future versions of the service.
+
+For instance the following validation error indicates that value of JSON key `authors` was not given as array:
+
+```json
+{
+  "message": "must be array",
+  "position": "/authors",
+  "positionFormat": "jsonpointer"
+}
+```
 
 ### API Errors
 
