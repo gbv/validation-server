@@ -19,10 +19,10 @@ Provides methods to validate records against different kinds of schemas to ensur
   - [Configuration](#configuration)
 - [Usage](#usage)
   - [Run Server](#run-server)
-  - [Run Tests](#run-tests)
   - [Deployment](#deployment)
   - [Updates](#updates)
   - [Use as Module](#use-as-module)
+  - [Run Tests](#run-tests)
 - [API](#api)
   - [GET /validate](#get-validate)
   - [POST /validate](#post-validate)
@@ -132,14 +132,6 @@ NODE_ENV=production node ./server.js
 
 On startup all configured schemas are downloaded to `formatsDirectory` (set `update` to `"missing"` will only download missing schema files) and compiled. Addition and updates require to restart the server.
 
-### Run Tests
-
-```bash
-npm test
-npm run debug    # test with logging enabled
-npm run coverage # test with code coverage report
-```
-
 ### Deployment
 
 To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
@@ -176,7 +168,7 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 ### Use as Module
 
 ```js
-const { loadConfig, createService } = require("validation-server")'
+const { loadConfig, createService, parseableFormats, validationFormats } = require("validation-server")
 
 const config = await loadConfig()
 
@@ -219,6 +211,14 @@ JSON object of [formats](#formats), each with async method `parse`.
 ### validationFormats
 
 JSON object of [schema languages](#schema-languages), each with an async `createValidator` method.
+
+### Run Tests
+
+```bash
+npm test
+npm run debug    # test with logging enabled
+npm run coverage # test with code coverage report
+```
 
 ## API
 
