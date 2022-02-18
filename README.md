@@ -61,6 +61,8 @@ A JSON Schema of this object is included in the configuration schema at [`config
 
 API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation server.
 
+By default all schema languages and the data formats `json` and `isbn` are supported.
+
 ### Schema Languages
 
 Schem languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats. Schema languages must reference this base formats with description key `for`.
@@ -209,6 +211,14 @@ Given a [configuration](#configuration) object, `createService` returns a promis
 - `listFormats` returns a list of formats, optionally filtered (see [GET /formats](#get-formats) for query parameters)
 
 Schemas of format objects can have an additional `validator` method to validate data in this format.
+
+### parseableFormats
+
+JSON object of [formats](#formats), each with async method `parse`.
+
+### validationFormats
+
+JSON object of [schema languages](#schema-languages), each with an async `createValidator` method.
 
 ## API
 
