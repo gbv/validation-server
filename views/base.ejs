@@ -18,6 +18,16 @@
     .id {
       font-family: monospace;
     }
+    ul.inline {
+      display: inline-block;
+      padding: 0;
+    }
+    ul.inline > li {
+      display: inline;
+    }
+    ul.inline > li:not(:last-child)::after  {
+      content: ", ";
+    }
     </style>
   </head>
   <body>
@@ -44,6 +54,18 @@
               (<a href="<%= format.homepage %>" target="_blank"><%= format.title %></a>)
             <% } else { %>
               (<%= format.title %>)<% } %>
+            <% } %>
+            <% if (format.schemas) { %>
+            Schemas:
+            <ul class="inline">
+              <% for (var schema of format.schemas) {
+                version = schema.version || "default"
+              %>
+              <li>
+                <a href="schema?format=<%= format.id %>&version=<%= version %>"><%= version %></a>
+              </li>
+              <% } %>
+            </ul>
             <% } %>
         </li>
       <% } %>
