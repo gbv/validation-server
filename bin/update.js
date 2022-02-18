@@ -48,19 +48,19 @@ if (flags.help) {
   process.exit(0)
 }
 
-const config = loadConfig()
+loadConfig().then(config => {
+  const formats = flags.formats
+    ? path.resolve("./", flags.formats)
+    : config.formatsFile
 
-const formats = flags.formats
-  ? path.resolve("./", flags.formats)
-  : config.formatsFile
+  const formatsDirectory = flags.directory === "-"
+    ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
+    : (flags.directory || config.formatsDirectory)
 
-const formatsDirectory = flags.directory === "-"
-  ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
-  : (flags.directory || config.formatsDirectory)
+  const update = "startup"
 
-const update = "startup"
-
-createService({ ...config, update, formats, formatsDirectory })
-  .then(() => {
-    process.exit()
-  })
+  createService({ ...config, update, formats, formatsDirectory })
+    .then(() => {
+      process.exit()
+    })
+})

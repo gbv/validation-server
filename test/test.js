@@ -9,7 +9,7 @@ chai.use(chaiHttp)
 const should = chai.should()
 
 import { loadConfig, createService } from "../index.js"
-const config = loadConfig()
+const config = await loadConfig()
 
 import app from "../server.js"
 

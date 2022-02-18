@@ -2,7 +2,7 @@
 import { expect } from "chai"
 import { loadConfig, createService } from "../index.js"
 
-const config = loadConfig()
+const config = await loadConfig()
 
 var formats
 

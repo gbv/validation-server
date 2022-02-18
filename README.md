@@ -176,7 +176,7 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 ```js
 const { loadConfig, createService } = require("validation-server")'
 
-const config = loadConfig() // optional
+const config = await loadConfig()
 
 createService(config).then(service => {
   const format = service.getFormat({ format: "json-schema", version: "draft-07" })
@@ -192,7 +192,13 @@ createService(config).then(service => {
 
 #### loadConfig
 
-Returns a configuration object.
+Returns a promise to a configuration object. Loading can be controlled by environment variables `CONFIG_FILE` and `NODE_ENV` or by arguments of same name:
+
+```js
+const config = await loadConfig({ CONFIG_FILE: "config.json" })
+```
+
+An error is thrown on invalid configuration.
 
 #### createService
 

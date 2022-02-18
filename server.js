@@ -2,7 +2,7 @@ import express from "express"
 import portfinder from "portfinder"
 
 import { loadConfig, createService } from "./index.js"
-const config = loadConfig()
+const config = await loadConfig()
 
 import formatsRoute from "./routes/formats.js"
 import validateRoute from "./routes/validate.js"

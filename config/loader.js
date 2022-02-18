@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url)
 
 const __dirname = new URL(".", import.meta.url).pathname
 
-export default function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env) {
+export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env) {
 
   const env = NODE_ENV || "development"
   const configFile = CONFIG_FILE
@@ -77,7 +77,7 @@ export default function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env) {
 
   // validate configuration
   const schemaFile = path.resolve(__dirname, "schema.json")
-  const validate = validators["json-schema"].createValidator(schemaFile)
+  const validate = await validators["json-schema"].createValidator(schemaFile)
   const rawConfig = JSON.parse(JSON.stringify(config))
 
   if (!validate(rawConfig)) {
