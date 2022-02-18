@@ -6,11 +6,17 @@ import { loadConfig } from "../index.js"
 import { URL } from "url"
 const __dirname = new URL(".", import.meta.url).pathname
 
+import chai from "chai"
+import chaiAsPromised from "chai-as-promised"
+chai.use(chaiAsPromised)
+const assert = chai.assert
+
 describe("Configuration", () => {
-  it("should throw an error on invalid configuration", done => {
+  it("should throw an error on invalid configuration", async () => {
     const CONFIG_FILE = path.resolve(__dirname, "config-invalid.json")
-    loadConfig({CONFIG_FILE, ...process.env})
-      .should.be.rejectedWith(`Invalid configuration from ${CONFIG_FILE}`)
-    done()
+    return assert.isRejected(
+      loadConfig({CONFIG_FILE, ...process.env}),
+      `Invalid configuration from ${CONFIG_FILE}`,
+    )
   })
 })

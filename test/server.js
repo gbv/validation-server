@@ -1,8 +1,6 @@
 /* eslint-env node, mocha */
 import fs from "fs"
 import chai from "chai"
-import chaiAsPromised from "chai-as-promised"
-chai.use(chaiAsPromised)
 import chaiHttp from "chai-http"
 chai.use(chaiHttp)
 // eslint-disable-next-line no-unused-vars
@@ -41,6 +39,7 @@ describe("Server", () => {
         res.body.should.be.a("array")
         res.body.map(format => format.id).sort().should.deep.equal([
           "example",
+          "isbn",
           "json",
           "json-schema",
         ])

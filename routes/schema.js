@@ -13,7 +13,7 @@ async function schemaRoute (req, res, next) {
         const { file, type } = format.schemas[0]
 
         const headers = { "Content-Type": validators[type].mimetype }
-        res.sendFile(file, { headers, root: formatsDirectory })
+        res.sendFile(file(), { headers, root: formatsDirectory })
       } else {
         throw new NotFound("Schema not found")
       }

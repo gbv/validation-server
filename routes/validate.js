@@ -9,13 +9,13 @@ import parsers from "../lib/parsers.js"
 import formatFromQuery from "../lib/format-from-query.js"
 
 async function validate(data, format) {
-  const { id, schemas } = format
+  const { id, parser, schemas } = format
 
   // TODO: take into account base format
 
-  // Just use a parser for validating (TODO: move to formats object)
-  if (id in parsers) {
-    return parsers[id].parse(data)
+  // Use a parser for validating, if available
+  if (parser) {
+    return parser(data)
       .then(result => result.map(() => true))
       .catch(e => [[e]])
   }
