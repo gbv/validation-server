@@ -1,9 +1,8 @@
 /* eslint-env node, mocha */
-const chai = require("chai")
-const expect = chai.expect
+import { expect } from "chai"
+import { loadConfig, createService } from "../index.js"
 
-const { createService } = require("../index.js")
-const config = require("../config/loader.js")(process.env)
+const config = loadConfig()
 
 var formats
 

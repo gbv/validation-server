@@ -1,12 +1,12 @@
-const express = require("express")
+import express from "express"
 const router = express.Router()
-const axios = require("axios")
-const { MalformedRequest, MalformedConfiguration } = require("../lib/errors.js")
-const config = require("../config")
-const { URL } = require("url")
+import axios from "axios"
+import { MalformedRequest, MalformedConfiguration } from "../lib/errors.js"
 
-const parsers = require("../lib/parsers.js")
-const formatFromQuery = require("../lib/format-from-query.js")
+import { URL } from "url"
+
+import parsers from "../lib/parsers.js"
+import formatFromQuery from "../lib/format-from-query.js"
 
 async function validate(data, format) {
   const { id, schemas } = format
@@ -79,7 +79,7 @@ router.get("/", async (req, res, next) => {
       }
       query.data = data
 
-      config.log(`Got ${format} from ${url}`)
+      // config.log(`Got ${format} from ${url}`)
     } catch(e) {
       if(e instanceof TypeError) {
         next(new MalformedRequest("malformed query parameter: url"))
@@ -96,4 +96,4 @@ router.get("/", async (req, res, next) => {
   validateRoute(req, res, next)
 })
 
-module.exports = router
+export default router

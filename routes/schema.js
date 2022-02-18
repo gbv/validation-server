@@ -1,10 +1,11 @@
-const { NotFound } = require("../lib/errors.js")
-const validators = require("../lib/validators.js")
-const config = require("../config")
-const formatFromQuery = require("../lib/format-from-query.js")
+import { NotFound } from "../lib/errors.js"
+import validators from "../lib/validators.js"
+import formatFromQuery from "../lib/format-from-query.js"
 
-module.exports = async (req, res, next) => {
+async function schemaRoute (req, res, next) {
   req.query.withFile = true
+
+  const formatsDirectory = req.app.get("formatsDirectory")
 
   return formatFromQuery(req)
     .then(format => {
@@ -12,10 +13,12 @@ module.exports = async (req, res, next) => {
         const { file, type } = format.schemas[0]
 
         const headers = { "Content-Type": validators[type].mimetype }
-        res.sendFile(file, { headers, root: config.formatsDirectory })
+        res.sendFile(file, { headers, root: formatsDirectory })
       } else {
         throw new NotFound("Schema not found")
       }
     })
     .catch(e => next(e))
 }
+
+export default schemaRoute

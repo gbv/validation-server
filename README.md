@@ -77,7 +77,7 @@ The format registry <http://format.gbv.de/> (mostly German) lists data formats r
 
 ## Install
 
-Requires at least Node 14.
+Requires at least Node v14.8.0.
 
 ### From GitHub
 
@@ -174,7 +174,9 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 ### Use as Module
 
 ```js
-const { createService } = require("validation-server")'
+const { loadConfig, createService } = require("validation-server")'
+
+const config = loadConfig() // optional
 
 createService(config).then(service => {
   const format = service.getFormat({ format: "json-schema", version: "draft-07" })
@@ -187,6 +189,12 @@ createService(config).then(service => {
   }
 })
 ```
+
+#### loadConfig
+
+Returns a configuration object.
+
+#### createService
 
 Given a [configuration](#configuration) object, `createService` returns a promise to an initialized service object with methods:
 

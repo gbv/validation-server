@@ -1,21 +1,23 @@
 /* eslint-env node, mocha */
-const fs = require("fs")
-const chai = require("chai")
-const chaiAsPromised = require("chai-as-promised")
+import fs from "fs"
+import chai from "chai"
+import chaiAsPromised from "chai-as-promised"
 chai.use(chaiAsPromised)
-const chaiHttp = require("chai-http")
+import chaiHttp from "chai-http"
 chai.use(chaiHttp)
 // eslint-disable-next-line no-unused-vars
 const should = chai.should()
 
-const config = require("../config")
-const server = require("../server")
+import { loadConfig, createService } from "../index.js"
+const config = loadConfig()
+
+import app from "../server.js"
 
 describe("Server", () => {
 
   before(async () => {
-    const formats = await require("../lib/formats")(config)
-    server.app.set("formats", formats)
+    const formats = await createService(config)
+    app.set("formats", formats)
   })
 
   const requestTests = [
@@ -140,7 +142,7 @@ describe("Server", () => {
 
   requestTests.forEach(({what, path, code, response, error, post}) => {
     it(`should ${what}`, done => {
-      var request = chai.request(server.app)
+      var request = chai.request(app)
       if (post !== undefined) {
         request = request.post(path).send(post)
       } else {
@@ -208,13 +210,13 @@ describe("Server", () => {
       })
 
     it(`should validate ${format} data ${data} (GET)`, done => {
-      chai.request(server.app)
+      chai.request(app)
         .get(`/validate?format=${format}&data=${data}`)
         .end(resultCheck(done))
     })
 
     it(`should validate ${format} data ${data} (POST)`, done => {
-      chai.request(server.app)
+      chai.request(app)
         .post(`/validate?format=${format}`)
         .send(data)
         .end(resultCheck(done))

@@ -1,6 +1,17 @@
-const path = require("path")
+import path from "path"
 
-module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
+import parsers from "../lib/parsers.js"
+import validators from "../lib/validators.js"
+
+import compileJSONSchema from "../lib/json-schema.js"
+
+// load JSON files via require
+import { createRequire } from "module"
+const require = createRequire(import.meta.url)
+
+const __dirname = new URL(".", import.meta.url).pathname
+
+export default function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env) {
 
   const env = NODE_ENV || "development"
   const configFile = CONFIG_FILE
@@ -54,9 +65,6 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
   }
 
   // Add or override hard-coded formats and schema languages
-  const parsers = require("../lib/parsers.js")
-  const validators = require("../lib/validators.js")
-
   config.formats = config.formats.filter(({id}) => {
     if (id in parsers || id in validators) {
       console.warn(`Configured format ${id} is overridden by hardcoded format!`)
@@ -70,7 +78,6 @@ module.exports = ({ NODE_ENV, CONFIG_FILE }) => {
     .map(({ filename, ...format}) => format)) // eslint-disable-line no-unused-vars
 
   // validate configuration
-  const compileJSONSchema = require("../lib/json-schema.js")
   const validate = compileJSONSchema(path.resolve(__dirname, "schema.json"))
   const rawConfig = JSON.parse(JSON.stringify(config))
 

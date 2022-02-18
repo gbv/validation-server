@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const configLoader = require("../config/loader.js")
-const compileFormats = require("../lib/formats")
-const fs = require("fs")
-const os = require("os")
-const path = require("path")
+import fs from "fs"
+import os from "os"
+import path from "path"
 
-const meow = require("meow")
+import { loadConfig, createService } from "./index.js"
+
+import meow from "meow"
 const cli = meow(`
 To not break things, update into a new formatsDirectory and move it afterwards.
 
@@ -48,7 +48,7 @@ if (flags.help) {
   process.exit(0)
 }
 
-const config = configLoader(process.env)
+const config = loadConfig()
 
 const formats = flags.formats
   ? path.resolve("./", flags.formats)
@@ -60,7 +60,7 @@ const formatsDirectory = flags.directory === "-"
 
 const update = "startup"
 
-compileFormats({ ...config, update, formats, formatsDirectory })
+createService({ ...config, update, formats, formatsDirectory })
   .then(() => {
     process.exit()
   })

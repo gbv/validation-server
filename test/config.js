@@ -1,15 +1,17 @@
 /* eslint-env node, mocha */
-const chai = require("chai")
-const path = require("path")
-const expect = chai.expect
+import { expect } from "chai"
+import path from "path"
 
-const loader = require("../config/loader.js")
+import { loadConfig } from "../index.js"
+
+import { URL } from "url"
+const __dirname = new URL(".", import.meta.url).pathname
 
 describe("Configuration", () => {
   it("should throw an error on invalid configuration", done => {
     const CONFIG_FILE = path.resolve(__dirname, "config-invalid.json")
     expect(function() {
-      console.log(loader({CONFIG_FILE, ...process.env}))
+      loadConfig({CONFIG_FILE, ...process.env})
     }).to.throw(`Invalid configuration from ${CONFIG_FILE}`)
     done()
   })

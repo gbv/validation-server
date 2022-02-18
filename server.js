@@ -1,9 +1,17 @@
-const config = require("./config")
+import express from "express"
+import portfinder from "portfinder"
+
+import { loadConfig, createService } from "./index.js"
+const config = loadConfig()
+
+import formatsRoute from "./routes/formats.js"
+import validateRoute from "./routes/validate.js"
+import schemaRoute from "./routes/schema.js"
+import typesRoute from "./routes/types.js"
 
 config.log(`Running in ${config.env} mode.`)
 
 // Initialize express with settings
-const express = require("express")
 const app = express()
 app.set("json spaces", 2)
 if (config.proxies && config.proxies.length) {
@@ -11,7 +19,7 @@ if (config.proxies && config.proxies.length) {
 }
 
 // Configure view engine to render EJS templates.
-app.set("views", __dirname + "/views")
+app.set("views", "./views")
 app.set("view engine", "ejs")
 
 // Middleware to parse the raw body
@@ -46,17 +54,10 @@ app.get("/", (req, res) => {
   res.render("base", { config })
 })
 
-// Validation endpoint
-app.use("/validate", require("./routes/validate.js"))
-
-// List of formats
-app.get("/formats", require("./routes/formats.js"))
-
-// Get a schema
-app.get("/schema", require("./routes/schema.js"))
-
-// List of schema languages
-app.get("/types", require("./routes/types.js"))
+app.use("/validate", validateRoute)
+app.get("/formats", formatsRoute)
+app.get("/schema", schemaRoute)
+app.get("/types", typesRoute)
 
 // Error handling
 app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
@@ -77,14 +78,14 @@ const start = async () => {
   // Find available port on test
   let port = config.port
   if (config.env == "test" || config.env === "debug") {
-    const portfinder = require("portfinder")
     portfinder.basePort = config.port
     port = await portfinder.getPortPromise()
   }
 
   // Initialize formats registry
-  const formats = await require("./lib/formats")(config)
+  const formats = await createService(config)
   app.set("formats", formats)
+  app.set("formatsDirectory", config.formatsDirectory)
 
   // Let's go!
   app.listen(port, () => {
@@ -94,4 +95,4 @@ const start = async () => {
 
 start()
 
-module.exports = { app }
+export default app
