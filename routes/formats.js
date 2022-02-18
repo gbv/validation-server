@@ -1,4 +1,4 @@
 export default function (req, res) {
-  const formats = req.app.get("formats")
-  res.json(formats.listFormats(req.query))
+  const service = req.app.get("validationService")
+  res.json(service.listFormats(req.query))
 }

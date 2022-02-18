@@ -83,8 +83,7 @@ const start = async () => {
   }
 
   // Initialize formats registry
-  const formats = await createService(config)
-  app.set("formats", formats)
+  app.set("validationService", await createService(config))
   app.set("formatsDirectory", config.formatsDirectory)
 
   // Let's go!

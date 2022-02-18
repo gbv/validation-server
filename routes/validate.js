@@ -54,6 +54,7 @@ router.post("/",
 
 // HTTP GET
 router.get("/", async (req, res, next) => {
+  const service = req.app.get("validationService")
   const { query } = req
 
   if (query.url) {
@@ -67,11 +68,8 @@ router.get("/", async (req, res, next) => {
       if (typeof data === "object") {
         format = "json"
       } else {
-        const formats = req.app.get("formats")
         const mimetype = headers["content-type"]
-        if (formats) {
-          format = formats.guessFromContentType(mimetype)
-        }
+        format = service.guessFromContentType(mimetype)
       }
 
       if (format && !query.format) {

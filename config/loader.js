@@ -3,8 +3,6 @@ import path from "path"
 import parsers from "../lib/parsers.js"
 import validators from "../lib/validators.js"
 
-import compileJSONSchema from "../lib/json-schema.js"
-
 // load JSON files via require
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
@@ -78,7 +76,8 @@ export default function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env) {
     .map(({ filename, ...format}) => format)) // eslint-disable-line no-unused-vars
 
   // validate configuration
-  const validate = compileJSONSchema(path.resolve(__dirname, "schema.json"))
+  const schemaFile = path.resolve(__dirname, "schema.json")
+  const validate = validators["json-schema"].createValidator(schemaFile)
   const rawConfig = JSON.parse(JSON.stringify(config))
 
   if (!validate(rawConfig)) {
