@@ -55,6 +55,16 @@
       "format": "uri",
       "pattern": "^https?://"
     },
+    "value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
     "schema": {
       "type": "object",
       "properties": {
@@ -66,11 +76,13 @@
         },
         "url": {
           "$ref": "#/definitions/url"
+        },
+        "value": {
+          "$ref": "#/definitions/value"
         }
       },
       "required": [
-        "type",
-        "url"
+        "type"
       ],
       "additionalProperties": false
     }

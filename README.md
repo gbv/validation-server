@@ -60,7 +60,7 @@ A JSON Schema of this object is included in the configuration schema at [`config
 
 API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation server.
 
-By default all schema languages and the data formats `json` and `isbn` are supported.
+By default all schema languages and the data formats `json`, `isbn`, and `regexp` are supported.
 
 ### Schema Languages
 

@@ -42,6 +42,7 @@ describe("Server", () => {
           "isbn",
           "json",
           "json-schema",
+          "regexp",
         ])
       },
     },
