@@ -4,7 +4,7 @@ import fs from "fs"
 import os from "os"
 import path from "path"
 
-import { loadConfig, createService } from "./index.js"
+import { loadConfig, createService } from "../index.js"
 
 import meow from "meow"
 const cli = meow(`
@@ -19,6 +19,7 @@ Examples
   $ CONFIG_FILE=config.json npm run update -d -
   $ npm run update -- --f newformats.json --d newformats/
 `, {
+  importMeta: import.meta,
   pkg: {
     description: "Update schema files from configuration",
   },
@@ -49,15 +50,17 @@ if (flags.help) {
 }
 
 loadConfig().then(config => {
-  const formats = flags.formats
+  const formatFile = flags.formats
     ? path.resolve("./", flags.formats)
     : config.formatsFile
+  const formats = JSON.parse(fs.readFileSync(formatFile))
 
   const formatsDirectory = flags.directory === "-"
     ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
     : (flags.directory || config.formatsDirectory)
 
   const update = "startup"
+
 
   createService({ ...config, update, formats, formatsDirectory })
     .then(() => {

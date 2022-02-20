@@ -115,9 +115,7 @@ A JSON Schema to validate configuration is included at [`config/config-schema.js
 
 ## Usage
 
-This node package is mainily designed to be run as web service but it can also be [used as module](#use-as-module).
-
-See [API Reference](#api) for usage of a running server instance.
+This node package is mainily designed to be run as web service but it can also be [used as module](#use-as-module). See [API Reference](#api) for usage of a running server instance.
 
 ### Run Server
 
@@ -162,7 +160,7 @@ npm ci
 pm2 restart validation-server
 ```
 
-The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported. Script `bin/update.js` can help to updating formats and local schema files without breaking things.
+The server needs to be restarted to reflect updates in [configuration](#configuration), including formats and schemas to be supported. Script `bin/update.js` can help updating formats and local schema files without breaking things.
 
 ### Use as Module
 
