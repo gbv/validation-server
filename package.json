@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon --ignore formats server.js",
+    "server": "node server.js",
     "update": "node bin/update.js",
     "test": "NODE_ENV=test mocha --exit",
     "debug": "NODE_ENV=debug mocha --exit",

@@ -76,7 +76,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     .map(({ filename, ...format}) => format)) // eslint-disable-line no-unused-vars
 
   // validate configuration
-  const schemaFile = path.resolve(__dirname, "schema.json")
+  const schemaFile = path.resolve(__dirname, "config-schema.json")
   const validate = await validators["json-schema"].createValidator(schemaFile)
   const rawConfig = JSON.parse(JSON.stringify(config))
 

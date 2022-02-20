@@ -56,8 +56,7 @@ Data formats are described as JSON Object with keys:
 
  of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
 
-
-A JSON Schema of this object is included in the configuration schema at [`config/schema.json`](config/schema.json).
+A JSON Schema of this object is included in the configuration schema at [`config/format-schema.json`](config/format-schema.json).
 
 API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation server.
 
@@ -112,7 +111,7 @@ Keys `version` and `description` are defaulted to its value in `package.json`. I
 
 Key `formats` must contain an array of [formats](#formats) or a file containing such array. The list of formats is automatically extended by some hardcoded formats and schema languages.
 
-A JSON Schema to validate configuration is included at [`config/schema.json`](config/schema.json).
+A JSON Schema to validate configuration is included at [`config/config-schema.json`](config/config-schema.json).
 
 ## Usage
 

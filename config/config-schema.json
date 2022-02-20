@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://format.gbv.de/validate/config-schema.json",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "formats": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "format-schema.json"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "formatsDirectory": {
+      "type": "string"
+    },
+    "port": {
+      "type": "integer"
+    },
+    "postLimit": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]+[kKmMgG][bB]$"
+    },
+    "proxies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "update": {
+      "type": "string",
+      "enum": [
+        "startup",
+        "missing"
+      ]
+    },
+    "verbosity": {
+      "type": "string",
+      "enum": [
+        "log",
+        "warn",
+        "error",
+        "silent"
+      ]
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
