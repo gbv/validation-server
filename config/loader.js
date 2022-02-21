@@ -80,10 +80,11 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   const validate = await validators["json-schema"].createValidator(schemaFile)
   const rawConfig = JSON.parse(JSON.stringify(config))
 
-  if (!validate(rawConfig)) {
+  const errors = validate(rawConfig)
+  if (errors) {
     const msg =`Invalid configuration from ${configFile}`
     config.error(msg)
-    validate.errors.forEach(e => config.warn(e))
+    errors.forEach(e => config.warn(e))
     // console.log(rawConfig)
     throw new Error(msg)
   }

@@ -26,7 +26,7 @@ async function validate(data, format) {
   if (schema && schema.validator) {
     const { validator } = schema
     return await parsers.json.parse(data)
-      .then(data => data.map(record => validator(record) ? true : validator.errors))
+      .then(data => data.map(record => validator(record) || true))
       .catch(e => [[e]])
   } else {
     throw new MalformedConfiguration(`No schema or parser available to validate ${id}`)

@@ -28,9 +28,8 @@ describe("ValidationService", () => {
     const digits = service.getFormat({ format: "digits" })
     const { validator } = digits.schemas[0]
 
-    expect(validator("123\n456\n")).to.be.true
-    expect(validator("xy")).to.be.false
-    expect(validator.errors).to.deep.equal([{
+    expect(validator("123\n456\n")).to.be.null
+    expect(validator("xy")).to.deep.equal([{
       message: "Value does not match regular expression",
     }])
   })

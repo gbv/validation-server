@@ -179,9 +179,9 @@ createService(config).then(service => {
 
   const { validator } = format.schemas[0]
 
-  const result = validator(data)
-  if (!result) {
-    console.error(validator.errors)
+  const errors = validator(data)
+  if (!errors) {
+    console.error(errors)
   }
 })
 ```
