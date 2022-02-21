@@ -7,16 +7,14 @@ chai.use(chaiHttp)
 const should = chai.should()
 
 import { loadConfig, createService } from "../index.js"
+
 const config = await loadConfig()
+const formats = await createService(config)
 
 import app from "../server.js"
+app.set("formats", formats)
 
 describe("Server", () => {
-
-  before(async () => {
-    const formats = await createService(config)
-    app.set("formats", formats)
-  })
 
   const requestTests = [
 
@@ -38,6 +36,7 @@ describe("Server", () => {
       response(res) {
         res.body.should.be.a("array")
         res.body.map(format => format.id).sort().should.deep.equal([
+          "digits",
           "example",
           "isbn",
           "json",

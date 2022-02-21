@@ -49,9 +49,10 @@ Data formats are described as JSON Object with keys:
 - `mimetype` optional content type
 - `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
 - `schemas` an optional array of schemas, each with
+  - `type` mandatory schema type (identifier of a schema language, e.g. `json-schema`)
   - `version` optional version number or name (set to `"default"` if missing)
-  - `type` Schema type (identifier of a schema language, e.g. `json-schema`)
-  - `url` where to retrieve the schema file from
+  - `url` where to retrieve the schema file from (optional)
+  - `value` schema as string (mandatory if no `url` given)
 - `for` identifier or list of identifiers of base format(s) of formats defined by this schema language (only for [schema formats](#schema-languages))
 
  of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
@@ -71,6 +72,10 @@ The following schema languages are supported for validation of other formats. Th
 - JSON Schema (`json-schema`)
   - Supports `draft-04`, `draft-06`, and `draft-07`
   - Supports format keywords from <https://github.com/ajv-validator/ajv-formats> and <https://github.com/luzlab/ajv-formats-draft2019>
+
+- Regular Expressions (`regexp`)
+  - Supports ECMAScript variant with Unicode flag enabled automatically and flags other than `i`, `m`, `s` ignored.
+  - Can be given as plain pattern or in form `/${pattern}/${flags}`
 
 ### See Also
 

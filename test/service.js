@@ -1,5 +1,9 @@
 /* eslint-env node, mocha */
-import { expect } from "chai"
+import chai from "chai"
+import chaiAsPromised from "chai-as-promised"
+chai.use(chaiAsPromised)
+const { expect } = chai
+
 import { loadConfig, createService } from "../index.js"
 
 const config = await loadConfig()
@@ -18,6 +22,17 @@ describe("ValidationService", () => {
     const result = service.getFormat({ format: "json-schema" })
     expect(result.schemas.length).to.equal(1)
     expect(result.schemas[0].version).to.equal("draft-07")
+  })
+
+  it("should support formats defined by regexp", () => {
+    const digits = service.getFormat({ format: "digits" })
+    const { validator } = digits.schemas[0]
+
+    expect(validator("123\n456\n")).to.be.true
+    expect(validator("xy")).to.be.false
+    expect(validator.errors).to.deep.equal([{
+      message: "Value does not match regular expression",
+    }])
   })
 
 })

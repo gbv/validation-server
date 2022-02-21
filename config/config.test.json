@@ -2,7 +2,18 @@
   "update": "missing",
   "formatsDirectory": "test/formats",
   "formats": [
-    { "id": "example" }
+    {
+      "id": "example"
+    },
+    {
+      "id": "digits",
+      "schemas": [
+        {
+          "type": "regexp",
+          "value": "^([0-9]+\n)*$"
+        }
+      ]
+    }
   ],
   "proxies": ["127.0.0.1"]
 }
