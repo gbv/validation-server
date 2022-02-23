@@ -169,7 +169,7 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 ### Use as Module
 
 ```js
-const { loadConfig, createService, parsedFormats, validationFormats } = require("validation-server")
+const { loadConfig, createService, knownFormats } = require("validation-server")
 
 const config = await loadConfig()
 
@@ -205,13 +205,9 @@ Given a [configuration](#configuration) object, `createService` returns a promis
 
 Schemas of format objects can have an additional `validator` method to validate data in this format.
 
-### parsedFormats
+#### knownFormats
 
-JSON object of [formats](#formats), each with async method `parse`.
-
-### validationFormats
-
-JSON object of [schema languages](#schema-languages), each with an async `createValidator` method.
+Service object with predefined data formats.
 
 ### Run Tests
 

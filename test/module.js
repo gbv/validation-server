@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
-import { createService, loadConfig, validationFormats, parsedFormats, knownFormats } from "../index.js"
+import { createService, loadConfig, knownFormats } from "../index.js"
+import defaultImport from "../index.js"
 
 import chai from "chai"
 import chaiAsPromised from "chai-as-promised"
@@ -8,25 +9,30 @@ const { expect } = chai
 
 describe("Module", () => {
 
-  it("should export functions", done => {
-    expect(createService).to.be.instanceOf(Function)
+  it("should export loadConfig", done => {
     expect(loadConfig).to.be.instanceOf(Function)
+    expect(defaultImport.loadConfig).to.be.instanceOf(Function)
     done()
   })
 
-  it("should export formats", done => {
+  it("should export createService", done => {
+    expect(createService).to.be.instanceOf(Function)
+    expect(defaultImport.createService).to.be.instanceOf(Function)
+    done()
+  })
+
+  it("should export knownFormats", done => {
     expect(knownFormats).to.be.instanceOf(Object)
-    expect(parsedFormats).to.be.instanceOf(Object)
-    expect(validationFormats).to.be.instanceOf(Object)
+    expect(defaultImport.knownFormats).to.be.instanceOf(Object)
     done()
   })
 
 })
 
-describe("parsedFormats", () => {
+describe("knownFormats", () => {
 
   it("should include json parser", async () => {
-    const { json } = parsedFormats
+    const { json } = knownFormats
     expect(json.title).to.equal("JSON")
 
     return Promise.all([
