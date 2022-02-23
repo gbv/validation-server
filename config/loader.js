@@ -2,7 +2,7 @@ import fs from "fs"
 import os from "os"
 import path from "path"
 
-import parsers from "../lib/parsers.js"
+import formats from "../lib/formats.js"
 import validators from "../lib/validators.js"
 import Cache from "../lib/cache.js"
 
@@ -57,24 +57,14 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   // Optionally load formats from file
   const formatsFile = typeof config.formats === "string" ? config.formats : null
   if (formatsFile) {
-    config.formats = require(formatsFile)
+    config.formats = require(path.resolve(__dirname,formatsFile))
       // remove prefix "schema/" from schema languages
       .map(({id, ...format}) => ({id: id.replace(/^schema[/]/,""), ...format}))
-
     config.log(`Formats loaded from ${formatsFile}`)
   }
 
-  // Add or override hard-coded formats and schema languages
-  config.formats = config.formats.filter(({id}) => {
-    if (id in parsers || id in validators) {
-      console.warn(`Configured format ${id} is overridden by hardcoded format!`)
-    } else {
-      return true
-    }
-  })
-
-  config.formats.push(...Object.values(parsers))
-  config.formats.push(...Object.values(validators))
+  // combine validators, parsers and configured formats
+  config.formats = Object.values(formats).concat(config.formats.filter(({id}) => !(id in formats)))
 
   // initialize cache
   if (env === "test") {

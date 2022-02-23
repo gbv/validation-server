@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import { createService, loadConfig, validationFormats, parsedFormats } from "../index.js"
+import { createService, loadConfig, validationFormats, parsedFormats, knownFormats } from "../index.js"
 
 import chai from "chai"
 import chaiAsPromised from "chai-as-promised"
@@ -15,6 +15,7 @@ describe("Module", () => {
   })
 
   it("should export formats", done => {
+    expect(knownFormats).to.be.instanceOf(Object)
     expect(parsedFormats).to.be.instanceOf(Object)
     expect(validationFormats).to.be.instanceOf(Object)
     done()

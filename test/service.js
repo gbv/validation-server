@@ -24,6 +24,14 @@ describe("ValidationService", () => {
     expect(result.schemas[0].version).to.equal("draft-07")
   })
 
+  // FIXME
+  /*
+  it("should support regexp as format", () => {
+    const regexp = service.getFormat({ format: "regexp" })
+    console.log(regexp)
+    expect(regexp.validator("^a+")).to.be.true
+  })*/
+
   it("should support formats defined by regexp", () => {
     const digits = service.getFormat({ format: "digits" })
     const { validator } = digits.schemas[0]
