@@ -22,7 +22,7 @@
         }
       ]
     },
-    "formatsDirectory": {
+    "cachePath": {
       "type": "string"
     },
     "port": {
@@ -37,13 +37,6 @@
       "items": {
         "type": "string"
       }
-    },
-    "update": {
-      "type": "string",
-      "enum": [
-        "startup",
-        "missing"
-      ]
     },
     "verbosity": {
       "type": "string",

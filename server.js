@@ -84,7 +84,7 @@ const start = async () => {
 
   // Initialize formats registry
   app.set("validationService", await createService(config))
-  app.set("formatsDirectory", config.formatsDirectory)
+  app.set("schemaCache", config.cache)
 
   // Let's go!
   app.listen(port, () => {

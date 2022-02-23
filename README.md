@@ -107,8 +107,7 @@ The service must be customized via configuration files. By default, this configu
   "postLimit": "20MB",
   "verbosity": "log",
   "formats": [],
-  "formatsDirectory": "./formats",
-  "update": "startup"
+  "cachePath": "./formats"
 }
 ```
 
@@ -132,7 +131,7 @@ npm run start
 NODE_ENV=production node ./server.js
 ```
 
-On startup all configured schemas are downloaded to `formatsDirectory` (set `update` to `"missing"` will only download missing schema files) and compiled. Addition and updates require to restart the server.
+On startup all configured schemas are downloaded to `cachePath` and compiled. Addition and updates require to restart the server.
 
 ### Deployment
 
@@ -170,7 +169,7 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 ### Use as Module
 
 ```js
-const { loadConfig, createService, parseableFormats, validationFormats } = require("validation-server")
+const { loadConfig, createService, parsedFormats, validationFormats } = require("validation-server")
 
 const config = await loadConfig()
 
@@ -206,7 +205,7 @@ Given a [configuration](#configuration) object, `createService` returns a promis
 
 Schemas of format objects can have an additional `validator` method to validate data in this format.
 
-### parseableFormats
+### parsedFormats
 
 JSON object of [formats](#formats), each with async method `parse`.
 

@@ -7,6 +7,5 @@
   "postLimit": "20MB",
   "verbosity": "warn",
   "formats": [],
-  "formatsDirectory": "./formats",
-  "update": "startup"
+  "cachePath": "./formats"
 }

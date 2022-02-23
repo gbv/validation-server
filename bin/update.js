@@ -8,12 +8,12 @@ import { loadConfig, createService } from "../index.js"
 
 import meow from "meow"
 const cli = meow(`
-To not break things, update into a new formatsDirectory and move it afterwards.
+To not break things, update into a new cachePath and move it afterwards.
 
 Options
   --help, -h           Show this help
   --formats, -f FILE   Set formats file
-  --directory, -d DIR  Set formatsDirectory (use - for temporary directory)
+  --directory, -d DIR  Set cachePath (use - for temporary directory)
 
 Examples
   $ CONFIG_FILE=config.json npm run update -d -
@@ -55,14 +55,12 @@ loadConfig().then(config => {
     : config.formatsFile
   const formats = JSON.parse(fs.readFileSync(formatFile))
 
-  const formatsDirectory = flags.directory === "-"
+  const cachePath = flags.directory === "-"
     ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
-    : (flags.directory || config.formatsDirectory)
+    : (flags.directory || config.cachePath)
 
-  const update = "startup"
-
-
-  createService({ ...config, update, formats, formatsDirectory })
+  // TODO: clear cache to reload schema files
+  createService({ ...config, formats, cachePath })
     .then(() => {
       process.exit()
     })

@@ -86,10 +86,21 @@ describe("Server", () => {
       path: "/schema?format=json-schema&version=draft-07",
       code: 200,
       response(res) {
-        const draft7 = "test/formats/json-schema/draft-07/schema.json"
+        const draft7 = "config/json-schema-draft-07.json"
         res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
       },
     },
+    /*
+     FIXME
+    {
+      what:"return a default schema at /schema",
+      path: "/schema?format=digits",
+      code: 200,
+      response(res) {
+        res.body.should.equal("^([0-9]+\n)*$")
+      },
+    },
+    */
     {
       what:"return 404 if schema not found at /schema",
       path: "/schema?format=json-schema&version=notexist",

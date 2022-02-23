@@ -1,7 +1,10 @@
+import fs from "fs"
+import os from "os"
 import path from "path"
 
 import parsers from "../lib/parsers.js"
 import validators from "../lib/validators.js"
+import Cache from "../lib/cache.js"
 
 // load JSON files via require
 import { createRequire } from "module"
@@ -51,7 +54,6 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     }
   }
 
-
   // Optionally load formats from file
   const formatsFile = typeof config.formats === "string" ? config.formats : null
   if (formatsFile) {
@@ -72,12 +74,30 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   })
 
   config.formats.push(...Object.values(parsers))
-  config.formats.push(...Object.values(validators)
-    .map(({ filename, ...format}) => format)) // eslint-disable-line no-unused-vars
+  config.formats.push(...Object.values(validators))
+
+  // initialize cache
+  if (env === "test") {
+    config.cachePath = path.join(os.tmpdir(), "validation-server-test")
+  }
+  const cachePath = path.resolve(__dirname, config.cachePath || "formats")
+  const cache = new Cache(cachePath)
+  const schemaFiles = {
+    "https://format.gbv.de/validate/format-schema.json": "format-schema.json",
+    "https://format.gbv.de/validate/config-schema.json": "config-schema.json",
+    "https://json-schema.org/draft-07/schema": "json-schema-draft-07.json",
+    "https://json-schema.org/draft-06/schema": "json-schema-draft-06.json",
+    "https://json-schema.org/draft-04/schema": "json-schema-draft-04.json",
+  }
+  for (const [uri, file] of Object.entries(schemaFiles)) {
+    await cache.put(uri, fs.readFileSync(path.resolve(__dirname, file)))
+  }
+
+  cache.keys().then(keys => config.log(`cachePath ${cachePath} contains ${keys.length} entries`))
 
   // validate configuration
-  const schemaFile = path.resolve(__dirname, "config-schema.json")
-  const validate = await validators["json-schema"].createValidator(schemaFile)
+  const url = "https://format.gbv.de/validate/config-schema.json"
+  const validate = await validators["json-schema"].createValidator({url, cache})
   const rawConfig = JSON.parse(JSON.stringify(config))
 
   const errors = validate(rawConfig)
@@ -96,9 +116,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   }
   config.env = env
   config.types = config.formats.filter(({id}) => id in validators)
-
-  // get full path
-  config.formatsDirectory = path.resolve(__dirname, config.formatsDirectory || "formats")
+  config.cache = cache
 
   return config
 }

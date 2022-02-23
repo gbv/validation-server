@@ -1,9 +1,9 @@
 import express from "express"
 const router = express.Router()
-import axios from "axios"
-import { MalformedRequest, MalformedConfiguration } from "../lib/errors.js"
 
+import { MalformedRequest, MalformedConfiguration } from "../lib/errors.js"
 import { URL } from "url"
+import fetch from "node-fetch"
 
 import parsers from "../lib/parsers.js"
 import formatFromQuery from "../lib/format-from-query.js"
@@ -61,25 +61,17 @@ router.get("/", async (req, res, next) => {
     // Get data from URL
     try {
       const url = new URL(query.url)
+      const res = await fetch(url.toString())
+      if (!res.ok) throw new Error()
 
-      const { data, headers } = await axios.get(url.toString())
-
-      var format
-      if (typeof data === "object") {
-        format = "json"
-      } else {
-        const mimetype = headers["content-type"]
-        format = service.guessFromContentType(mimetype)
-      }
-
+      query.data = res.text()
+      const type = res.headers.get("content-type")
+      const format = service.guessFromContentType(type)
       if (format && !query.format) {
         query.format = format
       }
-      query.data = data
-
-      // config.log(`Got ${format} from ${url}`)
     } catch(e) {
-      if(e instanceof TypeError) {
+      if (e instanceof TypeError) {
         next(new MalformedRequest("malformed query parameter: url"))
       } else {
         next(new Error("requesting data from url failed!"))

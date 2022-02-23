@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import { createService, loadConfig, validationFormats, parseableFormats } from "../index.js"
+import { createService, loadConfig, validationFormats, parsedFormats } from "../index.js"
 
 import chai from "chai"
 import chaiAsPromised from "chai-as-promised"
@@ -15,13 +15,17 @@ describe("Module", () => {
   })
 
   it("should export formats", done => {
-    expect(parseableFormats).to.be.instanceOf(Object)
+    expect(parsedFormats).to.be.instanceOf(Object)
     expect(validationFormats).to.be.instanceOf(Object)
     done()
   })
 
-  it("should export json parser", async () => {
-    const { json } = parseableFormats
+})
+
+describe("parsedFormats", () => {
+
+  it("should include json parser", async () => {
+    const { json } = parsedFormats
     expect(json.title).to.equal("JSON")
 
     return Promise.all([

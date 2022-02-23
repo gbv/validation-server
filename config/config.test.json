@@ -1,6 +1,5 @@
 {
-  "update": "missing",
-  "formatsDirectory": "test/formats",
+  "verbosity": "log",
   "formats": [
     {
       "id": "example"
