@@ -18,6 +18,16 @@
     .id {
       font-family: monospace;
     }
+    table {
+       border-collapse: collapse;
+    }
+    tr {
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    td {
+      padding: 0.25em;
+    }
     ul.inline {
       display: inline-block;
       padding: 0;
@@ -45,18 +55,32 @@
     </ul>
     <h3>Formats</h3>
     <p>The following data formats can be validated:</p>
-    <ul>
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>name</th>
+          <th>versions</th>
+          <th>for</th>
+        </tr>
+      </thead>
+      <tbody>
       <% for (var format of config.formats) { %>
-        <li>
-          <a href="formats?format=<%= format.id %>" class="id"><%= format.id %></a>
+        <tr>
+          <td>
+            <a href="formats?format=<%= format.id %>" class="id"><%= format.id %></a>
+          </td>
+          <td>
           <% if (format.title) { %>
             <% if (format.homepage) { %>
-              (<a href="<%= format.homepage %>" target="_blank"><%= format.title %></a>)
+              <a href="<%= format.homepage %>" target="_blank"><%= format.title %></a>
             <% } else { %>
-              (<%= format.title %>)<% } %>
+              <%= format.title %>
             <% } %>
+          <% } %>
+          </td>
+          <td>
             <% if (format.schemas) { %>
-            Schemas:
             <ul class="inline">
               <% for (var schema of format.schemas) {
                 version = schema.version || "default"
@@ -67,20 +91,20 @@
               <% } %>
             </ul>
             <% } %>
-        </li>
+          </td>
+          <td>
+            <% if (format.for) { %>
+              <ul class="inline">
+              <% for (var id of Array.isArray(format.for) ? format.for : [format.for]) { %>
+                <li><%= id %></li>
+              <% } %>
+              </ul>
+            <% } %>
+          </td>
+        </tr>
       <% } %>
-    </ul>
-    <h3>Schema types</h3>
-    <p>
-      The following schema languages are supported for specification of data formats:</p>
-    <ul>
-      <% for (var type of config.types) { %>
-        <li>
-          <a href="types?type=<%= type.id %>" class="id"><%= type.id %></a>
-          <% if (type.title) { %> (<%= type.title %>)<% } %>
-        </li>
-      <% } %>
-    </ul>
+      </tbody>
+    </table>
   </body>
   <footer>
     <p>

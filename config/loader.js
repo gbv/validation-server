@@ -105,7 +105,6 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     config.formatsFile = path.resolve(__dirname, formatsFile)
   }
   config.env = env
-  config.types = config.formats.filter(({id}) => id in validators)
   config.cache = cache
 
   return config
