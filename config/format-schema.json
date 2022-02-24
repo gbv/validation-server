@@ -19,7 +19,17 @@
       "$ref": "#/definitions/id"
     },
     "restricts": {
-      "$ref": "#/definitions/id"
+      "anyOf": [
+        {
+          "$ref": "#/definitions/id"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          }
+        }
+      ]
     },
     "mimetype": {
       "type": "string"

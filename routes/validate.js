@@ -15,10 +15,11 @@ function validate(data, format) {
     // format can have exactely one schema that is used for validation
     const schema = Object.values(format.versions || {}).map(v => (v.schemas||[])[0])[0]
 
-    const base = (schema && schema.type in knownFormats)
+    var base = (schema && schema.type in knownFormats)
       ? knownFormats[schema.type].restricts : null
+    if (!Array.isArray(base)) base = [base]
 
-    if (base === "json") {
+    if (base.find(b => b === "json")) {
       data = knownFormats.json.parse(data)
       if (!Array.isArray(data)) {
         data = [ data ]
