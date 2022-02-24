@@ -37,7 +37,6 @@ describe("Server", () => {
         res.body.should.be.a("array")
         res.body.map(format => format.id).sort().should.deep.equal([
           "digits",
-          "example",
           "isbn",
           "json",
           "json-schema",
@@ -206,14 +205,6 @@ describe("Server", () => {
         position: "/properties",
         positionFormat: "jsonpointer",
       }]],
-    },
-    {
-      format: "example", data: "?",
-      code: 500, result: {
-        error: "MalformedConfiguration",
-        message: "No schema or parser available to validate example",
-        status: 500,
-      },
     },
   ]
 

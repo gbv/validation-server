@@ -1,7 +1,7 @@
 import express from "express"
 const router = express.Router()
 
-import { MalformedRequest, MalformedConfiguration } from "../lib/errors.js"
+import { MalformedRequest } from "../lib/errors.js"
 import { URL } from "url"
 import fetch from "node-fetch"
 
@@ -9,29 +9,25 @@ import knownFormats from "../lib/formats.js"
 import formatFromQuery from "../lib/format-from-query.js"
 
 function validate(data, format) {
-  if (format.validate) {
-    // TODO: move logic into format.valid method?
+  // TODO: move logic into format.valid method?
 
-    // format can have exactely one schema that is used for validation
-    const schema = Object.values(format.versions || {}).map(v => (v.schemas||[])[0])[0]
+  // format can have exactely one schema that is used for validation
+  const schema = Object.values(format.versions || {}).map(v => (v.schemas||[])[0])[0]
 
-    var base = (schema && schema.type in knownFormats)
-      ? knownFormats[schema.type].restricts : null
-    if (!Array.isArray(base)) base = [base]
+  var base = (schema && schema.type in knownFormats)
+    ? knownFormats[schema.type].restricts : null
+  if (!Array.isArray(base)) base = [base]
 
-    if (base.find(b => b === "json")) {
-      data = knownFormats.json.parse(data)
-      if (!Array.isArray(data)) {
-        data = [ data ]
-      }
-    } else {
-      data = [ data ]
+  if (base.find(b => b === "json")) {
+    data = knownFormats.json.parse(data)
+    if (!Array.isArray(data)) {
+      data = [ data ] // TODO: do we actually want this?
     }
-
-    return data.map(record => format.validate(record) || true)
   } else {
-    throw new MalformedConfiguration(`No schema or parser available to validate ${format.id}`)
+    data = [ data ]
   }
+
+  return data.map(record => format.validate(record) || true)
 }
 
 async function validateRoute(req, res, next) {

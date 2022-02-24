@@ -97,9 +97,6 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   }
 
   // additional fields for internal use
-  for (let [id,value] of Object.entries(config.formats)) {
-    value.id = id
-  }
   config.configFile = path.resolve(__dirname, configFile)
   config.env = env
   config.cache = cache
