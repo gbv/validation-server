@@ -12,7 +12,7 @@
     "short": {
       "type": "string"
     },
-    "homepage": {
+    "url": {
       "$ref": "#/definitions/url"
     },
     "base": {

@@ -73,8 +73,8 @@
           </td>
           <td>
           <% if (format.title) { %>
-            <% if (format.homepage) { %>
-              <a href="<%= format.homepage %>" target="_blank"><%= format.title %></a>
+            <% if (format.url) { %>
+              <a href="<%= format.url %>" target="_blank"><%= format.title %></a>
             <% } else { %>
               <%= format.title %>
             <% } %>
