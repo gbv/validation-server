@@ -1,18 +1,21 @@
 {
   "verbosity": "log",
-  "formats": [
-    {
-      "id": "example"
-    },
-    {
-      "id": "digits",
-      "schemas": [
-        {
-          "type": "regexp",
-          "value": "^([0-9]+\n)*$"
+  "formats": {
+    "example": {},
+    "digits": {
+      "versions": {
+        "default": {
+          "schemas": [
+            {
+              "type": "regexp",
+              "value": "^([0-9]+\n)*$"
+            }
+          ]
         }
-      ]
+      }
     }
-  ],
-  "proxies": ["127.0.0.1"]
+  },
+  "proxies": [
+    "127.0.0.1"
+  ]
 }

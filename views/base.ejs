@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title><%= config.title %></title>
+    <title><%= title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
     body {
@@ -36,22 +36,22 @@
       display: inline;
     }
     ul.inline > li:not(:last-child)::after  {
-      content: ", ";
+      content: " ";
     }
     </style>
   </head>
   <body>
-    <h1><%= config.title %></h1>
+    <h1><%= title %></h1>
     <p>
-      <%= config.description %>
+      <%= description %>
     </p>
     <h3>API Endpoints</h3>
     <ul>
       <li>GET <a href="validate">/validate</a> - validate data (<a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>)</li>
       <li>POST /validate - validate data (<a href="https://github.com/gbv/validation-server#post-validate" target="_blank">documentation</a>)</li>
       <li>GET <a href="formats">/formats</a> - list supported data formats (<a href="https://github.com/gbv/validation-server#get-formats" target="_blank">documentation</a>)</li>
+      <li>GET <a href="languages">/languages</a> - list supported schema languages (<a href="https://github.com/gbv/validation-server#get-languages" target="_blank">documentation</a>)</li>
       <li>GET <a href="schema">/schema</a> - get a schema file (<a href="https://github.com/gbv/validation-server#get-schema" target="_blank">documentation</a>)</li>
-      <li>GET <a href="types">/types</a> - list supported schema types (<a href="https://github.com/gbv/validation-server#get-types" target="_blank">documentation</a>)</li>
     </ul>
     <h3>Formats</h3>
     <p>The following data formats can be validated:</p>
@@ -60,12 +60,13 @@
         <tr>
           <th>id</th>
           <th>name</th>
-          <th>versions</th>
-          <th>for</th>
+          <th>schemas</th>
+          <th>base</th>
+          <th>restricts</th>
         </tr>
       </thead>
       <tbody>
-      <% for (var format of config.formats) { %>
+        <% for (let format of formats) { %>
         <tr>
           <td>
             <a href="formats?format=<%= format.id %>" class="id"><%= format.id %></a>
@@ -80,26 +81,24 @@
           <% } %>
           </td>
           <td>
-            <% if (format.schemas) { %>
+            <% if (format.versions) { %>
             <ul class="inline">
-              <% for (var schema of format.schemas) {
-                version = schema.version || "default"
-              %>
-              <li>
-                <a href="schema?format=<%= format.id %>&version=<%= version %>"><%= version %></a>
-              </li>
-              <% } %>
+              <% for (var version in format.versions) {
+                let schemas = format.versions[version].schemas || []
+                  for (var schema of schemas) { %>
+                    <li>
+                      <a href="schema?format=<%= format.id %>&version=<%= version %>&type=<%= schema.type %>"><%= version %></a>
+                    </li>
+                <% }
+               } %>
             </ul>
             <% } %>
           </td>
           <td>
-            <% if (format.for) { %>
-              <ul class="inline">
-              <% for (var id of Array.isArray(format.for) ? format.for : [format.for]) { %>
-                <li><%= id %></li>
-              <% } %>
-              </ul>
-            <% } %>
+            <%= format.base %>
+          </td>
+          <td>
+            <%= format.restricts %>
           </td>
         </tr>
       <% } %>
@@ -108,7 +107,7 @@
   </body>
   <footer>
     <p>
-      Powered by <a href="https://github.com/gbv/validation-server" target="_blank">validation-server</a> version <%= config.version %>.
+      Powered by <a href="https://github.com/gbv/validation-server" target="_blank">validation-server</a> version <%= version %>.
     </p>
     </p>
   </footer>

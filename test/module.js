@@ -35,12 +35,9 @@ describe("knownFormats", () => {
     const { json } = knownFormats
     expect(json.title).to.equal("JSON")
 
-    return Promise.all([
-      expect(json.parse("[null,42]")).to.eventually.deep.equal([null,42]),
-      // TODO: don't return array of object
-      expect(json.parse("{\"x\":1}")).to.eventually.deep.equal([{x:1}]),
-      expect(json.parse("{")).to.be.rejected,
-    ])
+    expect(json.parse("[null,42]")).to.deep.equal([null,42])
+    expect(json.parse("{\"x\":1}")).to.deep.equal([{x:1}])
+    expect(() => json.parse("{")).to.throw("Unexpected end of JSON input")
   })
 
 })

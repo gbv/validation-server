@@ -12,10 +12,13 @@
     "formats": {
       "anyOf": [
         {
-          "type": "array",
-          "items": {
-            "$ref": "format-schema.json"
-          }
+          "type": "object",
+          "patternProperties": {
+            "^[0-9a-z_/-]+$": {
+              "$ref": "format-schema.json"
+            }
+          },
+          "additionalProperties": false
         },
         {
           "type": "string"

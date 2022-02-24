@@ -6,6 +6,6 @@
   "proxies": [],
   "postLimit": "20MB",
   "verbosity": "warn",
-  "formats": [],
+  "formats": {},
   "cachePath": "./formats"
 }

@@ -2,8 +2,7 @@ import fs from "fs"
 import os from "os"
 import path from "path"
 
-import formats from "../lib/formats.js"
-import validators from "../lib/validators.js"
+import knownFormats from "../lib/formats.js"
 import Cache from "../lib/cache.js"
 
 // load JSON files via require
@@ -55,16 +54,14 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   }
 
   // Optionally load formats from file
-  const formatsFile = typeof config.formats === "string" ? config.formats : null
-  if (formatsFile) {
+  if (typeof config.formats === "string") {
+    const formatsFile = config.formats
     config.formats = require(path.resolve(__dirname,formatsFile))
-      // remove prefix "schema/" from schema languages
-      .map(({id, ...format}) => ({id: id.replace(/^schema[/]/,""), ...format}))
     config.log(`Formats loaded from ${formatsFile}`)
   }
 
-  // combine validators, parsers and configured formats
-  config.formats = Object.values(formats).concat(config.formats.filter(({id}) => !(id in formats)))
+  // knownFormats override configured formats
+  config.formats = { ...config.formats, ...knownFormats }
 
   // initialize cache
   if (env === "test") {
@@ -87,7 +84,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
 
   // validate configuration
   const url = "https://format.gbv.de/validate/config-schema.json"
-  const validate = await validators["json-schema"].createValidator({url, cache})
+  const validate = await knownFormats["json-schema"].createValidator({url, cache})
   const rawConfig = JSON.parse(JSON.stringify(config))
 
   const errors = validate(rawConfig)
@@ -100,10 +97,10 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   }
 
   // additional fields for internal use
-  config.configFile = path.resolve(__dirname, configFile)
-  if (formatsFile) {
-    config.formatsFile = path.resolve(__dirname, formatsFile)
+  for (let [id,value] of Object.entries(config.formats)) {
+    value.id = id
   }
+  config.configFile = path.resolve(__dirname, configFile)
   config.env = env
   config.cache = cache
 

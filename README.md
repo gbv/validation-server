@@ -27,6 +27,7 @@ Provides methods to validate records against different kinds of schemas to ensur
   - [GET /validate](#get-validate)
   - [POST /validate](#post-validate)
   - [GET /formats](#get-formats)
+  - [GET /languages](#get-languages)
   - [GET /schema](#get-schema)
   - [Validation Errors](#validation-errors)
   - [API Errors](#api-errors)
@@ -48,12 +49,12 @@ Data formats are described as JSON Object with keys:
 - `homepage` optional URL with information about the format
 - `mimetype` optional content type
 - `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
-- `schemas` an optional array of schemas, each with
-  - `type` mandatory schema type (identifier of a schema language, e.g. `json-schema`)
-  - `version` optional version number or name (set to `"default"` if missing)
-  - `url` where to retrieve the schema file from (optional)
-  - `value` schema as string (mandatory if no `url` given)
-- `for` identifier or list of identifiers of base format(s) of formats defined by this schema language (only for [schema formats](#schema-languages))
+- `versions` an optional object with format versions, each with
+  - `schemas` an optional object with schemas, each with
+    - `type` mandatory schema type (identifier of a schema language, e.g. `json-schema`)
+    - `url` where to retrieve the schema file from (optional)
+    - `value` schema as string (mandatory if no `url` given)
+- `restricts` identifier of base format(s) of formats defined by this schema language (only for [schema formats](#schema-languages))
 
  of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
 
@@ -65,9 +66,9 @@ By default all schema languages and the data formats `json`, `isbn`, and `regexp
 
 ### Schema Languages
 
-Schem languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats. Schema languages must reference this base formats with description key `for`.
+Schem languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats. Schema languages must reference this base formats with description key `restricts`.
 
-The following schema languages are supported for validation of other formats. The list is available via API endpoint [/types](#get-types) and the languages are also included as formats via API endpoint [/formats](#get-formats):
+The following schema languages are supported for validation of other formats. The list is available via API endpoint [/languages](#get-languages) and the languages are also included as formats via API endpoint [/formats](#get-formats):
 
 - JSON Schema (`json-schema`)
   - Supports `draft-04`, `draft-06`, and `draft-07`
@@ -175,10 +176,7 @@ const config = await loadConfig()
 
 createService(config).then(service => {
   const format = service.getFormat({ format: "json-schema", version: "draft-07" })
-
-  const { validator } = format.schemas[0]
-
-  const errors = validator(data)
+  const errors = format.validate(data)
   if (!errors) {
     console.error(errors)
   }
@@ -203,7 +201,7 @@ Given a [configuration](#configuration) object, `createService` returns a promis
 
 - `listFormats` returns a list of formats, optionally filtered (see [GET /formats](#get-formats) for query parameters)
 
-Schemas of format objects can have an additional `validator` method to validate data in this format.
+Schemas of format objects can have an additional `validate` method to validate data in this format.
 
 #### knownFormats
 
@@ -337,6 +335,10 @@ Lists all [formats](#formats), optionally filtered by identifier, version, and/o
 
   JSON Array of format objects.
 
+### GET /languages
+
+List schema languages as array of [formats](#formats). The result is a subset of [GET /formats](#get-formats) with same query parameters and response format.
+
 ### GET /schema
 
 Get a schema file.
@@ -356,18 +358,6 @@ The schema file is served with corresponding content type.
 **Error Resonse**
 
 An [API error](#api-errors) with status code 404 is returned in no corresponding schema was found.
-
-### GET /types
-
-List schema types as array of [formats](#formats).
-
-**Query Parameters**
-
-* `type=[string]` optional schema type
-
-**Success Response**
-
-JSON Array of format objects.
 
 ### Validation Errors
 

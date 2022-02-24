@@ -64,8 +64,8 @@ describe("Server", () => {
 
     // GET /types
     {
-      what:"list schema types at /types",
-      path: "/types",
+      what:"list schema languages at /languages",
+      path: "/languages",
       code: 200,
       response(res) {
         res.body.should.be.a("array")
@@ -90,23 +90,29 @@ describe("Server", () => {
         res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
       },
     },
-    /*
-     FIXME
     {
       what:"return a default schema at /schema",
       path: "/schema?format=digits",
       code: 200,
       response(res) {
-        res.body.should.equal("^([0-9]+\n)*$")
+        res.text.should.equal("^([0-9]+\n)*$")
       },
     },
-    */
     {
       what:"return 404 if schema not found at /schema",
       path: "/schema?format=json-schema&version=notexist",
       error: {
         error: "NotFound",
-        message: "Schema not found",
+        message: "Format not found",
+        status: 404,
+      },
+    },
+    {
+      what:"return 404 if format has no schemas at /schema",
+      path: "/schema?format=regexp",
+      error: {
+        error: "NotFound",
+        message: "Format regexp has no schemas",
         status: 404,
       },
     },
@@ -173,7 +179,7 @@ describe("Server", () => {
 
 
   const validationTests = [
-    { format: "json", data: "[]", code: 200, result: [] },
+    { format: "json", data: "[]", code: 200, result: [true] },
     { format: "json", data: "{}", code: 200, result: [true] },
     { format: "json", data: "[false]", code: 200, result: [true] },
     { format: "json", data: "null", code: 200, result: [true] },
@@ -232,5 +238,4 @@ describe("Server", () => {
         .end(resultCheck(done))
     })
   })
-
 })

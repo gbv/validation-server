@@ -4,10 +4,10 @@ import portfinder from "portfinder"
 import { loadConfig, createService } from "./index.js"
 const config = await loadConfig()
 
-import formatsRoute from "./routes/formats.js"
 import validateRoute from "./routes/validate.js"
+import formatsRoute from "./routes/formats.js"
+import languagesRoute from "./routes/languages.js"
 import schemaRoute from "./routes/schema.js"
-import typesRoute from "./routes/types.js"
 
 config.log(`Running in ${config.env} mode.`)
 
@@ -51,13 +51,15 @@ app.use((req, res, next) => {
 // Root path for static page
 app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html")
-  res.render("base", { config })
+  const { title, description, version } = config
+  const formats = app.get("validationService").listFormats()
+  res.render("base", { title, description, version, formats })
 })
 
 app.use("/validate", validateRoute)
 app.get("/formats", formatsRoute)
+app.get("/languages", languagesRoute)
 app.get("/schema", schemaRoute)
-app.get("/types", typesRoute)
 
 // Error handling
 app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars

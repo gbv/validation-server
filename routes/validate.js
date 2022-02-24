@@ -5,31 +5,31 @@ import { MalformedRequest, MalformedConfiguration } from "../lib/errors.js"
 import { URL } from "url"
 import fetch from "node-fetch"
 
-import parsers from "../lib/parsers.js"
+import knownFormats from "../lib/formats.js"
 import formatFromQuery from "../lib/format-from-query.js"
 
-async function validate(data, format) {
-  const { id, parser, schemas } = format
+function validate(data, format) {
+  if (format.validate) {
+    // TODO: move logic into format.valid method?
 
-  // TODO: take into account base format
+    // format can have exactely one schema that is used for validation
+    const schema = Object.values(format.versions || {}).map(v => (v.schemas||[])[0])[0]
 
-  // Use a parser for validating, if available
-  if (parser) {
-    return parser(data)
-      .then(result => result.map(() => true))
-      .catch(e => [[e]])
-  }
+    const base = (schema && schema.type in knownFormats)
+      ? knownFormats[schema.type].restricts : null
 
-  // TODO: what if multiple schemas exist?
-  const schema = schemas ? schemas[0] : null
+    if (base === "json") {
+      data = knownFormats.json.parse(data)
+      if (!Array.isArray(data)) {
+        data = [ data ]
+      }
+    } else {
+      data = [ data ]
+    }
 
-  if (schema && schema.validator) {
-    const { validator } = schema
-    return await parsers.json.parse(data)
-      .then(data => data.map(record => validator(record) || true))
-      .catch(e => [[e]])
+    return data.map(record => format.validate(record) || true)
   } else {
-    throw new MalformedConfiguration(`No schema or parser available to validate ${id}`)
+    throw new MalformedConfiguration(`No schema or parser available to validate ${format.id}`)
   }
 }
 
