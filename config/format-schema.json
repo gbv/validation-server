@@ -16,20 +16,10 @@
       "$ref": "#/definitions/url"
     },
     "base": {
-      "$ref": "#/definitions/id"
+      "$ref": "#/definitions/ids"
     },
     "restricts": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/id"
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/id"
-          }
-        }
-      ]
+      "$ref": "#/definitions/ids"
     },
     "mimetype": {
       "type": "string"
@@ -37,7 +27,7 @@
     "versions": {
       "type": "object",
       "patternProperties": {
-        "^[0-9a-z_/-]+$": {
+        "^[0-9a-z_/.-]+$": {
           "$ref": "#/definitions/version"
         }
       },
@@ -49,6 +39,19 @@
     "id": {
       "type": "string",
       "pattern": "^[0-9a-z_/-]+$"
+    },
+    "ids": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/id"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          }
+        }
+      ]
     },
     "url": {
       "type": "string",

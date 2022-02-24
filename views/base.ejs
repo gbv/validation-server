@@ -95,10 +95,17 @@
             <% } %>
           </td>
           <td>
-            <%= format.base %>
+            <% let res = format.base; if (res) {
+              if (!Array.isArray(res)) res = [ res ] %>
+            <ul class="inline">
+              <% for (var r of res) { %>
+                <li><%= r %></li>
+              <% } %>
+            </ul>
+            <% } %>
           </td>
           <td>
-            <% let res = format.restricts; if (res) {
+            <% res = format.restricts; if (res) {
               if (!Array.isArray(res)) res = [ res ] %>
             <ul class="inline">
               <% for (var r of res) { %>
