@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
   res.render("base", { title, description, version, formats })
 })
 
-app.use("/validate", validateRoute)
+app.use("/", validateRoute)
 app.get("/formats", formatsRoute)
 app.get("/languages", languagesRoute)
 app.get("/schema", schemaRoute)

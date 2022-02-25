@@ -30,27 +30,8 @@ function validate(data, format) {
   return data.map(record => format.validate(record) || true)
 }
 
-async function validateRoute(req, res, next) {
-  formatFromQuery(req)
-    .then(format => validate(req.query.data, format))
-    .then(result => res.send(result))
-    .catch(error => next(error))
-}
-
-// HTTP POST
-router.post("/",
-  async (req, res, next) => {
-    if (req.rawBody) {
-      req.query.data = req.rawBody
-    } else {
-      next(new MalformedRequest("Missing HTTP POST request body!"))
-    }
-    validateRoute(req, res, next)
-  },
-)
-
 // HTTP GET
-router.get("/", async (req, res, next) => {
+async function prepareGetData(req) {
   const service = req.app.get("validationService")
   const { query } = req
 
@@ -67,20 +48,39 @@ router.get("/", async (req, res, next) => {
       if (format && !query.format) {
         query.format = format
       }
+
     } catch(e) {
       if (e instanceof TypeError) {
-        next(new MalformedRequest("malformed query parameter: url"))
+        throw new MalformedRequest("malformed query parameter: url")
       } else {
-        next(new Error("requesting data from url failed!"))
+        throw new Error("requesting data from url failed!")
       }
-      return
     }
   } else if (!query.data) {
-    next(new MalformedRequest("Please use HTTP POST or provide query parameter 'url' or 'data'!"))
-    return
+    throw new MalformedRequest("Please use HTTP POST or provide query parameter 'url' or 'data'")
   }
+}
 
-  validateRoute(req, res, next)
+router.get("/validate", async (req, res, next) => {
+  prepareGetData(req)
+    .then(() => formatFromQuery(req))
+    .then(format => validate(req.query.data, format))
+    .then(result => res.send(result))
+    .catch(error => next(error))
+})
+
+router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
+  req.query.format = req.params.format
+  formatFromQuery(req)
+    .then(format => {
+      if (req.rawBody) {
+        return validate(req.rawBody, format)
+      } else {
+        throw new MalformedRequest("Missing HTTP POST request body")
+      }
+    })
+    .then(result => res.send(result))
+    .catch(error => next(error))
 })
 
 export default router

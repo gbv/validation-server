@@ -25,7 +25,7 @@ Provides methods to validate records against different kinds of schemas to ensur
   - [Run Tests](#run-tests)
 - [API](#api)
   - [GET /validate](#get-validate)
-  - [POST /validate](#post-validate)
+  - [POST /:format](#post-format)
   - [GET /formats](#get-formats)
   - [GET /languages](#get-languages)
   - [GET /schema](#get-schema)
@@ -229,7 +229,7 @@ Endpoint to validate records passed via query parameter or URL.
 
 `data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
 
-**Success Response**
+**Response**
 
 Array of same length as the posted data and validation result formeach record.  An element is `true` when the object passed validation, or an array of [validation errors](#validation-errors) when the object failed validation.
 
@@ -267,21 +267,21 @@ JSON parsing errors are returned with character position in [RFC 5147](https://d
 
 The service does not guarantee to return all validation errors but it may stop at the first error.
 
-### POST /validate
+### POST /:format
 
-Endpoint to validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
+Endpoints to validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
 
-**Query Parameters**
+**Query**
 
-* `format=[string]` a known data format (required)
+The query path consists of the format identifier, e.g. `/json-schema` to validate JSON Schema.
 
-**Success Response**
+**Response**
 
-Same as response of [POST /validate](#post-validate).
+Same as response of [GET /validate](#get-validate).
 
 **Examples**
 
-This file `articles.json` contains two records in vzg-article format, one invalid and one valid:
+This file `articles.json` contains two records in `vzg-article` format, one invalid and one valid:
 
 ```json
 [
@@ -303,7 +303,7 @@ This file `articles.json` contains two records in vzg-article format, one invali
 ```
 
 ```sh
-curl -X POST 'http://format.gbv.de/validate/validate?format=vzg-article' -d @articles.json
+curl -X POST 'http://format.gbv.de/validate/vzg-article' -d @articles.json
 ```
 
 ```json
@@ -361,7 +361,7 @@ An [API error](#api-errors) with status code 404 is returned in no corresponding
 
 ### Validation Errors
 
-Validation results (see [GET /validate](#get-validate) and [POST /validate](#post-validate)) can include validation errors. Each error is a JSON object with
+Validation results (see [GET /validate](#get-validate) and [POST /:format](#post-format)) can include validation errors. Each error is a JSON object with
 
 * `message` mandatory error message
 * `error` optional type of error

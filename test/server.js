@@ -130,7 +130,7 @@ describe("Server", () => {
       path: "/validate?format=json",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Please use HTTP POST or provide query parameter 'url' or 'data'!")
+        res.body.message.should.equals("Please use HTTP POST or provide query parameter 'url' or 'data'")
       },
     },
     {
@@ -143,14 +143,23 @@ describe("Server", () => {
       },
     },
 
-    // POST /validate
+    // POST /
     {
-      what:"require a request body at /validate",
-      path: "/validate?format=json",
+      what:"require a request body at POST /json",
+      path: "/json",
       post: "",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Missing HTTP POST request body!")
+        res.body.message.should.equals("Missing HTTP POST request body")
+      },
+    },
+    {
+      what:"complain about unknown format at POST /example",
+      path: "/example",
+      post: "",
+      code: 404,
+      response(res) {
+        res.body.message.should.equals("Format not found")
       },
     },
   ]
@@ -224,7 +233,7 @@ describe("Server", () => {
 
     it(`should validate ${format} data ${data} (POST)`, done => {
       chai.request(app)
-        .post(`/validate?format=${format}`)
+        .post(`/${format}`)
         .send(data)
         .end(resultCheck(done))
     })
