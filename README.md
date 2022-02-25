@@ -225,11 +225,13 @@ Endpoint to validate records passed via query parameter or URL.
 
 **URL Params**
 
+`format=[string]`
+
 `url=[url]` Optional URL to load data from
 
 `data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
 
-`select=[string]` Optional query to select records within the data. Only supported for JSON-based formats with JSONPath `select=$` (default: data is one record) and `select=$.*` (records are array or object elements).
+`select=[string]` Optional selection of records within the data. Only supported for JSON-based formats with JSONPath `select=$` (default: data is one record) and `select=$.*` (records are array or object elements).
 
 **Response**
 
@@ -271,11 +273,13 @@ The service does not guarantee to return all validation errors but it may stop a
 
 ### POST /:format
 
-Endpoints to validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
+Validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
 
 **Query**
 
-The query path consists of the format identifier, e.g. `/json-schema` to validate JSON Schema.
+* `format=[id]` format identifier. Can also be specified in the URL path, e.g. `/json` is identical to `/?format=json`.
+
+* `select=[string]` Optional selection of records within the posted data.
 
 **Response**
 

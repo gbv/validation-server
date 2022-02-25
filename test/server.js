@@ -155,6 +155,15 @@ describe("Server", () => {
       },
     },
     {
+      what:"require a format at POST /",
+      path: "/",
+      post: "",
+      code: 400,
+      response(res) {
+        res.body.message.should.equals("Missing query parameter: format")
+      },
+    },
+    {
       what:"complain about unknown format at POST /example",
       path: "/example",
       post: "",

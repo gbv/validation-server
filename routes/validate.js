@@ -86,6 +86,11 @@ router.get("/validate", async (req, res, next) => {
 
 router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   req.query.format = req.params.format
+  req.url = "/"
+  next()
+})
+
+router.post("/", async (req, res, next) => {
   formatFromQuery(req)
     .then(format => {
       if (req.rawBody) {
