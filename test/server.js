@@ -187,13 +187,13 @@ describe("Server", () => {
 
 
   const validationTests = [
-    { format: "json", data: "[]", code: 200, result: [true] },
-    { format: "json", data: "{}", code: 200, result: [true] },
-    { format: "json", data: "[false]", code: 200, result: [true] },
-    { format: "json", data: "null", code: 200, result: [true] },
+    { format: "json", data: "[]", result: [true] },
+    { format: "json", data: "{}", result: [true] },
+    { format: "json", data: "[false]", result: [true] },
+    { format: "json", data: "null", result: [true] },
     {
       format: "json", data: "{",
-      code: 200, result: [[{
+      result: [[{
         message: "Unexpected end of JSON input",
         position: "char=1",
         positionFormat: "rfc5147",
@@ -201,14 +201,20 @@ describe("Server", () => {
     },
     {
       format: "json", data: "{ 1",
-      code: 200, result: [[{
+      result: [[{
         message: "Unexpected number in JSON at position 2",
         position: "char=2",
         positionFormat: "rfc5147",
       }]],
     },
+    { format: "json-schema", data: "[]", select: "$.*", result: [] },
+    { format: "json-schema", data: "[]", result: r => {
+      r.should.be.an("array")
+    }},
+    { format: "json-schema", data: "{}", result: [true] },
+    { format: "json-schema", data: "[{}]", select: "$.*", result: [true] },
     {
-      format: "json-schema", data: "{\"properties\":0}", code: 200,
+      format: "json-schema", data: "{\"properties\":0}",
       result: [[{
         message: "must be object",
         position: "/properties",
@@ -217,23 +223,29 @@ describe("Server", () => {
     },
   ]
 
-  validationTests.forEach(({format, data, code, result}) => {
+  validationTests.forEach(({format, data, select, code, result}) => {
     const resultCheck = done =>
       ((err, res) => {
-        res.should.have.status(code)
-        res.body.should.deep.equal(result)
+        res.should.have.status(code || 200)
+        if (typeof result === "function") {
+          result(res.body)
+        } else {
+          res.body.should.deep.equal(result)
+        }
         done()
       })
 
-    it(`should validate ${format} data ${data} (GET)`, done => {
+    select = select || ""
+
+    it(`should validate ${format} data ${data} ${select} (GET)`, done => {
       chai.request(app)
-        .get(`/validate?format=${format}&data=${data}`)
+        .get(`/validate?format=${format}&data=${data}` + (select ? `&select=${select}` : ""))
         .end(resultCheck(done))
     })
 
-    it(`should validate ${format} data ${data} (POST)`, done => {
+    it(`should validate ${format} data ${data} ${select} (POST)`, done => {
       chai.request(app)
-        .post(`/${format}`)
+        .post(`/${format}` + (select ? `?select=${select}` : ""))
         .send(data)
         .end(resultCheck(done))
     })

@@ -225,9 +225,11 @@ Endpoint to validate records passed via query parameter or URL.
 
 **URL Params**
 
-`url=[url]` URL to load data from
+`url=[url]` Optional URL to load data from
 
 `data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
+
+`select=[string]` Optional query to select records within the data. Only supported for JSON-based formats with JSONPath `select=$` (default: data is one record) and `select=$.*` (records are array or object elements).
 
 **Response**
 
@@ -281,6 +283,28 @@ Same as response of [GET /validate](#get-validate).
 
 **Examples**
 
+This file `schema.json` contains valid JSON but not a valid JSON Schema:
+
+```
+{
+  "properties": []
+}
+```
+
+```sh
+curl -X POST 'http://format.gbv.de/validate/vzg-article' -d @schema.json
+```
+
+```json
+[
+  {
+    "message": "must be object",
+    "position": "/properties",
+    "positionFormat": "jsonpointer"
+  }
+]
+```
+
 This file `articles.json` contains two records in `vzg-article` format, one invalid and one valid:
 
 ```json
@@ -302,8 +326,10 @@ This file `articles.json` contains two records in `vzg-article` format, one inva
 
 ```
 
+To validate both records in one query, parameter `select=$.*` must be added:
+
 ```sh
-curl -X POST 'http://format.gbv.de/validate/vzg-article' -d @articles.json
+curl -X POST 'http://format.gbv.de/validate/vzg-article?select=$.*' -d @articles.json
 ```
 
 ```json

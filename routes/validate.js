@@ -8,8 +8,25 @@ import fetch from "node-fetch"
 import knownFormats from "../lib/formats.js"
 import formatFromQuery from "../lib/format-from-query.js"
 
-function validate(data, format) {
-  // TODO: move logic into format.valid method?
+function jsonPathQuery(data, path="$") {
+  if (path === "$") {
+    return [data]
+  } else if (path === "$.*") {
+    if (Array.isArray(data)) {
+      return data
+    } else if (data instanceof Object) {
+      return Object.values(data)
+    } else {
+      return []
+    }
+  } else {
+    throw new Error("Invalid or unsupported select path. Try '$.*' or '$'!")
+  }
+}
+
+function validate(data, format, select) {
+  // TODO: move logic into format.validateAll method?
+  // TODO: only when data is string
 
   // format can have exactely one schema that is used for validation
   const schema = Object.values(format.versions || {}).map(v => (v.schemas||[])[0])[0]
@@ -20,11 +37,9 @@ function validate(data, format) {
 
   if (base.find(b => b === "json")) {
     data = knownFormats.json.parse(data)
-    if (!Array.isArray(data)) {
-      data = [ data ] // TODO: do we actually want this?
-    }
+    data = jsonPathQuery(data, select || "$")
   } else {
-    data = [ data ]
+    data = [data]
   }
 
   return data.map(record => format.validate(record) || true)
@@ -64,7 +79,7 @@ async function prepareGetData(req) {
 router.get("/validate", async (req, res, next) => {
   prepareGetData(req)
     .then(() => formatFromQuery(req))
-    .then(format => validate(req.query.data, format))
+    .then(format => validate(req.query.data, format, req.query.select))
     .then(result => res.send(result))
     .catch(error => next(error))
 })
@@ -74,7 +89,7 @@ router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   formatFromQuery(req)
     .then(format => {
       if (req.rawBody) {
-        return validate(req.rawBody, format)
+        return validate(req.rawBody, format, req.query.select)
       } else {
         throw new MalformedRequest("Missing HTTP POST request body")
       }

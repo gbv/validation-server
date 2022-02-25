@@ -36,7 +36,7 @@ describe("knownFormats", () => {
     expect(json.title).to.equal("JSON")
 
     expect(json.parse("[null,42]")).to.deep.equal([null,42])
-    expect(json.parse("{\"x\":1}")).to.deep.equal([{x:1}])
+    expect(json.parse("{\"x\":1}")).to.deep.equal({x:1})
     expect(() => json.parse("{")).to.throw("Unexpected end of JSON input")
   })
 
