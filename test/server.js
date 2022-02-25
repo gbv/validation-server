@@ -205,16 +205,14 @@ describe("Server", () => {
       format: "json", data: "{",
       result: [[{
         message: "Unexpected end of JSON input",
-        position: "char=1",
-        positionFormat: "rfc5147",
+        position: { rfc5147: "char=1" },
       }]],
     },
     {
       format: "json", data: "{ 1",
       result: [[{
         message: "Unexpected number in JSON at position 2",
-        position: "char=2",
-        positionFormat: "rfc5147",
+        position: { rfc5147: "char=2" },
       }]],
     },
     { format: "json-schema", data: "[]", select: "$.*", result: [] },
@@ -227,15 +225,13 @@ describe("Server", () => {
       format: "json-schema", data: "{\"properties\":0}",
       result: [[{
         message: "must be object",
-        position: "/properties",
-        positionFormat: "jsonpointer",
+        position: { jsonpointer: "/properties" },
       }]],
     },
     { format: "array", data: "[]", result: [true] },
     { format: "array", data: "{}", result: [[{
       message: "must be array",
-      position: "",
-      positionFormat: "jsonpointer",
+      position: { jsonpointer: "" },
     }]],
     },
   ]

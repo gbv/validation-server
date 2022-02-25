@@ -260,8 +260,9 @@ curl -g 'http://format.gbv.de/validate/validate?format=json&data=[x]'
   [
     {
       "message": "Unexpected token x in JSON at position 1",
-      "position": "char=1",
-      "positionFormat": "rfc5147"
+      "position": {
+        "rfc5147": "char=1"
+      }
     }
   ]
 ]
@@ -303,8 +304,9 @@ curl -X POST 'http://format.gbv.de/validate/json-schema' -d @schema.json
 [
   {
     "message": "must be object",
-    "position": "/properties",
-    "positionFormat": "jsonpointer"
+    "position": {
+      "jsonpointer": "/properties"
+    }
   }
 ]
 ```
@@ -341,8 +343,9 @@ curl -X POST 'http://format.gbv.de/validate/vzg-article?select=$.*' -d @articles
   [
     {
       "message": "must have required property 'primary_id'",
-      "position": "",
-      "positionFormat": "jsonpointer"
+      "position": {
+        "jsonpointer": ""
+      }
     }
   ],
   true
@@ -395,8 +398,7 @@ Validation results (see [GET /validate](#get-validate) and [POST /:format](#post
 
 * `message` mandatory error message
 * `error` optional type of error
-* `position` optional locator of the error
-* `positionFormat` optional locator format (e.g. `rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
+* `position` optional object mapping locator formats to locators (e.g.`rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
 
 Errors may contain additional keys but these may change with future versions of the service.
 
@@ -405,8 +407,9 @@ For instance the following validation error indicates that value of JSON key `au
 ```json
 {
   "message": "must be array",
-  "position": "/authors",
-  "positionFormat": "jsonpointer"
+  "position": {
+    "jsonpointer": "/authors"
+  }
 }
 ```
 
