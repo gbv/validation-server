@@ -139,6 +139,10 @@ On startup all configured schemas are downloaded to `cachePath` and compiled. Ad
 To provide the service behind a nginx web server at path `/validate/` (like at <http://format.gbv.de/validate/>), add this to nginx configuration file:
 
 ```
+location /validate {
+    port_in_redirect off;
+    return /validate/;
+}
 location /validate/ {
     proxy_pass http://127.0.0.1:3700/;
 }
