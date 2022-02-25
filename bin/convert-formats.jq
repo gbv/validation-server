@@ -32,7 +32,7 @@ map(
   |del(..|nulls)
   | select(.versions)
   |{
-    key: .id,
+    key: (if (.id|startswith("schema/")) then .id[7:] else .id end),
     value: .
   }
 
