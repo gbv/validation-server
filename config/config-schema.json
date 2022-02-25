@@ -44,7 +44,8 @@
     "verbosity": {
       "type": "string",
       "enum": [
-        "log",
+        "debug",
+        "info",
         "warn",
         "error",
         "silent"

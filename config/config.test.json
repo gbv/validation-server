@@ -1,5 +1,5 @@
 {
-  "verbosity": "log",
+  "verbosity": "info",
   "formats": {
     "ignored-because-no-validator": {},
     "array": {

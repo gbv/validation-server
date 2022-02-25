@@ -106,7 +106,7 @@ The service must be customized via configuration files. By default, this configu
   "port": 3700,
   "proxies": [],
   "postLimit": "20MB",
-  "verbosity": "log",
+  "verbosity": "info",
   "formats": [],
   "cachePath": "./formats"
 }

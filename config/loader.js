@@ -1,6 +1,7 @@
 import fs from "fs"
 import os from "os"
 import path from "path"
+import logger from "../lib/logger.js"
 
 import knownFormats from "../lib/formats.js"
 import Cache from "../lib/cache.js"
@@ -23,6 +24,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   const { version, description } = require("../package.json")
   let config = { ...configDefault, version, description }
 
+
   // Load local config
   try {
     let configLocal = require(configFile)
@@ -32,32 +34,17 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     if (CONFIG_FILE) {
       throw new Error(msg)
     } else {
-      console.warn(`Warning: ${msg} Running with default settings.`)
+      logger({level: config.verbosity}).warn(`Warning: ${msg} Running with default settings.`)
     }
   }
 
-  // Set up logging function
-  config.log = (...args) => {
-    if (env != "test" && config.verbosity === "log") {
-      console.log(new Date(), ...args)
-    }
-  }
-  config.warn = (...args) => {
-    if (env != "test" && (config.verbosity === "log" || config.verbosity === "warn")) {
-      console.warn(new Date(), ...args)
-    }
-  }
-  config.error = (...args) => {
-    if (env != "test" && config.verbosity !== "silent") {
-      console.error(new Date(), ...args)
-    }
-  }
+  const log = logger({level: env === "test" ? "silent" : config.verbosity})
 
   // Optionally load formats from file
   if (typeof config.formats === "string") {
     const formatsFile = config.formats
     config.formats = require(path.resolve(__dirname,formatsFile))
-    config.log(`Formats loaded from ${formatsFile}`)
+    log.info(`Formats loaded from ${formatsFile}`)
   }
 
   // knownFormats override configured formats
@@ -80,7 +67,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     await cache.put(uri, fs.readFileSync(path.resolve(__dirname, file)))
   }
 
-  cache.keys().then(keys => config.log(`cachePath ${cachePath} contains ${keys.length} entries`))
+  cache.keys().then(keys => log.info(`cachePath ${cachePath} contains ${keys.length} entries`))
 
   // validate configuration
   const url = "https://format.gbv.de/validate/config-schema.json"
@@ -90,9 +77,9 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   const errors = validate(rawConfig)
   if (errors) {
     const msg =`Invalid configuration from ${configFile}`
-    config.error(msg)
-    errors.forEach(e => config.warn(e))
-    // console.log(rawConfig)
+    log.error(msg)
+    errors.forEach(e => log.warn(e))
+    log.debug(rawConfig)
     throw new Error(msg)
   }
 
@@ -100,6 +87,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   config.configFile = path.resolve(__dirname, configFile)
   config.env = env
   config.cache = cache
+  config.log = log
 
   return config
 }
