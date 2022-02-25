@@ -36,6 +36,7 @@ describe("Server", () => {
       response(res) {
         res.body.should.be.a("array")
         res.body.map(format => format.id).sort().should.deep.equal([
+          "array",
           "digits",
           "isbn",
           "json",
@@ -208,8 +209,8 @@ describe("Server", () => {
       }]],
     },
     { format: "json-schema", data: "[]", select: "$.*", result: [] },
-    { format: "json-schema", data: "[]", result: r => {
-      r.should.be.an("array")
+    { format: "json-schema", data: "[]", result(r) {
+      r[0].should.be.an("array")
     }},
     { format: "json-schema", data: "{}", result: [true] },
     { format: "json-schema", data: "[{}]", select: "$.*", result: [true] },
@@ -220,6 +221,13 @@ describe("Server", () => {
         position: "/properties",
         positionFormat: "jsonpointer",
       }]],
+    },
+    { format: "array", data: "[]", result: [true] },
+    { format: "array", data: "{}", result: [[{
+      message: "must be array",
+      position: "",
+      positionFormat: "jsonpointer",
+    }]],
     },
   ]
 

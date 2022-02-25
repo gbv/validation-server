@@ -1,7 +1,19 @@
 {
   "verbosity": "log",
   "formats": {
-    "example": {},
+    "ignored-because-no-validator": {},
+    "array": {
+      "versions": {
+        "default": {
+          "schemas": [
+            {
+              "type": "json-schema",
+              "value": "{\"type\":\"array\"}"
+            }
+          ]
+        }
+      }
+    },
     "digits": {
       "versions": {
         "default": {

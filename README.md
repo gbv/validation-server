@@ -292,7 +292,7 @@ This file `schema.json` contains valid JSON but not a valid JSON Schema:
 ```
 
 ```sh
-curl -X POST 'http://format.gbv.de/validate/vzg-article' -d @schema.json
+curl -X POST 'http://format.gbv.de/validate/json-schema' -d @schema.json
 ```
 
 ```json
