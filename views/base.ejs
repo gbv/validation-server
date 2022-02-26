@@ -83,11 +83,11 @@
           <td>
             <% if (format.versions) { %>
             <ul class="inline">
-              <% for (var version in format.versions) {
-                let schemas = format.versions[version].schemas || []
+              <% for (var v in format.versions) {
+                let schemas = format.versions[v].schemas || []
                   for (var schema of schemas) { %>
                     <li>
-                      <a href="schema?format=<%= format.id %>&version=<%= version %>&type=<%= schema.type %>"><%= version %></a>
+                      <a href="schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><%= v %></a>
                     </li>
                 <% }
                } %>
