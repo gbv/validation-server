@@ -447,7 +447,6 @@ A stack trace is included in development mode.
 ## Maintainers
 
 - [@nichtich](https://github.com/nichtich)
-- [@stefandesu](https://github.com/stefandesu)
 
 ## Contributing
 
