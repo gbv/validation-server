@@ -22,7 +22,7 @@ Provides methods to validate records against different kinds of schemas to ensur
   - [Deployment](#deployment)
   - [Updates](#updates)
   - [Use as Module](#use-as-module)
-  - [Command line interface](#command-line-interface)
+  - [Command Line Interface](#command-line-interface)
   - [Run Tests](#run-tests)
 - [API](#api)
   - [GET /validate](#get-validate)
@@ -214,15 +214,14 @@ Schemas of format objects can have an additional `validate` method to validate d
 
 Service object with predefined data formats.
 
-### Command line interface
+### Command Line Interface
 
 The module includes an experimental command line interface:
 
 ```bash
 npm run validate -- --help  # run from repository
-validate --help
-``
-
+validate --help             # if installed via npm
+```
 
 ### Run Tests
 
