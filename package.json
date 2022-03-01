@@ -8,6 +8,9 @@
   },
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "validate": "./bin/validate.js"
+  },
   "scripts": {
     "start": "nodemon --ignore formats server.js",
     "update": "node bin/update.js",

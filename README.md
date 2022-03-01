@@ -22,6 +22,7 @@ Provides methods to validate records against different kinds of schemas to ensur
   - [Deployment](#deployment)
   - [Updates](#updates)
   - [Use as Module](#use-as-module)
+  - [Command line interface](#command-line-interface)
   - [Run Tests](#run-tests)
 - [API](#api)
   - [GET /validate](#get-validate)
@@ -173,6 +174,8 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 
 ### Use as Module
 
+*The internal API is not stable yet!*
+
 ```js
 const { loadConfig, createService, knownFormats } = require("validation-server")
 
@@ -210,6 +213,16 @@ Schemas of format objects can have an additional `validate` method to validate d
 #### knownFormats
 
 Service object with predefined data formats.
+
+### Command line interface
+
+The module includes an experimental command line interface:
+
+```bash
+npm run validate -- --help  # run from repository
+validate --help
+``
+
 
 ### Run Tests
 

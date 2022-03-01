@@ -3,14 +3,14 @@ import portfinder from "portfinder"
 
 import { loadConfig, createService } from "./index.js"
 const config = await loadConfig()
-const { log } = config
+const { logger } = config
 
 import validateRoute from "./routes/validate.js"
 import formatsRoute from "./routes/formats.js"
 import languagesRoute from "./routes/languages.js"
 import schemaRoute from "./routes/schema.js"
 
-log.info(`Running in ${config.env} mode.`)
+logger.info(`Running in ${config.env} mode.`)
 
 // Initialize express with settings
 const app = express()
@@ -91,7 +91,7 @@ const start = async () => {
 
   // Let's go!
   app.listen(port, () => {
-    log.info(`Now listening on port ${port}`)
+    logger.info(`Now listening on port ${port}`)
   })
 }
 

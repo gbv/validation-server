@@ -1,7 +1,7 @@
 import fs from "fs"
 import os from "os"
 import path from "path"
-import logger from "../lib/logger.js"
+import createLogger from "../lib/logger.js"
 
 import knownFormats from "../lib/formats.js"
 import Cache from "../lib/cache.js"
@@ -12,11 +12,10 @@ const require = createRequire(import.meta.url)
 
 const __dirname = new URL(".", import.meta.url).pathname
 
-export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env) {
-
+export default async function loadConfig({ NODE_ENV, CONFIG_FILE, ...options } = process.env) {
   const env = NODE_ENV || "development"
   const configFile = CONFIG_FILE
-  || (env === "test" || env === "debug" ? `./config.${env}.json` : "./config.json")
+    ?? (env === "test" || env === "debug" ? `./config.${env}.json` : "./config.json")
 
   // Load default config
   const configDefault = require("./config.default.json")
@@ -34,17 +33,18 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     if (CONFIG_FILE) {
       throw new Error(msg)
     } else {
-      logger({level: config.verbosity}).warn(`Warning: ${msg} Running with default settings.`)
+      const logger = options.logger ?? createLogger({level:config.verbosity})
+      logger.warn(`Warning: ${msg} Running with default settings.`)
     }
   }
 
-  const log = logger({level: env === "test" ? "silent" : config.verbosity})
+  const logger = options.logger || createLogger({level: env === "test" ? "silent" : config.verbosity})
 
   // Optionally load formats from file
   if (typeof config.formats === "string") {
     const formatsFile = config.formats
     config.formats = require(path.resolve(__dirname,formatsFile))
-    log.info(`Formats loaded from ${formatsFile}`)
+    logger.info(`Formats loaded from ${formatsFile}`)
   }
 
   // knownFormats override configured formats
@@ -67,19 +67,19 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
     await cache.put(uri, fs.readFileSync(path.resolve(__dirname, file)))
   }
 
-  cache.keys().then(keys => log.info(`cachePath ${cachePath} contains ${keys.length} entries`))
+  cache.keys().then(keys => logger.info(`cachePath ${cachePath} contains ${keys.length} entries`))
 
   // validate configuration
   const url = "https://format.gbv.de/validate/config-schema.json"
-  const validate = await knownFormats["json-schema"].createValidator({url, cache})
-  const rawConfig = JSON.parse(JSON.stringify(config))
+  const validate = await knownFormats["json-schema"].createValidator({url, cache, logger})
+  const rawConfig = JSON.parse(JSON.stringify(config)) // omit functions
 
+  logger.debug(JSON.stringify(rawConfig, null, "  "))
   const errors = validate(rawConfig)
   if (errors) {
     const msg =`Invalid configuration from ${configFile}`
-    log.error(msg)
-    errors.forEach(e => log.warn(e))
-    log.debug(rawConfig)
+    logger.error(msg)
+    errors.forEach(e => logger.warn(e))
     throw new Error(msg)
   }
 
@@ -87,7 +87,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE } = process.env
   config.configFile = path.resolve(__dirname, configFile)
   config.env = env
   config.cache = cache
-  config.log = log
+  config.logger = logger
 
   return config
 }
