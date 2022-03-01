@@ -1,0 +1,31 @@
+a:link, a:visited {
+  text-decoration: none;
+  color: rgb(96, 143, 219);
+}
+a:hover, a:active {
+  text-decoration: underline;
+}
+dt {
+  font-weight: bold;
+}
+code {
+  color: #d63384;
+  word-wrap: break-word;
+}
+a > code {
+  color: rgb(96, 143, 219);
+}
+footer {
+  border-top: 1px solid #666;
+}
+dd {
+  margin-left: 1em;
+  margin-bottom: 0.5em;
+}
+ul {
+  margin-left: 0em;
+  padding-left: 1em;
+}
+li {
+  margin-bottom: 0.5em;
+}

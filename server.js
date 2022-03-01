@@ -5,6 +5,7 @@ import { loadConfig, createService } from "./index.js"
 const config = await loadConfig()
 const { logger } = config
 
+import htmlRoute from "./routes/html.js"
 import validateRoute from "./routes/validate.js"
 import formatsRoute from "./routes/formats.js"
 import languagesRoute from "./routes/languages.js"
@@ -45,18 +46,10 @@ app.use((req, res, next) => {
   }
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
   res.setHeader("Access-Control-Allow-Methods", "GET,POST")
-  res.setHeader("Content-Type", "application/json; charset=utf-8")
   next()
 })
 
-// Root path for static page
-app.get("/", (req, res) => {
-  res.setHeader("Content-Type", "text/html")
-  const { title, description, version } = config
-  const formats = app.get("validationService").listFormats()
-  res.render("base", { title, description, version, formats })
-})
-
+app.use("/", htmlRoute)
 app.use("/", validateRoute)
 app.get("/formats", formatsRoute)
 app.get("/languages", languagesRoute)

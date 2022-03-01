@@ -27,6 +27,14 @@ describe("Server", () => {
         res.text.should.match(/<body/)
       },
     },
+    {
+      what: "show HTML on format page",
+      path: "/json",
+      code: 200,
+      response(res) {
+        res.text.should.match(/<body/)
+      },
+    },
 
     // GET /formats
     {
