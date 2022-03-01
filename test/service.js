@@ -33,20 +33,20 @@ describe("ValidationService", () => {
 
   it("should getFormat specific version", () => {
     const version = "draft-06"
-    const result = service.getFormat({ format: "json-schema", version })
+    const result = service.getFormat("json-schema", { version })
     expect(Object.keys(result.versions)).to.deep.equal(["draft-06"])
   })
 
   it("should getFormat default version", () => {
-    var result = service.getFormat({ format: "json-schema" })
+    var result = service.getFormat("json-schema")
     expect(Object.keys(result.versions)).to.deep.equal(["draft-07"])
 
-    result = service.getFormat({ format: "json-schema", version: "default" })
+    result = service.getFormat("json-schema", { version: "default" })
     expect(Object.keys(result.versions)).to.deep.equal(["draft-07"])
   })
 
   it("should include json-schema as format", () => {
-    const format = service.getFormat({ format: "json-schema" })
+    const format = service.getFormat("json-schema")
     expect(format.validate).to.be.instanceOf(Function)
 
     // .validate
@@ -57,7 +57,7 @@ describe("ValidationService", () => {
   })
 
   it("should include regexp as format", () => {
-    const format = service.getFormat({ format: "regexp" })
+    const format = service.getFormat("regexp")
 
     // .validate
     expect(format.validate("^a+")).to.be.null
@@ -69,7 +69,7 @@ describe("ValidationService", () => {
   })
 
   it("should support a format defined by regexp", () => {
-    const format = service.getFormat({ format: "digits" })
+    const format = service.getFormat("digits")
 
     expect(format.validate("123\n456\n")).to.be.null
     expect(format.validate("xy")).to.deep.equal([{
@@ -78,7 +78,7 @@ describe("ValidationService", () => {
   })
 
   it("should support a format with parser only", () => {
-    const format = service.getFormat({ format: "isbn" })
+    const format = service.getFormat("isbn")
 
     expect(format.validate("978-3-16-148410-0")).to.be.null
     expect(format.validate("978-3-16-148410-1")).to.deep.equal([{
@@ -87,7 +87,7 @@ describe("ValidationService", () => {
   })
 
   it("should validate from Buffer and String", () => {
-    const format = service.getFormat({ format: "json" })
+    const format = service.getFormat("json")
 
     expect(format.validate("{}")).to.be.null
     expect(format.validate("[")).to.be.instanceOf(Array)

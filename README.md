@@ -179,7 +179,7 @@ const { loadConfig, createService, knownFormats } = require("validation-server")
 const config = await loadConfig()
 
 createService(config).then(service => {
-  const format = service.getFormat({ format: "json-schema", version: "draft-07" })
+  const format = service.getFormat("json-schema", { version: "draft-07" })
   const errors = format.validate(data)
   if (!errors) {
     console.error(errors)
