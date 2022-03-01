@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import fs from "fs"
+import fs from "fs/promises"
 import path from "path"
+import getStdin from "get-stdin"
 
 import { loadConfig, createService } from "../index.js"
 import createLogger from "../lib/logger.js"
@@ -9,27 +10,30 @@ import createLogger from "../lib/logger.js"
 import meow from "meow"
 const cli = meow(`
 Usage
-  $ validate <format> [<files>...]
+  $ validate [<format> [<files>...]]
 
 Options
   --help, -h            Show this help
   --formats, -f FILE    Set formats file
   --config, -c FILE     Set configuration file
   --cachepath, -p DIR   Set cachePath (use - for temporary directory)
-  --verbosity, -v LEVEL Set log level (debug, info, warn, error, silent)
+  --verbosity, -v LEVEL Set log level (debug, info, warn, error=default, silent)
   --list, -l            List configured formats
 
 Examples
-  $ validate -c config.json json < input.json
   $ validate json-schema schema.json
   $ echo {} | validate json
-
+  $ validate -c config.json json < input.json
 `, {
   importMeta: import.meta,
   pkg: {
     description: "Validate data in several formats",
   },
   flags: {
+    help: {
+      type: "boolean",
+      alias: "h",
+    },
     formats: {
       type: "string",
       alias: "f",
@@ -41,6 +45,7 @@ Examples
     verbosity: {
       type: "string",
       alias: "v",
+      default: "error",
     },
     list: {
       type: "boolean",
@@ -62,13 +67,11 @@ if (flags.help) {
 }
 
 var logger
-if (flags.verbosity) {
-  if (flags.verbosity.match(/^(silent|error|warn|info|debug)$/)) {
-    logger = createLogger({ level: flags.verbosity })
-  } else {
-    console.error("Invalid verbosity level")
-    process.exit(2)
-  }
+if (flags.verbosity.match(/^(silent|error|warn|info|debug)$/)) {
+  logger = createLogger({ level: flags.verbosity })
+} else {
+  console.error("Invalid verbosity level")
+  process.exit(2)
 }
 
 const CONFIG_FILE = flags.config ? path.resolve(flags.config, "./") : null
@@ -97,8 +100,10 @@ if (!format) {
   throw new Error(`Format ${formatName} not supported`)
 }
 for (let file of input) {
-  const data = fs.readFileSync(file)
-  format.valid(data)
+  const getData = file === "-" ? getStdin() : fs.readFile(file)
+
+  getData
+    .then(data => format.valid(data))
     .then(() => {
       console.log("ok")
     })
