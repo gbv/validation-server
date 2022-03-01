@@ -86,4 +86,11 @@ describe("ValidationService", () => {
     }])
   })
 
+  it("should validate from Buffer and String", () => {
+    const format = service.getFormat({ format: "json" })
+
+    expect(format.validate("{}")).to.be.null
+    expect(format.validate("[")).to.be.instanceOf(Array)
+    expect(format.validate(new Buffer("{}"))).to.be.null
+  })
 })

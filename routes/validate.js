@@ -7,22 +7,7 @@ import fetch from "node-fetch"
 
 import knownFormats from "../lib/formats.js"
 import formatFromQuery from "../lib/format-from-query.js"
-
-function jsonPathQuery(data, path="$") {
-  if (path === "$") {
-    return [data]
-  } else if (path === "$.*") {
-    if (Array.isArray(data)) {
-      return data
-    } else if (data instanceof Object) {
-      return Object.values(data)
-    } else {
-      return []
-    }
-  } else {
-    throw new Error("Invalid or unsupported select path. Try '$.*' or '$'!")
-  }
-}
+import { jsonPathQuery } from "../lib/source.js"
 
 function validate(data, format, select) {
   // TODO: move logic into format.validateAll method?
