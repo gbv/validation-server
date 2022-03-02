@@ -46,7 +46,7 @@
           let schemas = format.versions[v].schemas || []
             for (var schema of schemas) { %>
               <li>
-                <a href="schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><code><%= v %></code></a>
+                <a href="<%=root%>schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><code><%= v %></code></a>
                 a <%- include("link", { id: schema.type }) %>
                 <% if (schema.url) { %>
                   from <a href="<%= schema.url %>"><%= schema.url %></a>
@@ -59,7 +59,7 @@
   <% } %>
   <% if (format.mimetype) { %>
     <dt>mimetype</dt>
-    <dd><a href="<%= format.mimetype %>"><%= format.mimetype %></a></dd>
+    <dd><%= format.mimetype %></dd>
   <% } %>
 </dl>
 <% if (format.createValidator) { %>

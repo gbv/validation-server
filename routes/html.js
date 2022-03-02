@@ -6,7 +6,7 @@ router.get("/", (req, res) => {
   const service = req.app.get("validationService")
   const baseUrl = req.app.get("baseUrl")
   const formats = service.listFormats()
-  res.render("base", { ...service, formats, baseUrl })
+  res.render("base", { ...service, formats, baseUrl, root: "" })
 })
 
 // static files
@@ -20,7 +20,8 @@ router.get("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   const formats = service.listFormats()
 
   if (format) {
-    res.render("format", { ...service, format, formats, baseUrl })
+    const root = format.id.replaceAll(/[^/]*/g,"../")
+    res.render("format", { ...service, format, formats, baseUrl, root })
   } else {
     next()
   }

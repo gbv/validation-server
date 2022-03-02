@@ -1,5 +1,5 @@
 <% if (formats.find(f => f.id === id)) { %>
-  <a href="./<%= id %>"><code><%= id %></code></a>
+  <a href="./<%= root + id %>"><code><%= id %></code></a>
 <% } else { %>
   <code><%= id %></code>
 <% } %>
