@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1
+
+- Improve HTML layout and add format pages
+- Extend format description
+- Support validating XML
+
 ## 0.4.0
 
 - API: Renamed /types endpoint to /languages
