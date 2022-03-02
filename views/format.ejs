@@ -1,15 +1,21 @@
 <%- include("head", { title: format.title }) %>
+<% short = format.short ?? format.title %>
 <h1><a href="./"><%= title %></a></h1>
 <h2><%= format.title %></h2>
+<% if (format.description || format.wikidata) { %>
+  <p>
+    <% if (format.description) { %>
+      <%= format.description %>.
+    <% } %>
+    <% if (format.wikidata) { %>
+      Read more about <a href="https://tools.wmflabs.org/hub/<%= format.wikidata %>"><%= short %> in Wikipedia</a>.
+  <% } %>
+  </p>
+<% } %>
+<% if (format.url) { %>
+  <p><a href="<%= format.url %>"><%= format.url %></a></p>
+<% } %>
 <dl>
-  <% if (format.url) { %>
-    <dt>homepage</dt>
-    <dd><a href="<%= format.url %>"><%= format.url %></a></dd>
-  <% } %>
-  <% if (format.mimetype) { %>
-    <dt>mimetype</dt>
-    <dd><a href="<%= format.mimetype %>"><%= format.mimetype %></a></dd>
-  <% } %>
   <% if (format.base) {
        bases = Array.isArray(format.base) ? format.base : [ format.base ] %>
     <dt>base format</dt>
@@ -51,14 +57,24 @@
       </ul>
     </dd>
   <% } %>
+  <% if (format.mimetype) { %>
+    <dt>mimetype</dt>
+    <dd><a href="<%= format.mimetype %>"><%= format.mimetype %></a></dd>
+  <% } %>
 </dl>
+
+<h3>Validation</h3>
 <p>
-  Check whether data conforms to this format:
+  Check whether data conforms to <%= short %> format:
 </p>
 <ul>
-  <li><code>POST /<%= format.id %></code>
-  <li><code>GET /validate?format=<%= format.id %></code>
-  with additional parameter <code>data</code> or <code>url</code>
+  <li>
+    <code>POST /<%= format.id %></code>
+  </li>
+  <li>
+    <code>GET /validate?format=<%= format.id %></code>
+    with additional parameter <code>data</code> or <code>url</code>
+  </li>
 </ul>
 
 <% if (format.createValidator) { %>

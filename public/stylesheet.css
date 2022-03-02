@@ -25,7 +25,11 @@ dd {
 ul {
   margin-left: 0em;
   padding-left: 1em;
+  list-style-type: '– ';
 }
 li {
+  margin-bottom: 0.5em;
+}
+h2 {
   margin-bottom: 0.5em;
 }

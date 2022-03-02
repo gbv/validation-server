@@ -48,6 +48,8 @@ Data formats are described as JSON Object with keys:
 - `title` optional title
 - `short` optional short title
 - `url` optional URL with information about the format
+- `description` optional short textual description
+- `wikidata` optional Wikidata identifier of the format
 - `mimetype` optional content type
 - `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
 - `versions` an optional object with format versions, each with
