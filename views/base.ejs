@@ -5,13 +5,13 @@
   <%= description %>
 </p>
 
-<h2>Formats</h2>
-<p>The following data formats can be validated:</p>
+<h2>Supported Data Formats</h2>
 <ul>
   <% for (let format of formats) { %>
     <li>
       <a href="./<%= format.id %>"><%= format.title || format.id %></a>
       (<a href="formats?format=<%= format.id %>"><code><%= format.id %></code></a>)
+      <%= format.description %>
     </li>
   <% } %>
 </ul>
