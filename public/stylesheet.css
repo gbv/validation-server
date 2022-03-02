@@ -33,3 +33,11 @@ li {
 h2 {
   margin-bottom: 0.5em;
 }
+pre {
+  background-color: #f7f7f9;
+  padding: 1em;
+  margin: 0.3em 0;
+}
+pre > code {
+  color: #000;
+}

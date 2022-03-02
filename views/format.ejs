@@ -47,7 +47,7 @@
             for (var schema of schemas) { %>
               <li>
                 <a href="schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><code><%= v %></code></a>
-                a <%= schema.type %>
+                a <%- include("link", { id: schema.type }) %>
                 <% if (schema.url) { %>
                   from <a href="<%= schema.url %>"><%= schema.url %></a>
                 <% } %>
@@ -62,6 +62,11 @@
     <dd><a href="<%= format.mimetype %>"><%= format.mimetype %></a></dd>
   <% } %>
 </dl>
+<% if (format.createValidator) { %>
+<p>
+  <%= title %> supports <%= short %> for definition of other formats.
+</p>
+<% } %>
 
 <h3>Validation</h3>
 <p>
@@ -70,17 +75,14 @@
 <ul>
   <li>
     <code>POST /<%= format.id %></code>
+    ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
+<pre><code language="bash">curl -X POST <%= baseUrl + format.id %> -d @filename</code></pre>
   </li>
   <li>
     <code>GET /validate?format=<%= format.id %></code>
     with additional parameter <code>data</code> or <code>url</code>
+    ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
   </li>
 </ul>
-
-<% if (format.createValidator) { %>
-<p>
-  This format is a <b>schema language</b>: It can be used to specify data formats with schemas.
-</p>
-<% } %>
 
 <%- include("foot") %>
