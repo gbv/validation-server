@@ -50,6 +50,7 @@ describe("Server", () => {
           "json",
           "json-schema",
           "regexp",
+          "xml",
         ])
       },
     },

@@ -20,6 +20,7 @@ describe("ValidationService", () => {
       "json",
       "json-schema",
       "regexp",
+      "xml",
     ])
   })
 
@@ -83,6 +84,18 @@ describe("ValidationService", () => {
     expect(format.validate("978-3-16-148410-0")).to.be.null
     expect(format.validate("978-3-16-148410-1")).to.deep.equal([{
       message: "Invalid ISBN",
+    }])
+  })
+
+  it("should support parsing XML", () => {
+    const format = service.getFormat("xml")
+
+    expect(format.validate("<x:y/>")).to.be.null
+    expect(format.validate("<x>\n<y>\n</x>")).to.deep.equal([{
+      message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
+      position: {
+        rowcol: "3,1",
+      },
     }])
   })
 
