@@ -29,7 +29,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE, ...options } =
     let configLocal = require(configFile)
     config = { ...config, ...configLocal }
   } catch(error) {
-    const msg = `Could not load configuration file from ${configFile}.`
+    const msg = `Failed to load configuration from ${configFile}.`
     if (CONFIG_FILE) {
       throw new Error(msg)
     } else {

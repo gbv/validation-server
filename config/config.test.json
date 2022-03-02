@@ -2,6 +2,18 @@
   "verbosity": "info",
   "formats": {
     "ignored-because-no-validator": {},
+    "ignored-because-all-validator-failed": {
+      "versions": {
+        "default": {
+          "schemas": [
+            {
+              "type": "regexp",
+              "value": "["
+            }
+          ]
+        }
+      }
+    },
     "array": {
       "versions": {
         "default": {
@@ -21,6 +33,10 @@
             {
               "type": "regexp",
               "value": "^([0-9]+\n)*$"
+            },
+            {
+              "type": "unknown-type",
+              "value": "ignored-anyway"
             }
           ]
         }

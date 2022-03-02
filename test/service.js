@@ -87,6 +87,15 @@ describe("ValidationService", () => {
     }])
   })
 
+  it("should support parsing JSON", () => {
+    const format = service.getFormat("json")
+    expect(format.validate("[]")).to.be.null
+    expect(format.validate("{")).to.deep.equal([{
+      message: "Unexpected end of JSON input",
+      position: { rfc5147: "char=1" },
+    }])
+  })
+
   it("should support parsing XML", () => {
     const format = service.getFormat("xml")
 

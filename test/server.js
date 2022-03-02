@@ -108,7 +108,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"return 404 if schema not found at /schema",
+      what:"return 404 if schema version not found at /schema",
       path: "/schema?format=json-schema&version=notexist",
       error: {
         error: "NotFound",
@@ -123,6 +123,24 @@ describe("Server", () => {
         error: "NotFound",
         message: "Format regexp has no schemas",
         status: 404,
+      },
+    },
+    {
+      what:"detect invalid format parameter at /schema",
+      path: "/schema?format=$",
+      error: {
+        error: "MalformedRequest",
+        message: "Invalid query parameter: format",
+        status: 400,
+      },
+    },
+    {
+      what:"detect invalid version parameter at /schema",
+      path: "/schema?format=json&version=$",
+      error: {
+        error: "MalformedRequest",
+        message: "Invalid query parameter: version",
+        status: 400,
       },
     },
 
@@ -145,11 +163,20 @@ describe("Server", () => {
     },
     {
       what:"return 404 if format not found at /validate",
-      path: "/schema?format=notexist",
+      path: "/validate?format=notexist&data=x",
       error: {
         error: "NotFound",
         message: "Format not found",
         status: 404,
+      },
+    },
+    {
+      what:"return 400 for unsupported or invalid select",
+      path: "/validate?format=json-schema&data=[]&select=_",
+      error: {
+        error: "MalformedRequest",
+        message: "Malformed query parameter: select",
+        status: 400,
       },
     },
 
@@ -230,6 +257,8 @@ describe("Server", () => {
     }},
     { format: "json-schema", data: "{}", result: [true] },
     { format: "json-schema", data: "[{}]", select: "$.*", result: [true] },
+    { format: "json-schema", data: "1", select: "$.*", result: [] },
+    { format: "json-schema", data: "{\"x\":{}}", select: "$.*", result: [true] },
     {
       format: "json-schema", data: "{\"properties\":0}",
       result: [[{

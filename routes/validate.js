@@ -22,7 +22,11 @@ function validate(data, format, select) {
 
   if (base.find(b => b === "json")) {
     data = knownFormats.json.parse(data)
-    data = jsonPathQuery(data, select || "$")
+    try {
+      data = jsonPathQuery(data, select || "$")
+    } catch(e) {
+      throw new MalformedRequest("Malformed query parameter: select")
+    }
   } else {
     data = [data]
   }
