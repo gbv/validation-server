@@ -2,14 +2,15 @@ import express from "express"
 import portfinder from "portfinder"
 
 import { loadConfig, createService } from "./index.js"
-const config = await loadConfig()
-const { logger } = config
 
 import htmlRoute from "./routes/html.js"
 import validateRoute from "./routes/validate.js"
 import formatsRoute from "./routes/formats.js"
 import languagesRoute from "./routes/languages.js"
 import schemaRoute from "./routes/schema.js"
+
+const config = await loadConfig()
+const { logger } = config
 
 logger.info(`Running in ${config.env} mode.`)
 
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
   next()
 })
 
+// Enable routes
 app.use("/", htmlRoute)
 app.use("/", validateRoute)
 app.get("/formats", formatsRoute)
