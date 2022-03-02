@@ -57,8 +57,8 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE, ...options } =
   const cachePath = path.resolve(__dirname, config.cachePath || "formats")
   const cache = new Cache(cachePath)
   const schemaFiles = {
-    "https://format.gbv.de/validate/format-schema.json": "format-schema.json",
-    "https://format.gbv.de/validate/config-schema.json": "config-schema.json",
+    "https://format.gbv.de/validate/format-schema.json": "../public/format-schema.json",
+    "https://format.gbv.de/validate/config-schema.json": "../public/config-schema.json",
     "https://json-schema.org/draft-07/schema": "json-schema-draft-07.json",
     "https://json-schema.org/draft-06/schema": "json-schema-draft-06.json",
     "https://json-schema.org/draft-04/schema": "json-schema-draft-04.json",

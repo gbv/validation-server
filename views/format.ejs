@@ -1,6 +1,7 @@
 <%- include("head", { title: format.title }) %>
 <% short = format.short ?? format.title %>
-<h1><a href="./"><%= title %></a></h1>
+<h1><a href="./<%=root%>"><%= title %></a></h1>
+
 <h2><%= format.title %></h2>
 <% if (format.description || format.wikidata) { %>
   <p>
@@ -84,5 +85,10 @@
     ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
   </li>
 </ul>
+<h3>About</h3>
+<p>
+  <a href="<%=root%>formats?format=<%=format.id%>">Data about <%= short %></a>
+  as configured in <%= title %>.
+</p>
 
 <%- include("foot") %>

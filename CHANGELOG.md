@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.2
+
+- Fix HTML Links in format pages with / in format identifier
+- Add "Data About Data Formats" as format with Schema
+
 ## 0.4.1
 
 - Improve HTML layout and add format pages

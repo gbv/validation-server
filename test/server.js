@@ -35,6 +35,16 @@ describe("Server", () => {
         res.text.should.match(/<body/)
       },
     },
+    {
+      what: "config-schema.json",
+      path: "/config-schema.json",
+      code: 200,
+    },
+    {
+      what: "format-schema.json",
+      path: "/format-schema.json",
+      code: 200,
+    },
 
     // GET /formats
     {
@@ -44,6 +54,7 @@ describe("Server", () => {
       response(res) {
         res.body.should.be.a("array")
         res.body.map(format => format.id).sort().should.deep.equal([
+          "about/data",
           "array",
           "digits",
           "isbn",
@@ -223,7 +234,7 @@ describe("Server", () => {
           res.should.have.status(error ? error.status : code)
           if (error) {
             res.body.should.deep.equal(error)
-          } else {
+          } else if (response) {
             response(res)
           }
           done()

@@ -32,7 +32,7 @@ map(
   |del(..|nulls)
   | select(.versions)
   |{
-    key: (if (.id|startswith("schema/")) then .id[7:] elif .id=="about/data" then "dfdf" else .id end),
+    key: (if (.id|startswith("schema/")) then .id[7:] else .id end),
     value: .
   }
 

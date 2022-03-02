@@ -14,6 +14,7 @@ describe("ValidationService", () => {
   it("should listFormats", () => {
     const formats = service.listFormats()
     expect(formats.map(f => f.id)).deep.equal([
+      "about/data",
       "array",
       "digits",
       "isbn",
