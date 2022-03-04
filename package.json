@@ -67,7 +67,8 @@
     "json-schema-migrate": "^2.0.0",
     "meow": "^10.1.2",
     "node-fetch": "^3.2.0",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "tmp": "^0.2.1"
   },
   "engines": {
     "node": ">=14.8.0"

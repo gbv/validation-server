@@ -1,5 +1,4 @@
 import fs from "fs"
-import os from "os"
 import path from "path"
 import createLogger from "../lib/logger.js"
 
@@ -51,10 +50,8 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE, ...options } =
   config.formats = { ...config.formats, ...knownFormats }
 
   // initialize cache
-  if (env === "test") {
-    config.cachePath = path.join(os.tmpdir(), "validation-server-test")
-  }
-  const cachePath = path.resolve(__dirname, config.cachePath || "formats")
+  const cachePath = (env === "test" || env === "debug") ? null :
+    path.resolve(__dirname, config.cachePath || "formats")
   const cache = new Cache(cachePath)
   const schemaFiles = {
     "https://format.gbv.de/validate/format-schema.json": "../public/format-schema.json",

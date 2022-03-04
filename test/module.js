@@ -1,11 +1,8 @@
 /* eslint-env node, mocha */
+import { expect } from "chai"
+
 import { createService, loadConfig, knownFormats } from "../index.js"
 import defaultImport from "../index.js"
-
-import chai from "chai"
-import chaiAsPromised from "chai-as-promised"
-chai.use(chaiAsPromised)
-const { expect } = chai
 
 describe("Module", () => {
 

@@ -11,7 +11,7 @@ import { loadConfig, createService } from "../index.js"
 const config = await loadConfig()
 const formats = await createService(config)
 
-import app from "../server.js"
+import app from "../server.js" // TODO: await start
 app.set("formats", formats)
 
 describe("Server", () => {
