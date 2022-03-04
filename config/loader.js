@@ -8,36 +8,46 @@ import Cache from "../lib/cache.js"
 const __dirname = new URL(".", import.meta.url).pathname
 const readJSON = file => JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
 
-export default async function loadConfig({ NODE_ENV, CONFIG_FILE, ...options } = process.env) {
-  const env = NODE_ENV || "development"
-  const configFile = path.resolve(__dirname, CONFIG_FILE
-    ?? (env === "test" || env === "debug" ? `./config.${env}.json` : "./config.json"))
+export default async function loadConfig(configFile, logger) {
 
   // Load default config
   const configDefault = readJSON("./config.default.json")
-
   const { version, description } = readJSON("../package.json")
-  let config = { ...configDefault, version, description }
+  var configPath = __dirname // default config/ directory
+  var config = { ...configDefault, version, description }
 
-  // Load local config
-  try {
-    let configLocal = readJSON(configFile)
-    config = { ...config, ...configLocal }
-  } catch(error) {
-    const msg = `Failed to load configuration from ${configFile}.`
-    if (CONFIG_FILE) {
-      throw new Error(msg)
-    } else {
-      const logger = options.logger ?? createLogger({level:config.verbosity})
-      logger.warn(`Warning: ${msg} Running with default settings.`)
+  // Find and local local config
+  const env = process.env.NODE_ENV || "development"
+  const testing = env === "test" || env === "debug"
+
+  if (configFile === undefined) {
+    const file = path.resolve(__dirname, testing ? "./config.test.json" : "./config.json")
+    if (fs.existsSync(file)) {
+      configFile = file
     }
   }
 
-  const logger = options.logger || createLogger({level: env === "test" ? "silent" : config.verbosity})
+  if (configFile) {
+    try {
+      var configLocal = readJSON(configFile)
+      config = { ...config, ...configLocal }
+      configPath = path.dirname(configFile)
+    } catch(error) {
+      throw new Error(`Failed to load configuration from ${configFile}`)
+    }
+  }
+
+  if (!logger) {
+    logger = createLogger({level: env === "test" ? "silent" : config.verbosity})
+  }
+
+  if (configFile) {
+    logger.info(`Loaded configuration from ${configFile}`)
+  }
 
   // Optionally load formats from file
   if (typeof config.formats === "string") {
-    const formatsFile = path.resolve(path.dirname(configFile), config.formats)
+    const formatsFile = path.resolve(configPath, config.formats)
     config.formats = readJSON(formatsFile)
     logger.info(`Formats loaded from ${formatsFile}`)
   }
@@ -46,8 +56,7 @@ export default async function loadConfig({ NODE_ENV, CONFIG_FILE, ...options } =
   config.formats = { ...config.formats, ...knownFormats }
 
   // initialize cache
-  const cachePath = (env === "test" || env === "debug") ? null :
-    path.resolve(__dirname, config.cachePath || "formats")
+  const cachePath = testing ? null : path.resolve(configPath, config.cachePath || "formats")
   const cache = new Cache(cachePath)
   const schemaFiles = {
     "https://format.gbv.de/validate/format-schema.json": "../public/format-schema.json",

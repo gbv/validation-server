@@ -13,18 +13,18 @@ const assert = chai.assert
 
 describe("Configuration", () => {
   it("should throw an error on missing configuration file", async () => {
-    const CONFIG_FILE = path.resolve(__dirname, "config-missing.json")
+    const file = path.resolve(__dirname, "config-missing.json")
     return assert.isRejected(
-      loadConfig({CONFIG_FILE, ...process.env}),
-      `Failed to load configuration from ${CONFIG_FILE}`,
+      loadConfig(file),
+      `Failed to load configuration from ${file}`,
     )
   })
 
   it("should throw an error on invalid configuration", async () => {
-    const CONFIG_FILE = path.resolve(__dirname, "config-invalid.json")
+    const file = path.resolve(__dirname, "config-invalid.json")
     return assert.isRejected(
-      loadConfig({CONFIG_FILE, ...process.env}),
-      `Invalid configuration from ${CONFIG_FILE}`,
+      loadConfig(file),
+      `Invalid configuration from ${file}`,
     )
   })
 })

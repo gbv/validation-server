@@ -7,7 +7,8 @@ const { expect } = chai
 import formats from "../lib/formats.js"
 import validate from "../lib/cli.js"
 
-const CONFIG_FILE = "./config/config.test.json"
+// make sure local default config file is not load accidentally
+process.env.XDG_CONFIG_HOME = "/dev/null"
 
 describe("validate CLI", () => {
   var out
@@ -28,7 +29,7 @@ describe("validate CLI", () => {
   })
 
   it("list formats from config file with -l", async () => {
-    await cli("-l","-c",CONFIG_FILE)
+    await cli("-l","-c","./config/config.test.json")
     expect(out).to.deep.equal([
       "about/data",
       "array",

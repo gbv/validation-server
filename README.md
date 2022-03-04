@@ -99,7 +99,7 @@ npm ci
 
 ### Configuration
 
-The service must be customized via configuration files. By default, this configuration file resides in `config/config.json` (or `config/config.test.json` for tests). However, it is possible to adjust this path via the `CONFIG_FILE` environment variable. Missing keys are defaulted from `config/config.default.json`:
+The service must be customized via configuration files. By default, this configuration file resides in `config/config.json` (or `config/config.test.json` for tests). Missing keys are defaulted from `config/config.default.json`:
 
 ```json
 {
@@ -194,10 +194,10 @@ createService(config).then(service => {
 
 #### loadConfig
 
-Returns a promise to a configuration object. Loading can be controlled by environment variables `CONFIG_FILE` and `NODE_ENV` or by arguments of same name:
+Returns a promise to a configuration object. Location of an optional configuration file can be given as argument (or by setting environment variable `NODE_ENV` to `debug` or `test`):
 
 ```js
-const config = await loadConfig({ CONFIG_FILE: "config.json" })
+const config = await loadConfig("./config.json")
 ```
 
 An error is thrown on invalid configuration.
