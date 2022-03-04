@@ -20,7 +20,7 @@ router.get("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   const formats = service.listFormats()
 
   if (format) {
-    const root = format.id.replaceAll(/[^/]*/g,"../")
+    const root = format.id.replace(/[^/]*/g,"../")
     res.render("format", { ...service, format, formats, baseUrl, root })
   } else {
     next()
