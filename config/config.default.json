@@ -1,7 +1,5 @@
 {
   "title": "Validation Service",
-  "description": null,
-  "version": null,
   "port": 3700,
   "proxies": [],
   "postLimit": "20MB",

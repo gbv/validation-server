@@ -4,7 +4,10 @@ import chaiAsPromised from "chai-as-promised"
 chai.use(chaiAsPromised)
 const { expect } = chai
 
+import formats from "../lib/formats.js"
 import validate from "../lib/cli.js"
+
+const CONFIG_FILE = "./config/config.test.json"
 
 describe("validate CLI", () => {
   var out
@@ -19,8 +22,13 @@ describe("validate CLI", () => {
     expect(cli("-c","mising-file.json")).to.be.rejected
   })
 
-  it("list formats with -l", async () => {
-    await cli(["-l"])
+  it("list known formats without config file", async () => {
+    await cli("-l")
+    expect(out).to.deep.equal(Object.keys(formats).sort())
+  })
+
+  it("list formats from config file with -l", async () => {
+    await cli("-l","-c",CONFIG_FILE)
     expect(out).to.deep.equal([
       "about/data",
       "array",
