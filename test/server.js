@@ -182,11 +182,20 @@ describe("Server", () => {
       },
     },
     {
-      what:"return 400 for unsupported or invalid select",
+      what:"return 400 for invalid select",
       path: "/validate?format=json-schema&data=[]&select=_",
       error: {
         error: "MalformedRequest",
         message: "Malformed query parameter: select",
+        status: 400,
+      },
+    },
+    {
+      what:"return 400 for unsupported select",
+      path: "/validate?format=json&data=[]&select=$.*",
+      error: {
+        error: "MalformedRequest",
+        message: "Validator does not support selection",
         status: 400,
       },
     },

@@ -73,15 +73,15 @@ export default async function loadConfig(configFile, logger) {
 
   // validate configuration
   const url = "https://format.gbv.de/validate/config-schema.json"
-  const validate = await knownFormats["json-schema"].createValidator({url, cache, logger})
-  const rawConfig = JSON.parse(JSON.stringify(config)) // omit functions
+  const validateAll = await knownFormats["json-schema"].createValidator({url, cache, logger})
+  const rawConfig = JSON.stringify(config, null, "  ") // omits functions
 
-  logger.debug(JSON.stringify(rawConfig, null, "  "))
-  const errors = validate(rawConfig)
-  if (errors) {
+  logger.debug(rawConfig)
+  const result = validateAll(rawConfig)[0]
+  if (result !== true) {
     const msg =`Invalid configuration from ${configFile}`
     logger.error(msg)
-    errors.forEach(e => logger.warn(e))
+    result.forEach(e => logger.warn(e))
     throw new Error(msg)
   }
 

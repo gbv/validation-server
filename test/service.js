@@ -49,13 +49,20 @@ describe("ValidationService", () => {
 
   it("should include json-schema as format", () => {
     const format = service.getFormat("json-schema")
-    expect(format.validate).to.be.instanceOf(Function)
 
     // .validate
     expect(format.validate({})).to.be.null
 
-    // expect(format.validate("{}")).to.be.null // TODO
+    expect(format.validate("{}")).to.be.null
     expect(format.validate([])).to.be.instanceOf(Array)
+
+    expect(format.validate("[")).to.deep.equal([
+      {
+        message: "Unexpected end of JSON input",
+        position: { rfc5147: "char=1" },
+      },
+    ])
+
   })
 
   it("should include regexp as format", () => {
@@ -64,6 +71,11 @@ describe("ValidationService", () => {
     // .validate
     expect(format.validate("^a+")).to.be.null
     expect(format.validate("[")).to.be.instanceOf(Array)
+
+    // .validateAll
+    expect(() => format.validateAll(".","")).to.throw("Validator does not support selection")
+    expect(format.validateAll(".")).to.deep.equal([true])
+    expect(format.validateAll("[")[0]).to.be.instanceOf(Array)
 
     // .valid
     expect(format.valid("^a+")).to.eventually.equal("^a+")

@@ -5,34 +5,7 @@ import { MalformedRequest } from "../lib/errors.js"
 import { URL } from "url"
 import fetch from "node-fetch"
 
-import knownFormats from "../lib/formats.js"
 import formatFromQuery from "../lib/format-from-query.js"
-import { jsonPathQuery } from "../lib/source.js"
-
-function validate(data, format, select) {
-  // TODO: move logic into format.validateAll method?
-  // TODO: only when data is string
-
-  // format can have exactely one schema that is used for validation
-  const schema = Object.values(format.versions || {}).map(v => (v.schemas||[])[0])[0]
-
-  var base = (schema && schema.type in knownFormats)
-    ? knownFormats[schema.type].restricts : null
-  if (!Array.isArray(base)) base = [base]
-
-  if (base.find(b => b === "json")) {
-    data = knownFormats.json.parse(data)
-    try {
-      data = jsonPathQuery(data, select || "$")
-    } catch(e) {
-      throw new MalformedRequest("Malformed query parameter: select")
-    }
-  } else {
-    data = [data]
-  }
-
-  return data.map(record => format.validate(record) || true)
-}
 
 // HTTP GET
 async function prepareGetData(req) {
@@ -68,7 +41,7 @@ async function prepareGetData(req) {
 router.get("/validate", async (req, res, next) => {
   prepareGetData(req)
     .then(() => formatFromQuery(req))
-    .then(format => validate(req.query.data, format, req.query.select))
+    .then(format => format.validateAll(req.query.data, req.query.select))
     .then(result => res.send(result))
     .catch(error => next(error))
 })
@@ -83,7 +56,7 @@ router.post("/", async (req, res, next) => {
   formatFromQuery(req)
     .then(format => {
       if (req.rawBody) {
-        return validate(req.rawBody, format, req.query.select)
+        return format.validateAll(req.rawBody, req.query.select)
       } else {
         throw new MalformedRequest("Missing HTTP POST request body")
       }
