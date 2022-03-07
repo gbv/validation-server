@@ -118,7 +118,7 @@ A JSON Schema to validate configuration is included at [`config/config-schema.js
 
 ## Usage
 
-This node package is mainily designed to be run as web service but it can also be [used as module](#use-as-module). See [API Reference](#api) for usage of a running server instance.
+This node package is mainily designed to be run as web service but it can also be [used as module](#use-as-module). See [API Reference](#api) for usage of a running server instance instead.
 
 ### Run Server
 
@@ -189,7 +189,7 @@ createService(config).then(service => {
 
 #### loadConfig
 
-Returns a promise to a configuration object. Location of an optional configuration file can be given as argument (or by setting environment variable `NODE_ENV` to `debug` or `test`):
+Returns a promise to a valid configuration object. Location of an optional configuration file can be given as argument (or by setting environment variable `NODE_ENV` to `debug` or `test`):
 
 ```js
 const config = await loadConfig("./config.json")
@@ -209,7 +209,7 @@ Schemas of format objects can have an additional `validate` method to validate d
 
 #### knownFormats
 
-Service object with predefined data formats.
+Object with predefined data formats.
 
 ### Command Line Interface
 

@@ -4,11 +4,18 @@
     "ignored-because-no-validator": {},
     "ignored-because-all-validator-failed": {
       "versions": {
-        "default": {
+        "1": {
+          "schemas": [
+            {
+              "type": "regexp"
+            }
+          ]
+        },
+        "2": {
           "schemas": [
             {
               "type": "regexp",
-              "value": "["
+              "value": "/[/"
             }
           ]
         }

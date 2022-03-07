@@ -89,6 +89,7 @@ describe("ValidationService", () => {
     expect(format.validate("xy")).to.deep.equal([{
       message: "Value does not match regular expression",
     }])
+    expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
   })
 
   it("should support a format with parser only", () => {
@@ -98,6 +99,7 @@ describe("ValidationService", () => {
     expect(format.validate("978-3-16-148410-1")).to.deep.equal([{
       message: "Invalid ISBN",
     }])
+    expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
   })
 
   it("should support parsing JSON", () => {
@@ -106,6 +108,10 @@ describe("ValidationService", () => {
     expect(format.validate("{")).to.deep.equal([{
       message: "Unexpected end of JSON input",
       position: { rfc5147: "char=1" },
+    }])
+    expect(format.validate("{ 1")).to.deep.equal([{
+      message: "Unexpected number in JSON at position 2",
+      position: { rfc5147: "char=2" },
     }])
   })
 
