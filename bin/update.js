@@ -49,19 +49,18 @@ if (flags.help) {
   process.exit(0)
 }
 
-loadConfig().then(config => {
-  const formatFile = flags.formats
-    ? path.resolve("./", flags.formats)
-    : config.formatsFile
-  const formats = JSON.parse(fs.readFileSync(formatFile))
+const config = loadConfig()
+const formatFile = flags.formats
+  ? path.resolve("./", flags.formats)
+  : config.formatsFile
+const formats = JSON.parse(fs.readFileSync(formatFile))
 
-  const cachePath = flags.directory === "-"
-    ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
-    : (flags.directory || config.cachePath)
+const cachePath = flags.directory === "-"
+  ? fs.mkdtempSync(path.join(os.tmpdir(),"validation-server-"))
+  : (flags.directory || config.cachePath)
 
-  // TODO: clear cache to reload schema files
-  createService({ ...config, formats, cachePath })
-    .then(() => {
-      process.exit()
-    })
-})
+// TODO: clear cache to reload schema files
+createService({ ...config, formats, cachePath })
+  .then(() => {
+    process.exit()
+  })

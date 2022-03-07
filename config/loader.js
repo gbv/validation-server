@@ -1,22 +1,25 @@
 import fs from "fs"
 import path from "path"
-import createLogger from "../lib/logger.js"
 
+import createLogger from "../lib/logger.js"
 import knownFormats from "../lib/formats.js"
-import Cache from "../lib/cache.js"
+import validateConfig from "../lib/validate-config.js"
+
+import tmp from "tmp"
+tmp.setGracefulCleanup()
 
 const __dirname = new URL(".", import.meta.url).pathname
 const readJSON = file => JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
 
-export default async function loadConfig(configFile, logger) {
+export default function loadConfig(configFile, logger) {
 
-  // Load default config
+  // Load default config file
   const configDefault = readJSON("./config.default.json")
   const { version, description } = readJSON("../package.json")
   var configPath = __dirname // default config/ directory
   var config = { ...configDefault, version, description }
 
-  // Find and local local config
+  // Find and load local config file
   const env = process.env.NODE_ENV || "development"
   const testing = env === "test" || env === "debug"
 
@@ -55,41 +58,16 @@ export default async function loadConfig(configFile, logger) {
   // knownFormats override configured formats
   config.formats = { ...config.formats, ...knownFormats }
 
-  // initialize cache
-  const cachePath = testing ? null : path.resolve(configPath, config.cachePath || "formats")
-  const cache = new Cache(cachePath)
-  const schemaFiles = {
-    "https://format.gbv.de/validate/format-schema.json": "../public/format-schema.json",
-    "https://format.gbv.de/validate/config-schema.json": "../public/config-schema.json",
-    "https://json-schema.org/draft-07/schema": "json-schema-draft-07.json",
-    "https://json-schema.org/draft-06/schema": "json-schema-draft-06.json",
-    "https://json-schema.org/draft-04/schema": "json-schema-draft-04.json",
-  }
-  for (const [uri, file] of Object.entries(schemaFiles)) {
-    await cache.put(uri, fs.readFileSync(path.resolve(__dirname, file)))
-  }
-
-  cache.keys().then(keys => logger.info(`cachePath ${cachePath} contains ${keys.length} entries`))
-
-  // validate configuration
-  const url = "https://format.gbv.de/validate/config-schema.json"
-  const validateAll = await knownFormats["json-schema"].createValidator({url, cache, logger})
-  const rawConfig = JSON.stringify(config, null, "  ") // omits functions
-
-  logger.debug(rawConfig)
-  const result = validateAll(rawConfig)[0]
-  if (result !== true) {
-    const msg =`Invalid configuration from ${configFile}`
-    logger.error(msg)
-    result.forEach(e => logger.warn(e))
-    throw new Error(msg)
+  if (testing) {
+    config.cachePath = tmp.dirSync().name
+  } else {
+    config.cachePath = path.resolve(configPath, config.cachePath || "formats")
   }
 
   // additional fields for internal use
-  config.configFile = configFile
   config.env = env
-  config.cache = cache
+  config.configFile = configFile
   config.logger = logger
 
-  return config
+  return validateConfig(config)
 }

@@ -8,7 +8,7 @@ const should = chai.should()
 
 import { loadConfig, createService } from "../index.js"
 
-const config = await loadConfig()
+const config = loadConfig()
 const formats = await createService(config)
 
 import app from "../server.js" // TODO: await start

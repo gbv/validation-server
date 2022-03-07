@@ -9,7 +9,7 @@ import formatsRoute from "./routes/formats.js"
 import languagesRoute from "./routes/languages.js"
 import schemaRoute from "./routes/schema.js"
 
-const config = await loadConfig()
+const config = loadConfig()
 const { logger } = config
 
 logger.info(`Running in ${config.env} mode.`)
@@ -83,8 +83,8 @@ const start = async () => {
   app.set("baseUrl", config.baseUrl || `http://localhost:${port}/`)
 
   // Initialize formats registry
-  app.set("validationService", await createService(config))
-  app.set("schemaCache", config.cache)
+  const service = await createService(config)
+  app.set("validationService", service)
 
   // Let's go!
   app.listen(port, () => {

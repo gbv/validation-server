@@ -6,7 +6,7 @@ const { expect } = chai
 
 import { loadConfig, createService } from "../index.js"
 
-const config = await loadConfig()
+const config = loadConfig()
 const service = await createService(config)
 
 describe("ValidationService", () => {

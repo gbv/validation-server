@@ -12,9 +12,10 @@ async function schemaRoute (req, res, next) {
       if (versions.length) {
         const schema = versions[0].schemas[0]
         if (schema.url) {
-          const entry = await req.app.get("schemaCache").get(schema.url)
+          // TODO: move to service object?
+          const service = req.app.get("validationService")
+          const entry = await service.cache.get(schema.url)
           if (!entry) {
-            console.log("Schema not found: ", schema.url)
             throw new NotFound("Schema file not found")
           }
           const headers = entry.metadata.headers || {}
