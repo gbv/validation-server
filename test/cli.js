@@ -11,10 +11,11 @@ import validate from "../lib/cli.js"
 process.env.XDG_CONFIG_HOME = "/dev/null"
 
 describe("validate CLI", () => {
-  var out
-  beforeEach(() => { out = [] })
 
-  const cli = async (...args) => validate(args, msg => out.push(msg))
+  const cli = async (...args) => {
+    const out = []
+    return validate(args, msg => out.push(msg)).then(() => out)
+  }
 
   it("should not accept invalid options/arguments", () => {
     expect(cli()).to.be.rejectedWith("Missing first argument <format>")
@@ -24,26 +25,28 @@ describe("validate CLI", () => {
     expect(cli("xxx","y")).to.be.rejectedWith("Format not found: xxx")
   })
 
-  it("list known formats without config file", async () => {
-    await cli("-l")
-    expect(out).to.deep.equal(Object.keys(formats).sort())
+  it("list known formats without config file", () => {
+    return cli("-l").then(out => {
+      expect(out).to.deep.equal(Object.keys(formats).sort())
+    })
   })
 
-  it("list formats from config file with -l", async () => {
-    await cli("-l","-c","./config/config.test.json")
-    expect(out).to.deep.equal([
-      "about/data",
-      "array",
-      "digits",
-      "isbn",
-      "json",
-      "json-schema",
-      "regexp",
-      "xml"])
+  it("list formats from config file with -l", () => {
+    return cli("-l","-c","./config/config.test.json").then(out => {
+      expect(out).to.deep.equal([
+        "about/data",
+        "array",
+        "digits",
+        "isbn",
+        "json",
+        "json-schema",
+        "regexp",
+        "xml"])
+    })
   })
 
-  it("validate a file", async () => {
-    await cli("json-schema","./public/format-schema.json")
-    expect(out).to.deep.equal(["ok"])
+  it("validate a file", () => {
+    return cli("json-schema","./public/format-schema.json")
+      .then(out => expect(out).to.deep.equal(["ok"]))
   })
 })
