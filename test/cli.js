@@ -40,4 +40,9 @@ describe("validate CLI", () => {
       "regexp",
       "xml"])
   })
+
+  it("validate a file", async () => {
+    await cli("json-schema","./public/format-schema.json")
+    expect(out).to.deep.equal(["ok"])
+  })
 })
