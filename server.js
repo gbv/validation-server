@@ -80,7 +80,8 @@ const start = async () => {
     port = await portfinder.getPortPromise()
   }
 
-  app.set("baseUrl", config.baseUrl || `http://localhost:${port}/`)
+  config.baseUrl = config.baseUrl || `http://localhost:${port}/`
+  app.set("validationConfig", config)
 
   // Initialize formats registry
   const service = await createService(config)

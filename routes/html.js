@@ -1,13 +1,15 @@
 import express from "express"
 const router = express.Router()
 
-// root page
-router.get("/", (req, res) => {
+function render(req, res, path, vars) {
+  const config = req.app.get("validationConfig")
   const service = req.app.get("validationService")
-  const baseUrl = req.app.get("baseUrl")
   const formats = service.listFormats()
-  res.render("base", { ...service, formats, baseUrl, root: "" })
-})
+  res.render(path, { ...service, ...config, formats, ...vars})
+}
+
+// root page
+router.get("/", (req, res) => render(req, res, "base", { root: "" }))
 
 // static files
 router.use(express.static("public"))
@@ -15,13 +17,11 @@ router.use(express.static("public"))
 // format pages
 router.get("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   const service = req.app.get("validationService")
-  const baseUrl = req.app.get("baseUrl")
   const [ format ] = service.listFormats({ format: req.params.format })
-  const formats = service.listFormats()
 
   if (format) {
     const root = format.id.replace(/[^/]*[/]/g,"../").replace(/[^/]+$/,"")
-    res.render("format", { ...service, format, formats, baseUrl, root })
+    render(req, res, "format", { format, root })
   } else {
     next()
   }

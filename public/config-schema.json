@@ -32,9 +32,16 @@
       "type": "integer"
     },
     "baseUrl": {
-      "type": "string",
-      "format": "uri",
-      "pattern": "^https?://"
+      "$ref": "#/definitions/url" 
+    },
+    "provider": {
+      "$ref": "#/definitions/link" 
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/link" 
+      }
     },
     "postLimit": {
       "type": "string",
@@ -58,6 +65,29 @@
     },
     "version": {
       "type": "string"
+    }
+  },
+  "definitions": {
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://"
+    },
+    "link": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "$ref": "#/definitions/url" 
+        },
+        "title": {
+          "type": "string" 
+        }
+      },
+      "required": [
+        "url",
+        "title" 
+      ],
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

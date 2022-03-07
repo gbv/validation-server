@@ -114,6 +114,8 @@ Keys `version` and `description` are defaulted to its value in `package.json`. I
 
 Key `formats` must contain an array of [data formats](#data-formats) or a file containing such array. The list of formats is automatically extended by some hardcoded formats and schema languages.
 
+Additional keys `provider` and `links` can be used to adjust the HTML footer.
+
 A JSON Schema to validate configuration is included at [`config/config-schema.json`](config/config-schema.json).
 
 ## Usage
