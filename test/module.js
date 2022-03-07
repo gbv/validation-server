@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 import { expect } from "chai"
 
-import { createService, loadConfig, knownFormats } from "../index.js"
+import { loadConfig, validateConfig, createService, knownFormats } from "../index.js"
 import defaultImport from "../index.js"
 
 describe("Module", () => {
@@ -9,6 +9,12 @@ describe("Module", () => {
   it("should export loadConfig", done => {
     expect(loadConfig).to.be.instanceOf(Function)
     expect(defaultImport.loadConfig).to.be.instanceOf(Function)
+    done()
+  })
+
+  it("should export validateConfig", done => {
+    expect(validateConfig).to.be.instanceOf(Function)
+    expect(defaultImport.validateConfig).to.be.instanceOf(Function)
     done()
   })
 

@@ -174,7 +174,7 @@ The server needs to be restarted to reflect updates in [configuration](#configur
 *The internal API is not stable yet!*
 
 ```js
-const { loadConfig, createService, knownFormats } = require("validation-server")
+const { loadConfig, validateConfig, createService, knownFormats } = require("validation-server")
 
 const config = loadConfig()
 
@@ -196,6 +196,10 @@ const config = loadConfig("./config.json")
 ```
 
 An error is thrown on invalid configuration.
+
+#### validateConfig
+
+Validate a configuration object. Throws an error if configuration is not valid. Returns the passed configuration otherwise.
 
 #### createService
 

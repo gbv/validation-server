@@ -21,6 +21,7 @@ describe("validate CLI", () => {
     expect(cli("-x")).to.be.rejected
     expect(cli("-v","x")).to.be.rejectedWith("Invalid verbosity level")
     expect(cli("-c","mising-file.json")).to.be.rejected
+    expect(cli("xxx","y")).to.be.rejectedWith("Format not found: xxx")
   })
 
   it("list known formats without config file", async () => {
