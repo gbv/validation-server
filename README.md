@@ -4,14 +4,14 @@
 [![NPM package version](https://img.shields.io/npm/v/validation-server.svg)](https://www.npmjs.com/package/validation-server)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 
-> Web service to validate data against schemas
+> Web service to validate data with support of multiple schema languages
 
-Provides methods to validate records against different kinds of schemas to ensure that they conform to known data formats.
+Large parts of practical data science or other data processing work is spent by bringing dirty data into shape. **Data formats** define desired shapes of data. To check whether data conforms to a data format, it must be **validated**. This application helps to validate data against data formats. [Validation errors](#validation-errors) show if, where and how a format is violated so data can be cleaned or rejected. Data formats can be configured with **schemas** in multiple [schema languages](#schema-languages).
 
 ## Table of Contents
 
 - [Background](#background)
-  - [Formats](#formats)
+  - [Data Formats](#data-formats)
   - [Schema Languages](#schema-languages)
   - [See Also](#see-also)
 - [Install](#install)
@@ -38,40 +38,35 @@ Provides methods to validate records against different kinds of schemas to ensur
 
 ## Background
 
-Large parts of practical data science or other data processing work is spent by cleaning dirty data. To detect errors in data or to ensure that data is good enough, it must be **validated** against some critera. A **data format** is a set of digital objects (aka records) that meet some defined criteria. This application helps to check whether records conform to known data formats. [Validation errors](#validation-errors) show when and how a format is violated so data can be cleaned or rejected.
+### Data Formats
 
-### Formats
+Data formats supported by validation server are described as JSON Object with:
 
-Data formats are described as JSON Object with keys:
-
-- `id` mandatory format identifier
+- `id` mandatory local format identifier
 - `title` optional title
-- `short` optional short title
+- `short` optional short title (abbreviation or acronym)
+- `description` optional short textual description or definition
 - `url` optional URL with information about the format
-- `description` optional short textual description
 - `wikidata` optional Wikidata identifier of the format
 - `mimetype` optional content type
 - `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
-- `versions` an optional object with format versions, each with
-  - `schemas` an optional object with schemas, each with
-    - `type` mandatory schema type (identifier of a schema language, e.g. `json-schema`)
-    - `url` where to retrieve the schema file from (optional)
-    - `value` schema as string (mandatory if no `url` given)
-- `restricts` identifier of base format(s) of formats defined by this schema language (only for [schema formats](#schema-languages))
+- `versions` an optional object with format versions, the keys used as version identifier (is `default` if unknown) and each values an object with:
+    - `schemas` an optional array with schemas, each an object with:
+        - `type` mandatory schema type (identifier of a schema language, e.g. `json-schema`)
+        - `url` optional URL to retrieve the schema file from
+        - `value` schema as string (mandatory if no `url` given)
 
- of the base format that is tailored by the schema language (e.g. regular expressions are for character sequences)
+This meta-format is defined as **Data About Data Formats** with a JSON Schema at <https://format.gbv.de/validate/format-schema.json>.
 
-A JSON Schema of this object is included in the configuration schema at [`config/format-schema.json`](config/format-schema.json).
-
-API endpoint [/formats](#get-formats) can be used to list formats supported by an instance of validation server.
-
-By default all schema languages and the data formats `json`, `isbn`, and `regexp` are supported.
+API endpoint [/formats](#get-formats) or [command line argument](#command-line-interface) `--list` return data formats supported by an instance of validation server.
 
 ### Schema Languages
 
-Schem languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats. Schema languages must reference this base formats with description key `restricts`.
+Schema languages (also known as schema formats or schema types) are data formats used to define other data formats. Formats defined by a schema language all share a common base format. For instance JSON Schema is a schema language to define JSON-based formats, XML Schema is a schema language to define XML-based formats, and regular expressions can be used as schema language to describe character-based formats.
 
-The following schema languages are supported for validation of other formats. The list is available via API endpoint [/languages](#get-languages) and the languages are also included as formats via API endpoint [/formats](#get-formats):
+Schema languages supported by validation server are described as [data formats](#data-formats) with additional mandatory keys `restricts` referencing the common base format(s).
+
+The following schema languages are supported for validation of other formats. The list is available via API endpoint [/languages](#get-languages):
 
 - JSON Schema (`json-schema`)
   - Supports `draft-04`, `draft-06`, and `draft-07`
@@ -117,7 +112,7 @@ The service must be customized via configuration files. By default, this configu
 
 Keys `version` and `description` are defaulted to its value in `package.json`. In addition the environment variable `NODE_ENV` is respected with `development` as default. Alternative values are `production`, `test`, and `debug`.
 
-Key `formats` must contain an array of [formats](#formats) or a file containing such array. The list of formats is automatically extended by some hardcoded formats and schema languages.
+Key `formats` must contain an array of [data formats](#data-formats) or a file containing such array. The list of formats is automatically extended by some hardcoded formats and schema languages.
 
 A JSON Schema to validate configuration is included at [`config/config-schema.json`](config/config-schema.json).
 
@@ -278,9 +273,7 @@ curl -g 'http://format.gbv.de/validate/validate?format=json&data=[x]'
   [
     {
       "message": "Unexpected token x in JSON at position 1",
-      "position": {
-        "rfc5147": "char=1"
-      }
+      "position": { "rfc5147": "char=1" }
     }
   ]
 ]
@@ -372,7 +365,7 @@ curl -X POST 'http://format.gbv.de/validate/vzg-article?select=$.*' -d @articles
 
 ### GET /formats
 
-Lists all [formats](#formats), optionally filtered by identifier, version, and/or schema type.
+Lists all [data formats](#data-formats), optionally filtered by identifier, version, and/or schema type.
 
 **Query Parameters**
 
@@ -382,13 +375,13 @@ Lists all [formats](#formats), optionally filtered by identifier, version, and/o
 
 * `type=[string]` schema type filter for
 
-* **Success Response**
+**Success Response**
 
-  JSON Array of format objects.
+JSON Array of format objects.
 
 ### GET /languages
 
-List schema languages as array of [formats](#formats). The result is a subset of [GET /formats](#get-formats) with same query parameters and response format.
+List schema languages as array of [data formats](#data-formats). The result is a subset of [GET /formats](#get-formats) with same query parameters and response format.
 
 ### GET /schema
 

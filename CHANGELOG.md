@@ -4,6 +4,7 @@
 
 - Fix HTML Links in format pages with / in format identifier
 - Add "Data About Data Formats" as format with Schema
+- Add command line interface
 
 ## 0.4.1
 
