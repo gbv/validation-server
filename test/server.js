@@ -32,7 +32,7 @@ describe("Server", () => {
       path: "/json",
       code: 200,
       response(res) {
-        res.text.should.match(/<body/)
+        res.text.should.match(/<h2/)
       },
     },
     {
