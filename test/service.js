@@ -4,6 +4,9 @@ import chaiAsPromised from "chai-as-promised"
 chai.use(chaiAsPromised)
 const { expect } = chai
 
+import { Readable } from "stream"
+import toArray from "stream-to-array"
+
 import { loadConfig, createService } from "../index.js"
 
 const config = loadConfig()
@@ -63,9 +66,10 @@ describe("ValidationService", () => {
       },
     ])
 
+
   })
 
-  it("should include regexp as format", () => {
+  it("should include regexp as format", async () => {
     const format = service.getFormat("regexp")
 
     // .validate
@@ -80,6 +84,15 @@ describe("ValidationService", () => {
     // .valid
     expect(format.valid("^a+")).to.eventually.equal("^a+")
     expect(format.valid("[")).to.be.rejected
+
+    // .validateStream
+    return toArray(Readable.from(["^a+","?"]).pipe(format.validateStream))
+      .then(result => {
+        expect(result).to.deep.equal([
+          true,
+          [ { message: "Invalid regular expression: /?/: Nothing to repeat" } ],
+        ])
+      })
   })
 
   it("should support a format defined by regexp", () => {

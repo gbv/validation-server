@@ -186,6 +186,9 @@ createService(config).then(service => {
   if (!errors) {
     console.error(errors)
   }
+
+  // validate a stream of records
+  const resultStream = inputStream.pipe(format.validateStream)
 })
 ```
 
