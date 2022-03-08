@@ -1,5 +1,5 @@
 import createService from "./lib/service.js"
-import loadConfig from "./config/loader.js"
+import loadConfig from "./lib/config.js"
 import validateConfig from "./lib/validate-config.js"
 import knownFormats from "./lib/formats.js"
 
