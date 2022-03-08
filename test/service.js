@@ -54,12 +54,12 @@ describe("ValidationService", () => {
     const format = service.getFormat("json-schema")
 
     // .validate
-    expect(format.validate({})).to.be.null
+    expect(format.validSync({})).to.be.null
 
-    expect(format.validate("{}")).to.be.null
-    expect(format.validate([])).to.be.instanceOf(Array)
+    expect(format.validSync("{}")).to.be.null
+    expect(format.validSync([])).to.be.instanceOf(Array)
 
-    expect(format.validate("[")).to.deep.equal([
+    expect(format.validSync("[")).to.deep.equal([
       {
         message: "Unexpected end of JSON input",
         position: { rfc5147: "char=1" },
@@ -71,35 +71,32 @@ describe("ValidationService", () => {
 
   it("should include regexp as format", async () => {
     const format = service.getFormat("regexp")
-
-    // .validate
-    expect(format.validate("^a+")).to.be.null
-    expect(format.validate("[")).to.be.instanceOf(Array)
+    const errors = [ { message: "Invalid regular expression: /?/: Nothing to repeat" } ]
 
     // .validateAll
     expect(() => format.validateAll(".","")).to.throw("Validator does not support selection")
     expect(format.validateAll(".")).to.deep.equal([true])
-    expect(format.validateAll("[")[0]).to.be.instanceOf(Array)
+    expect(format.validateAll("?")[0]).to.be.instanceOf(Array)
 
     // .valid
     expect(format.valid("^a+")).to.eventually.equal("^a+")
-    expect(format.valid("[")).to.be.rejected
+    await expect(format.valid("?")).to.be.rejected.then(e =>
+      expect(e).to.deep.equal({ message: "Invalid data", errors }))
+
+    // .validSync
+    expect(format.validSync("^a+")).to.be.null
+    expect(format.validSync("?")).to.deep.equal(errors)
 
     // .validateStream
     return toArray(Readable.from(["^a+","?"]).pipe(format.validateStream))
-      .then(result => {
-        expect(result).to.deep.equal([
-          true,
-          [ { message: "Invalid regular expression: /?/: Nothing to repeat" } ],
-        ])
-      })
+      .then(result => expect(result).to.deep.equal([ true, errors ]))
   })
 
   it("should support a format defined by regexp", () => {
     const format = service.getFormat("digits")
 
-    expect(format.validate("123\n456\n")).to.be.null
-    expect(format.validate("xy")).to.deep.equal([{
+    expect(format.validSync("123\n456\n")).to.be.null
+    expect(format.validSync("xy")).to.deep.equal([{
       message: "Value does not match regular expression",
     }])
     expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
@@ -108,8 +105,8 @@ describe("ValidationService", () => {
   it("should support a format with parser only", () => {
     const format = service.getFormat("isbn")
 
-    expect(format.validate("978-3-16-148410-0")).to.be.null
-    expect(format.validate("978-3-16-148410-1")).to.deep.equal([{
+    expect(format.validSync("978-3-16-148410-0")).to.be.null
+    expect(format.validSync("978-3-16-148410-1")).to.deep.equal([{
       message: "Invalid ISBN",
     }])
     expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
@@ -117,12 +114,12 @@ describe("ValidationService", () => {
 
   it("should support parsing JSON", () => {
     const format = service.getFormat("json")
-    expect(format.validate("[]")).to.be.null
-    expect(format.validate("{")).to.deep.equal([{
+    expect(format.validSync("[]")).to.be.null
+    expect(format.validSync("{")).to.deep.equal([{
       message: "Unexpected end of JSON input",
       position: { rfc5147: "char=1" },
     }])
-    expect(format.validate("{ 1")).to.deep.equal([{
+    expect(format.validSync("{ 1")).to.deep.equal([{
       message: "Unexpected number in JSON at position 2",
       position: { rfc5147: "char=2" },
     }])
@@ -131,8 +128,8 @@ describe("ValidationService", () => {
   it("should support parsing XML", () => {
     const format = service.getFormat("xml")
 
-    expect(format.validate("<x:y/>")).to.be.null
-    expect(format.validate("<x>\n<y>\n</x>")).to.deep.equal([{
+    expect(format.validSync("<x:y/>")).to.be.null
+    expect(format.validSync("<x>\n<y>\n</x>")).to.deep.equal([{
       message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
       position: {
         rowcol: "3,1",
@@ -143,8 +140,8 @@ describe("ValidationService", () => {
   it("should validate from Buffer and String", () => {
     const format = service.getFormat("json")
 
-    expect(format.validate("{}")).to.be.null
-    expect(format.validate("[")).to.be.instanceOf(Array)
-    expect(format.validate(new Buffer("{}"))).to.be.null
+    expect(format.validSync("{}")).to.be.null
+    expect(format.validSync("[")).to.be.instanceOf(Array)
+    expect(format.validSync(new Buffer("{}"))).to.be.null
   })
 })

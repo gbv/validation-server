@@ -182,9 +182,18 @@ const config = loadConfig()
 
 createService(config).then(service => {
   const format = service.getFormat("json-schema", { version: "draft-07" })
-  const errors = format.validate(data)
-  if (!errors) {
+
+  // asynchronous validation
+  format.valid(data)
+    .then(() => console.log("ok"))
+    .catch(e => console.error(e.errors))
+
+  // synchronous validation
+  const errors = format.validSync(data)
+  if (errors) {
     console.error(errors)
+  } else {
+    console.log("ok")
   }
 
   // validate a stream of records
