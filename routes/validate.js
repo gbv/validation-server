@@ -63,6 +63,7 @@ router.post("/", async (req, res, next) => {
     req.query.version = req.body.version
     req.query.type = req.body.type
     req.query.select = req.body.select
+    req.query.format = req.query.format || req.body.format
   }
   formatFromQuery(req)
     .then(format => {

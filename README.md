@@ -303,13 +303,17 @@ The service does not guarantee to return all validation errors but it may stop a
 
 ### POST /:format
 
-Validate records like [GET /validate](#validate) but data is send via HTTP POST payload.
+Validate records like [GET /validate](#validate) but data is send via HTTP POST payload or as `multipart/form-data`.
 
-**Query**
+**Query parameters or multipart form fields**
 
-* `format=[id]` format identifier. Can also be specified in the URL path, e.g. `/json` is identical to `/?format=json`.
+* `format` format identifier. Can also be specified in the URL path, e.g. `/json` is identical to `/?format=json`.
 
-* `select=[string]` Optional selection of records within the posted data.
+* `select` Optional selection of records within the posted data.
+
+* `file` File to be validated (form data only)
+
+* `data` Data to be validated (form data only)
 
 **Response**
 

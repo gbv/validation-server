@@ -41,3 +41,17 @@ pre {
 pre > code {
   color: #000;
 }
+input, label {
+  display: inline-block;
+}
+form {
+  padding: 0.5em 0em 0em 0em;
+}
+.msg.valid {
+  border-color: #2d2;
+  background: #dfd;
+}
+.msg.invalid {
+  border-color: #e44;
+	background: #fdd;
+}
