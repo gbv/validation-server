@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- Support validation via file upload
+- Improve command line client
+- More refactoring
+
 ## 0.4.2
 
 - Fix HTML Links in format pages with / in format identifier
