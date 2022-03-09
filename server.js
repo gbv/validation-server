@@ -26,6 +26,7 @@ app.set("views", "./views")
 app.set("view engine", "ejs")
 
 // Middleware to parse the raw body
+import typeis from "type-is"
 app.use(
   express.raw({
     limit: config.postLimit,
@@ -34,9 +35,14 @@ app.use(
         req.rawBody = buf.toString(encoding || "utf8")
       }
     },
-    type: "*/*",
+    type: req => !typeis(req, ["multipart"]),
   }),
 )
+
+// Middleware to handle multipart request, including file upload
+import multer from "multer"
+const upload = multer()
+app.use(upload.single("file"))
 
 // Add default headers
 app.use((req, res, next) => {

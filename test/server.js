@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
 import fs from "fs"
+import path from "path"
 import chai from "chai"
 import chaiHttp from "chai-http"
 chai.use(chaiHttp)
@@ -7,6 +8,9 @@ chai.use(chaiHttp)
 const should = chai.should()
 
 import { loadConfig, createService } from "../index.js"
+
+import { URL } from "url"
+const __dirname = new URL(".", import.meta.url).pathname
 
 const config = loadConfig()
 const formats = await createService(config)
@@ -251,12 +255,17 @@ describe("Server", () => {
     })
   })
 
-
   const validationTests = [
     { format: "json", data: "[]", result: [true] },
     { format: "json", data: "{}", result: [true] },
-    { format: "json", data: "[false]", result: [true] },
-    { format: "json", data: "null", result: [true] },
+    {
+      format: "json", data: "[false]", result: [true],
+      type: "application/json",
+    },
+    {
+      format: "json", data: "null", result: [true],
+      type: "application/json",
+    },
     {
       format: "json", data: "{",
       result: [[{
@@ -290,11 +299,10 @@ describe("Server", () => {
     { format: "array", data: "{}", result: [[{
       message: "must be array",
       position: { jsonpointer: "" },
-    }]],
-    },
+    }]] },
   ]
 
-  validationTests.forEach(({format, data, select, code, result}) => {
+  validationTests.forEach(({format, version, data, select, code, type, result}) => {
     const resultCheck = done =>
       ((err, res) => {
         res.should.have.status(code || 200)
@@ -314,11 +322,46 @@ describe("Server", () => {
         .end(resultCheck(done))
     })
 
-    it(`should validate ${format} data ${data} ${select} (POST)`, done => {
+    it(`should validate ${format} data ${data} ${select} (POST body)`, done => {
       chai.request(app)
         .post(`/${format}` + (select ? `?select=${select}` : ""))
+        .set("content-type", type || "application/x-www-form-urlencoded")
         .send(data)
         .end(resultCheck(done))
     })
+
+    it(`should validate ${format} data ${data} ${select} (POST multipart)`, done => {
+      const fields = { data }
+      if (select) fields.select = select
+      if (version) fields.version = version
+      chai.request(app)
+        .post(`/${format}`)
+        .type("form")
+        .field(fields)
+        .end(resultCheck(done))
+    })
   })
+
+  it("should support file upload validation (1)", done => {
+    chai.request(app)
+      .post("/json")
+      .attach("file", path.resolve(__dirname, "../package.json"))
+      .end((err, res) => {
+        res.should.have.status(200)
+        res.body.should.deep.equal([true])
+        done()
+      })
+  })
+
+  it("should support file upload validation (2)", done => {
+    chai.request(app)
+      .post("/json-schema")
+      .attach("file", path.resolve(__dirname, "../package.json"))
+      .end((err, res) => {
+        res.should.have.status(200)
+        res.body[0].should.be.an("array")
+        done()
+      })
+  })
+
 })

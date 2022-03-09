@@ -53,6 +53,17 @@ router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
 })
 
 router.post("/", async (req, res, next) => {
+  // from multipart
+  if (req.body && !(req.body instanceof Buffer)) {
+    if (req.file) {
+      req.rawBody = req.file.buffer.toString()
+    } else {
+      req.rawBody = req.body.data
+    }
+    req.query.version = req.body.version
+    req.query.type = req.body.type
+    req.query.select = req.body.select
+  }
   formatFromQuery(req)
     .then(format => {
       if (req.rawBody) {
