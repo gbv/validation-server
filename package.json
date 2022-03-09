@@ -1,6 +1,6 @@
 {
   "name": "validation-server",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Web service to validate data with support of multiple schema languages",
   "repository": {
     "type": "git",
