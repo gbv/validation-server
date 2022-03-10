@@ -62,6 +62,7 @@ describe("Server", () => {
           "array",
           "digits",
           "isbn",
+          "jskos",
           "json",
           "json-schema",
           "regexp",

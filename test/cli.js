@@ -38,6 +38,7 @@ describe("validate CLI", () => {
         "array",
         "digits",
         "isbn",
+        "jskos",
         "json",
         "json-schema",
         "regexp",

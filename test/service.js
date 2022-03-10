@@ -21,6 +21,7 @@ describe("ValidationService", () => {
       "array",
       "digits",
       "isbn",
+      "jskos",
       "json",
       "json-schema",
       "regexp",
@@ -135,6 +136,19 @@ describe("ValidationService", () => {
         rowcol: "3,1",
       },
     }])
+  })
+
+  it("should support validating JSKOS", () => {
+    const format = service.getFormat("jskos")
+
+    expect(format.validSync("{}")).to.be.null
+    expect(format.validSync("{\"uri\":\"https://example.org\"}")).to.be.null
+
+    // TODO: test error details
+    const invalid = format.validSync("{\"uri\":0}")
+    expect(invalid).to.be.instanceOf(Array)
+    // expect(format.validSync('{"prefLabel":{"en":"x"}}')).to.be.null
+
   })
 
   it("should validate from Buffer and String", () => {
