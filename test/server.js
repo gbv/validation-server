@@ -191,7 +191,7 @@ describe("Server", () => {
       path: "/validate?format=json-schema&data=[]&select=_",
       error: {
         error: "MalformedRequest",
-        message: "Malformed query parameter: select",
+        message: "Invalid or unsupported selection (did you mean '$.*' or '$'?)",
         status: 400,
       },
     },
