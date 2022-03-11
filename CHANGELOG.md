@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1
+
+- Support JSKOS format validation
+- Support selection of JSON array elements in file upload form
+
 ## 0.5.0
 
 - Support validation via file upload
