@@ -48,7 +48,7 @@ Data formats supported by validation server are described as JSON Object with:
 - `description` optional short textual description or definition
 - `url` optional URL with information about the format
 - `wikidata` optional Wikidata identifier of the format
-- `mimetype` optional content type
+- `mimetypes` optional array of content types
 - `base` optional identifier of a base format (e.g. `json` for JSON-based formats)
 - `versions` an optional object with format versions, the keys used as version identifier (is `default` if unknown) and each values an object with:
     - `schemas` an optional array with schemas, each an object with:

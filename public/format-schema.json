@@ -21,8 +21,11 @@
     "restricts": {
       "$ref": "#/definitions/ids"
     },
-    "mimetype": {
-      "type": "string"
+    "mimetypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "description": {
       "type": "string"

@@ -10,7 +10,7 @@ async function schemaRoute (req, res, next) {
       if (schema.file) {
         const headers = schema.file.metadata.headers || {}
         const validator = knownFormats[schema.type] || {}
-        headers["content-type"] = validator.mimetype || headers["content-type"] || "text/plain"
+        headers["content-type"] = validator.mimetypes[0] || headers["content-type"] || "text/plain"
         res.sendFile(schema.file.path, { headers })
       } else {
         res.set("content-type", "text/plain")

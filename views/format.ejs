@@ -58,9 +58,15 @@
       </ul>
     </dd>
   <% } %>
-  <% if (format.mimetype) { %>
-    <dt>mimetype</dt>
-    <dd><%= format.mimetype %></dd>
+  <% if (format.mimetypes) { %>
+    <dt>mimetypes</dt>
+    <dd>
+      <ul>
+        <% for (var type of format.mimetypes) { %>
+          <li><%= type %></li>
+        <% } %>
+      </ul>
+    </dd>
   <% } %>
 </dl>
 <% if (format.createValidator) { %>
