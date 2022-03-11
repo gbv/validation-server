@@ -8,6 +8,7 @@ function messageDiv(valid, content) {
   return div
 }
 
+if (validateFileForm)
 validateFileForm.addEventListener("submit", function(evnt) {
   if (typeof fetch === "undefined") return
   if (validateFileForm.rawResult.checked) return
