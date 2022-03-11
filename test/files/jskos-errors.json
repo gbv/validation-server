@@ -1,0 +1,16 @@
+[
+  true,
+  [
+    {
+        "message": "concept URI http://example.com/1 does not match namespace http://example.org/"
+    }
+  ],
+  [
+    {
+      "message": "must NOT have additional properties",
+      "position": {
+        "jsonpointer": ""
+      }
+    }
+  ]
+]

@@ -11,6 +11,7 @@ import { loadConfig, createService } from "../index.js"
 
 import { URL } from "url"
 const __dirname = new URL(".", import.meta.url).pathname
+const readJSON = file => JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
 
 const config = loadConfig()
 const formats = await createService(config)
@@ -361,6 +362,17 @@ describe("Server", () => {
       .end((err, res) => {
         res.should.have.status(200)
         res.body[0].should.be.an("array")
+        done()
+      })
+  })
+
+  it("should support file upload validation with select", done => {
+    chai.request(app)
+      .post("/jskos")
+      .attach("file", path.resolve(__dirname, "files/jskos.json"))
+      .field("select", "$.*")
+      .end((err, res) => {
+        res.body.should.deep.equal(readJSON("files/jskos-errors.json"))
         done()
       })
   })

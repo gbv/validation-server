@@ -1,0 +1,11 @@
+<form method="POST" enctype="multipart/form-data" id="validateFile">
+  <input type="file" name="file">
+  <input type="submit">
+  <input type="checkbox" name="rawResult">
+  <label for="rawResult">raw result</label>
+  <% if (format.base === "json") { %>
+    <input type="checkbox" name="select" value="$.*">
+    <label for="select">JSON array</label>
+  <% } %>
+</form>
+<div id="validationResult"></div>

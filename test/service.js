@@ -9,6 +9,11 @@ import toArray from "stream-to-array"
 
 import { loadConfig, createService } from "../index.js"
 
+import fs from "fs"
+import path from "path"
+const __dirname = new URL(".", import.meta.url).pathname
+const readJSON = file => JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
+
 const config = loadConfig()
 const service = await createService(config)
 
@@ -152,36 +157,9 @@ describe("ValidationService", () => {
       position: { jsonpointer: "/uri" },
     }])
 
-    const input = [
-      {
-        uri: "http://example.org",
-        namespace: "http://example.org/",
-        type: ["http://www.w3.org/2004/02/skos/core#ConceptScheme"],
-      },
-      {
-        uri: "http://example.com/1",
-        inScheme: [{uri: "http://example.org"}],
-        type: ["http://www.w3.org/2004/02/skos/core#Concept"],
-      },
-      {
-        x: true,
-      },
-    ]
-
-    expect(format.validateAll(input, "$.*")).to.deep.equal([
-      true,
-      [
-        {
-          message: "concept URI http://example.com/1 does not match namespace http://example.org/",
-        },
-      ],
-      [
-        {
-          message: "must NOT have additional properties",
-          position: { jsonpointer: "" },
-        },
-      ],
-    ])
+    const input = readJSON("files/jskos.json")
+    const errors = readJSON("files/jskos-errors.json")
+    expect(format.validateAll(input, "$.*")).to.deep.equal(errors)
 
     // FIXME: validateStream stream is not persistent
     // return toArray(Readable.from(input).pipe(format.validateStream))

@@ -79,13 +79,7 @@
       <code>POST /<%= format.id %></code> multipart/form-data
       ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
     </div>
-    <form method="POST" enctype="multipart/form-data" id="validateFile">
-      <input type="file" name="file">
-      <input type="submit">
-      <input type="checkbox" name="rawResult">
-      <label for="rawResult">raw result</label>
-    </form>
-    <div id="validationResult"></div>
+    <%- include("validate-form") %>
   </li>
   <li>
     <code>POST /<%= format.id %></code> request body

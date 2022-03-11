@@ -1,0 +1,23 @@
+[
+  {
+    "uri": "http://example.org",
+    "namespace": "http://example.org/",
+    "type": [
+      "http://www.w3.org/2004/02/skos/core#ConceptScheme"
+    ]
+  },
+  {
+    "uri": "http://example.com/1",
+    "inScheme": [
+      {
+        "uri": "http://example.org"
+      }
+    ],
+    "type": [
+      "http://www.w3.org/2004/02/skos/core#Concept"
+    ]
+  },
+  {
+    "x": false
+  }
+]

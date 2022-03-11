@@ -18,7 +18,7 @@ describe("Configuration", () => {
   })
 
   it("should throw an error on invalid configuration", () => {
-    const file = path.resolve(__dirname, "config-invalid.json")
+    const file = path.resolve(__dirname, "files/config-invalid.json")
     expect(() => loadConfig(file)).to.throw(`Invalid configuration from ${file}`)
   })
 })
