@@ -92,6 +92,12 @@
     ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
   </li>
 </ul>
+<% if (format.base === "json") { %>
+<p>
+  Optional Request parameter <code>select=$.*</code> validates a JSON array of records in
+  <%= short %> format.
+</p>
+<% } %>
 <h3>About</h3>
 <p>
   <a href="<%=root%>formats?format=<%=format.id%>">Data about <%= short %></a>
