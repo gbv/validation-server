@@ -30,6 +30,10 @@ ul {
 li {
   margin: 0.5em;
 }
+h1.back:hover::before {
+  content: "☜ ";
+  margin-left: -1.3em;
+}
 h2 {
   margin-bottom: 0.5em;
 }

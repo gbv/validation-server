@@ -1,6 +1,6 @@
 <%- include("head", { title: format.title }) %>
 <% short = format.short ?? format.title %>
-<h1><a href="./<%=root%>"><%= title %></a></h1>
+<h1 class="back"><a href="./<%=root%>"><%= title %></a></h1>
 
 <h2><%= format.title %></h2>
 <% if (format.description || format.wikidata) { %>
@@ -72,20 +72,20 @@
 <h3>Validation</h3>
 <p>
   Check whether data conforms to <%= short %> format
-  (optionally <input type="checkbox" id="rawResult"> <label for="rawResult">show raw respone</label>):
+  (optionally <input type="checkbox" id="rawResult"> <label for="rawResult">show raw response</label>):
 </p>
 <ul>
+  <li>
+    <code>GET /validate?format=<%= format.id %></code>
+    ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
+    <%- include("validate-data-form") %>
+  </li>
   <li>
     <div>
       <code>POST /<%= format.id %></code> multipart/form-data
       ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
     </div>
     <%- include("validate-file-form") %>
-  </li>
-  <li>
-    <code>GET /validate?format=<%= format.id %></code>
-    ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
-    <%- include("validate-data-form") %>
    <div id="validationResult"></div>
   </li>
   <li>
