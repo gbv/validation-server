@@ -141,14 +141,51 @@ describe("ValidationService", () => {
   it("should support validating JSKOS", () => {
     const format = service.getFormat("jskos")
 
-    expect(format.validSync("{}")).to.be.null
-    expect(format.validSync("{\"uri\":\"https://example.org\"}")).to.be.null
+    ;[
+      {},
+      {uri:"https://example.org"},
+      {prefLabel:{en:"x"},type:["http://www.w3.org/2004/02/skos/core#Concept"]},
+    ].forEach(ok => expect(format.validSync(JSON.stringify(ok))).to.be.null)
 
-    // TODO: test error details
-    const invalid = format.validSync("{\"uri\":0}")
-    expect(invalid).to.be.instanceOf(Array)
-    // expect(format.validSync('{"prefLabel":{"en":"x"}}')).to.be.null
+    expect(format.validSync("{\"uri\":0}")).to.deep.equal([{
+      message: "must be string",
+      position: { jsonpointer: "/uri" },
+    }])
 
+    const input = [
+      {
+        uri: "http://example.org",
+        namespace: "http://example.org/",
+        type: ["http://www.w3.org/2004/02/skos/core#ConceptScheme"],
+      },
+      {
+        uri: "http://example.com/1",
+        inScheme: [{uri: "http://example.org"}],
+        type: ["http://www.w3.org/2004/02/skos/core#Concept"],
+      },
+      {
+        x: true,
+      },
+    ]
+
+    expect(format.validateAll(input, "$.*")).to.deep.equal([
+      true,
+      [
+        {
+          message: "concept URI http://example.com/1 does not match namespace http://example.org/",
+        },
+      ],
+      [
+        {
+          message: "must NOT have additional properties",
+          position: { jsonpointer: "" },
+        },
+      ],
+    ])
+
+    // FIXME: validateStream stream is not persistent
+    // return toArray(Readable.from(input).pipe(format.validateStream))
+    //  .then(result => expect(result).to.deep.equal([ true, error ]))
   })
 
   it("should validate from Buffer and String", () => {
