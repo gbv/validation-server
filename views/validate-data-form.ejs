@@ -1,0 +1,12 @@
+<form method="GET" id="validateData" action="<%=root%>validate">
+  <input type="hidden" name="format" value="<%=format.id%>">
+  <label for="data"><code>data=</code></label>
+  <input type="text" name="data" style="width:80%; margin-bottom: 0"><br/>
+  <label for="url"><code>url=</code></label>
+  <input type="text" name="url">
+  <input type="submit" value="validate">
+  <% if (format.base === "json") { %>
+    <input type="checkbox" name="select" value="$.*">
+    <label for="select">JSON array</label>
+  <% } %>
+</form>

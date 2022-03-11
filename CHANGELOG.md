@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2
+
+- UI: Support validating via GET request
+
 ## 0.5.1
 
 - Support JSKOS format validation
