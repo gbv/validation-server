@@ -48,7 +48,7 @@
             for (var schema of schemas) { %>
               <li>
                 <a href="<%=root%>schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><code><%= v %></code></a>
-                a <%- include("./link", { link: schema.type }) %>
+                a <%- include("./id", { id: schema.type }) %>
                 <% if (schema.url) { %>
                   from <a href="<%= schema.url %>"><%= schema.url %></a>
                 <% } %>
