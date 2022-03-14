@@ -16,7 +16,8 @@ a > code {
   color: rgb(96, 143, 219);
 }
 footer {
-  border-top: 1px solid #666;
+  padding-top: 2em;
+  color: #666;
 }
 dd {
   margin-left: 0em;
@@ -29,10 +30,6 @@ ul {
 }
 li {
   margin: 0.5em;
-}
-h1.back:hover::before {
-  content: "☜ ";
-  margin-left: -1.3em;
 }
 h2 {
   margin-bottom: 0.5em;
