@@ -56,25 +56,6 @@ describe("ValidationService", () => {
     expect(Object.keys(result.versions)).to.deep.equal(["draft-07"])
   })
 
-  it("should include json-schema as format", () => {
-    const format = service.getFormat("json-schema")
-
-    // .validate
-    expect(format.validSync({})).to.be.null
-
-    expect(format.validSync("{}")).to.be.null
-    expect(format.validSync([])).to.be.instanceOf(Array)
-
-    expect(format.validSync("[")).to.deep.equal([
-      {
-        message: "Unexpected end of JSON input",
-        position: { rfc5147: "char=1" },
-      },
-    ])
-
-
-  })
-
   it("should include regexp as format", async () => {
     const format = service.getFormat("regexp")
     const errors = [ { message: "Invalid regular expression: /?/: Nothing to repeat" } ]
@@ -84,78 +65,127 @@ describe("ValidationService", () => {
     expect(format.validateAll(".")).to.deep.equal([true])
     expect(format.validateAll("?")[0]).to.be.instanceOf(Array)
 
-    // .valid
-    expect(format.valid("^a+")).to.eventually.equal("^a+")
-    await expect(format.valid("?")).to.be.rejected.then(e =>
-      expect(e).to.deep.equal({ message: "Invalid data", errors }))
-
-    // .validSync
-    expect(format.validSync("^a+")).to.be.null
-    expect(format.validSync("?")).to.deep.equal(errors)
-
     // .validateStream
     return toArray(Readable.from(["^a+","?"]).pipe(format.validateStream))
       .then(result => expect(result).to.deep.equal([ true, errors ]))
   })
 
+  const serviceTests = {
+    "json-schema": {
+      valid: [
+        "{\"type\":\"array\"}",             // pass JSON string
+        new Buffer("{\"type\":\"array\"}"), // pass Buffer
+        {type:"array"},                     // pass JSON object
+      ],
+      invalid: {
+        "[": [
+          {
+            message: "Unexpected end of JSON input",
+            position: { rfc5147: "char=1" },
+          },
+        ],
+        "[]": [
+          {
+            message: "must be object,boolean",
+            position: { jsonpointer: "" },
+          },
+        ],
+      },
+    },
+    regexp: {
+      valid: ["^a+"],
+      invalid: {
+        "?": [{ message: "Invalid regular expression: /?/: Nothing to repeat" }],
+      },
+    },
+    digits: { // example of a format defined by regexp
+      valid: ["123\n456\n"],
+      invalid: {
+        xy: [{
+          message: "Value does not match regular expression",
+        }],
+      },
+    },
+    isbn: { // example of a format defined by parser
+      valid: ["978-3-16-148410-0"],
+      invalid: {
+        "978-3-16-148410-1": [{ message: "Invalid ISBN" }],
+      },
+    },
+    json: {
+      valid: [
+        "[]",
+        "{}",
+      ],
+      invalid: {
+        "{": [{
+          message: "Unexpected end of JSON input",
+          position: { rfc5147: "char=1" },
+        }],
+        "{ 1": [{
+          message: "Unexpected number in JSON at position 2",
+          position: { rfc5147: "char=2" },
+        }],
+      },
+    },
+    xml: {
+      valid: ["<x:y/>"],
+      invalid: {
+        "<x>\n<y>\n</x>":     [{
+          message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
+          position: {
+            rowcol: "3,1",
+          },
+        }],
+      },
+    },
+    jskos: {
+      valid: [
+        {},
+        {uri:"https://example.org"},
+        "{\"uri\":\"https://example.org\"}",
+        {prefLabel:{en:"x"},type:["http://www.w3.org/2004/02/skos/core#Concept"]},
+      ],
+      invalid: {
+        "{\"uri\":0}": [{
+          message: "must be string",
+          position: { jsonpointer: "/uri" },
+        }],
+      },
+    },
+  }
+
+  Object.entries(serviceTests).forEach(([name, { valid, invalid }]) => {
+    const format = service.getFormat(name)
+    if (valid) {
+      it(`should pass valid ${name}`, () =>
+        Promise.all(valid.map(value =>
+          expect(format.valid(value)).to.eventually.equal(value),
+        )),
+      )
+    }
+    if (invalid) {
+      it(`should detect invalid ${name}`, () =>
+        Promise.all(Object.entries(invalid).map(([value, errs]) =>
+          expect(format.valid(value)).to.be.rejected
+            .then(({errors}) => expect(errors).to.deep.equal(errs)),
+        )),
+      )
+    }
+  })
+
   it("should support a format defined by regexp", () => {
     const format = service.getFormat("digits")
-
-    expect(format.validSync("123\n456\n")).to.be.null
-    expect(format.validSync("xy")).to.deep.equal([{
-      message: "Value does not match regular expression",
-    }])
     expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
   })
 
   it("should support a format with parser only", () => {
     const format = service.getFormat("isbn")
-
-    expect(format.validSync("978-3-16-148410-0")).to.be.null
-    expect(format.validSync("978-3-16-148410-1")).to.deep.equal([{
-      message: "Invalid ISBN",
-    }])
     expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
-  })
-
-  it("should support parsing JSON", () => {
-    const format = service.getFormat("json")
-    expect(format.validSync("[]")).to.be.null
-    expect(format.validSync("{")).to.deep.equal([{
-      message: "Unexpected end of JSON input",
-      position: { rfc5147: "char=1" },
-    }])
-    expect(format.validSync("{ 1")).to.deep.equal([{
-      message: "Unexpected number in JSON at position 2",
-      position: { rfc5147: "char=2" },
-    }])
-  })
-
-  it("should support parsing XML", () => {
-    const format = service.getFormat("xml")
-
-    expect(format.validSync("<x:y/>")).to.be.null
-    expect(format.validSync("<x>\n<y>\n</x>")).to.deep.equal([{
-      message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
-      position: {
-        rowcol: "3,1",
-      },
-    }])
   })
 
   it("should support validating JSKOS", () => {
     const format = service.getFormat("jskos")
-
-    ;[
-      {},
-      {uri:"https://example.org"},
-      {prefLabel:{en:"x"},type:["http://www.w3.org/2004/02/skos/core#Concept"]},
-    ].forEach(ok => expect(format.validSync(JSON.stringify(ok))).to.be.null)
-
-    expect(format.validSync("{\"uri\":0}")).to.deep.equal([{
-      message: "must be string",
-      position: { jsonpointer: "/uri" },
-    }])
 
     const input = readJSON("files/jskos.json")
     const errors = readJSON("files/jskos-errors.json")
@@ -164,13 +194,5 @@ describe("ValidationService", () => {
     // FIXME: validateStream stream is not persistent
     // return toArray(Readable.from(input).pipe(format.validateStream))
     //  .then(result => expect(result).to.deep.equal([ true, error ]))
-  })
-
-  it("should validate from Buffer and String", () => {
-    const format = service.getFormat("json")
-
-    expect(format.validSync("{}")).to.be.null
-    expect(format.validSync("[")).to.be.instanceOf(Array)
-    expect(format.validSync(new Buffer("{}"))).to.be.null
   })
 })

@@ -188,14 +188,6 @@ createService(config).then(service => {
     .then(() => console.log("ok"))
     .catch(e => console.error(e.errors))
 
-  // synchronous validation
-  const errors = format.validSync(data)
-  if (errors) {
-    console.error(errors)
-  } else {
-    console.log("ok")
-  }
-
   // validate a stream of records
   const resultStream = inputStream.pipe(format.validateStream)
 })
