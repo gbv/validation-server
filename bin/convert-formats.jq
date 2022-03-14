@@ -1,11 +1,32 @@
 # Convert format used at http://format.gbv.de/ to new format
+
+def cleanid:
+  if startswith("schema/") then
+    .[7:]
+  elif test("^rdf/(json-ld|turtle|ntriples|hdt)") then
+    .[4:]
+  else
+    .
+  end
+;
+
+def cleanids:
+  if . == null then
+    null
+  elif type == "array" then
+    map(cleanid)
+  else
+    [ cleanid ]
+  end
+;
+
 map(
   {
-    id,
+    id: (.id|cleanid),
     title,
     short,
-    base,
-    restricts: .for,
+    base: (.base|cleanids),
+    restricts: (.for|cleanids),
     url: .homepage,
   }
   + if .schemas then
@@ -30,12 +51,13 @@ map(
   { }
   end
   |del(..|nulls)
-  | select(.versions)
-  |{
-    key: (if (.id|startswith("schema/")) then .id[7:] else .id end),
-    value: .
-  }
+  |select(.versions)
+)
 
-)|from_entries
+| map({
+  key: (.id | cleanid),
+  value: .
+})
+| from_entries
 
 # Usage: jq . -s ../format.gbv.de/formats.ndjson | jq -f bin/convert-formats.jq > format.gbv.de.json
