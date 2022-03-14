@@ -2,7 +2,12 @@
 <% short = format.short ?? format.title %>
 <h1 class="back"><a href="./<%=root%>"><%= title %></a></h1>
 
-<h2><%= format.title %></h2>
+<h2 style="display: flex">
+  <div style="flex-grow: 1"><%= format.title %></div>
+  <div>
+    <a href="<%=root%>formats?format=<%=format.id%>"><code><%= format.id %></code></a>
+  </div>
+</h2>
 <% if (format.description || format.wikidata) { %>
   <p>
     <% if (format.description) { %>
@@ -105,10 +110,5 @@
   Optional Request parameter <code>select=$.*</code> validates a JSON array of records.
 </p>
 <% } %>
-<h3>About</h3>
-<p>
-  <a href="<%=root%>formats?format=<%=format.id%>">Data about <%= short %></a>
-  as configured in <%= title %>.
-</p>
 
 <%- include("foot") %>
