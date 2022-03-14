@@ -8,9 +8,10 @@ import validateRoute from "./routes/validate.js"
 import formatsRoute from "./routes/formats.js"
 import languagesRoute from "./routes/languages.js"
 import schemaRoute from "./routes/schema.js"
+import bytes from "bytes"
 
 const config = loadConfig()
-const { logger } = config
+const { logger, limit } = config
 
 logger.info(`Running in ${config.env} mode.`)
 
@@ -29,7 +30,7 @@ app.set("view engine", "ejs")
 import typeis from "type-is"
 app.use(
   express.raw({
-    limit: config.postLimit,
+    limit,
     verify: (req, res, buf, encoding) => {
       if (buf && buf.length) {
         req.rawBody = buf.toString(encoding || "utf8")
@@ -41,7 +42,8 @@ app.use(
 
 // Middleware to handle multipart request, including file upload
 import multer from "multer"
-const upload = multer()
+const fileSize = bytes.parse(limit)
+const upload = multer({ limits: { fileSize } })
 app.use(upload.single("file"))
 
 // Add default headers

@@ -2,7 +2,7 @@
   "title": "Validation Service",
   "port": 3700,
   "proxies": [],
-  "postLimit": "20MB",
+  "limit": "20MB",
   "verbosity": "warn",
   "formats": {},
   "cachePath": "./formats"

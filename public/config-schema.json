@@ -32,18 +32,18 @@
       "type": "integer"
     },
     "baseUrl": {
-      "$ref": "#/definitions/url" 
+      "$ref": "#/definitions/url"
     },
     "provider": {
-      "$ref": "#/definitions/link" 
+      "$ref": "#/definitions/link"
     },
     "links": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/link" 
+        "$ref": "#/definitions/link"
       }
     },
-    "postLimit": {
+    "limit": {
       "type": "string",
       "pattern": "^[1-9][0-9]+[kKmMgG][bB]$"
     },
@@ -77,15 +77,15 @@
       "type": "object",
       "properties": {
         "url": {
-          "$ref": "#/definitions/url" 
+          "$ref": "#/definitions/url"
         },
         "title": {
-          "type": "string" 
+          "type": "string"
         }
       },
       "required": [
         "url",
-        "title" 
+        "title"
       ],
       "additionalProperties": false
     }
