@@ -61,9 +61,8 @@ describe("ValidationService", () => {
     const errors = [ { message: "Invalid regular expression: /?/: Nothing to repeat" } ]
 
     // .validateAll
-    expect(() => format.validateAll(".","")).to.throw("Validator does not support selection")
-    expect(format.validateAll(".")).to.deep.equal([true])
-    expect(format.validateAll("?")[0]).to.be.instanceOf(Array)
+    await expect(format.validateAll(".")).to.eventually.deep.equal([true])
+    await expect(format.validateAll("?")).to.eventually.deep.equal([errors])
 
     // .validateStream
     return toArray(Readable.from(["^a+","?"]).pipe(format.validateStream))
@@ -174,14 +173,12 @@ describe("ValidationService", () => {
     }
   })
 
-  it("should support a format defined by regexp", () => {
-    const format = service.getFormat("digits")
-    expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
-  })
-
-  it("should support a format with parser only", () => {
-    const format = service.getFormat("isbn")
-    expect(() => format.validateAll("","")).to.throw("Validator does not support selection")
+  it("should complain validate with selection if format doesn't support selection", () => {
+    return Promise.all(["regexp", "isbn", "isbn"].map(name => {
+      const format = service.getFormat(name)
+      return expect(format.validateAll("","")).to.be.rejected
+        .then(e => expect(e.message).to.equal("Validator does not support selection"))
+    }))
   })
 
   it("should support validating JSKOS", () => {
@@ -189,7 +186,7 @@ describe("ValidationService", () => {
 
     const input = readJSON("files/jskos.json")
     const errors = readJSON("files/jskos-errors.json")
-    expect(format.validateAll(input, "$.*")).to.deep.equal(errors)
+    return expect(format.validateAll(input, "$.*")).to.eventually.deep.equal(errors)
 
     // FIXME: validateStream stream is not persistent
     // return toArray(Readable.from(input).pipe(format.validateStream))
