@@ -42,7 +42,8 @@ describe("validate CLI", () => {
         "json",
         "json-schema",
         "regexp",
-        "xml"])
+        "xml",
+        "xsd"])
     })
   })
 

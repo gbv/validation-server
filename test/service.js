@@ -31,6 +31,7 @@ describe("ValidationService", () => {
       "json-schema",
       "regexp",
       "xml",
+      "xsd",
     ])
   })
 
@@ -39,6 +40,7 @@ describe("ValidationService", () => {
     expect(formats.map(f => f.id)).deep.equal([
       "json-schema",
       "regexp",
+      "xsd",
     ])
   })
 

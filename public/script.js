@@ -31,7 +31,7 @@ function submitValidate(evnt, form, method) {
     request = fetch(form.action, { method: "POST", body: new FormData(form) })
   }
 
-  const format = document.querySelector("h2").textContent
+  const format = document.querySelector("#format-title").textContent
   const result = document.getElementById("validationResult")
   result.innerHTML = ""
 
