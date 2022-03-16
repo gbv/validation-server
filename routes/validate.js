@@ -19,7 +19,8 @@ async function prepareGetData(req) {
       const res = await fetch(url.toString())
       if (!res.ok) throw new Error()
 
-      query.data = res.text()
+      query.data = await res.text()
+
       const type = res.headers.get("content-type")
       const format = service.guessFromContentType(type)
       if (format && !query.format) {
