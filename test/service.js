@@ -135,7 +135,7 @@ describe("ValidationService", () => {
         "<x>\n<y>\n</x>":     [{
           message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
           position: {
-            rowcol: "3,1",
+            rfc5147: "line=3",
           },
         }],
       },
