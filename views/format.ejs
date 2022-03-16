@@ -81,10 +81,6 @@
 <% } %>
 
 <h3>Validation</h3>
-<p>
-  Check whether data conforms to <%= short %> format
-  (optionally <input type="checkbox" id="rawResult"> <label for="rawResult">show raw response</label>):
-</p>
 <ul>
   <li>
     <code>GET /validate?format=<%= format.id %></code>
@@ -110,5 +106,8 @@
   Optional Request parameter <code>select=$.*</code> validates a JSON array of records.
 </p>
 <% } %>
+<p>
+  <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
+</p>
 
 <%- include("foot") %>
