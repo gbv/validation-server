@@ -113,7 +113,7 @@ describe("Server", () => {
       path: "/schema?format=json-schema&version=draft-07",
       code: 200,
       response(res) {
-        const draft7 = "config/json-schema-draft-07.json"
+        const draft7 = "lib/schemas/json-schema-draft-07.json"
         res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
       },
     },
