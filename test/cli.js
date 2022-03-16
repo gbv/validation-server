@@ -1,8 +1,5 @@
 /* eslint-env node, mocha */
-import chai from "chai"
-import chaiAsPromised from "chai-as-promised"
-chai.use(chaiAsPromised)
-const { expect } = chai
+import { expect } from "./test.js"
 
 import formats from "../lib/formats.js"
 import validate from "../lib/cli.js"

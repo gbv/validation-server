@@ -1,18 +1,10 @@
 /* eslint-env node, mocha */
-import chai from "chai"
-import chaiAsPromised from "chai-as-promised"
-chai.use(chaiAsPromised)
-const { expect } = chai
+import { expect, jsonFile } from "./test.js"
 
 import { Readable } from "stream"
 import toArray from "stream-to-array"
 
 import { loadConfig, createService } from "../index.js"
-
-import fs from "fs"
-import path from "path"
-const __dirname = new URL(".", import.meta.url).pathname
-const readJSON = file => JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
 
 const config = loadConfig()
 const service = await createService(config)
@@ -186,8 +178,8 @@ describe("ValidationService", () => {
   it("should support validating JSKOS", () => {
     const format = service.getFormat("jskos")
 
-    const input = readJSON("files/jskos.json")
-    const errors = readJSON("files/jskos-errors.json")
+    const input = jsonFile("files/jskos.json")
+    const errors = jsonFile("files/jskos-errors.json")
     return expect(format.validateAll(input, "$.*")).to.eventually.deep.equal(errors)
 
     // FIXME: validateStream stream is not persistent

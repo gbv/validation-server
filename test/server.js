@@ -1,17 +1,9 @@
 /* eslint-env node, mocha */
-import fs from "fs"
-import path from "path"
-import chai from "chai"
+import { chai, expect, file, jsonFile } from "./test.js"
 import chaiHttp from "chai-http"
 chai.use(chaiHttp)
-// eslint-disable-next-line no-unused-vars
-const should = chai.should()
 
 import { loadConfig, createService } from "../index.js"
-
-import { URL } from "url"
-const __dirname = new URL(".", import.meta.url).pathname
-const readJSON = file => JSON.parse(fs.readFileSync(path.resolve(__dirname, file)))
 
 const config = loadConfig()
 const formats = await createService(config)
@@ -29,7 +21,7 @@ describe("Server", () => {
       path: "/",
       code: 200,
       response(res) {
-        res.text.should.match(/<body/)
+        expect(res.text).to.match(/<body/)
       },
     },
     {
@@ -37,7 +29,7 @@ describe("Server", () => {
       path: "/json",
       code: 200,
       response(res) {
-        res.text.should.match(/<h2/)
+        expect(res.text).to.match(/<h2/)
       },
     },
     {
@@ -57,8 +49,8 @@ describe("Server", () => {
       path: "/formats",
       code: 200,
       response(res) {
-        res.body.should.be.a("array")
-        res.body.map(format => format.id).sort().should.deep.equal([
+        expect(res.body).to.be.a("array")
+        expect(res.body.map(format => format.id).sort()).to.deep.equal([
           "about/data",
           "array",
           "digits",
@@ -77,7 +69,7 @@ describe("Server", () => {
       path: "/formats?format=xxxx",
       code: 200,
       response(res) {
-        res.body.should.deep.equal([])
+        expect(res.body).to.deep.equal([])
       },
     },
     {
@@ -85,7 +77,7 @@ describe("Server", () => {
       path: "/formats?format=xxxx",
       code: 200,
       response(res) {
-        res.body.should.deep.equal([])
+        expect(res.body).to.deep.equal([])
       },
     },
 
@@ -95,7 +87,7 @@ describe("Server", () => {
       path: "/languages",
       code: 200,
       response(res) {
-        res.body.should.be.a("array")
+        expect(res.body).to.be.a("array")
       },
     },
 
@@ -105,7 +97,7 @@ describe("Server", () => {
       path: "/schema",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Missing query parameter: format")
+        expect(res.body.message).to.equal("Missing query parameter: format")
       },
     },
     {
@@ -113,16 +105,14 @@ describe("Server", () => {
       path: "/schema?format=json-schema&version=draft-07",
       code: 200,
       response(res) {
-        const draft7 = "lib/schemas/json-schema-draft-07.json"
-        res.body.should.deep.equal(JSON.parse(fs.readFileSync(draft7)))
-      },
+        expect(res.body).to.deep.equal(jsonFile("../lib/schemas/json-schema-draft-07.json"))         },
     },
     {
       what:"return a default schema at /schema",
       path: "/schema?format=digits",
       code: 200,
       response(res) {
-        res.text.should.equal("^([0-9]+\n)*$")
+        expect(res.text).to.equal("^([0-9]+\n)*$")
       },
     },
     {
@@ -168,7 +158,7 @@ describe("Server", () => {
       path: "/validate?data=0",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Missing query parameter: format")
+        expect(res.body.message).to.equal("Missing query parameter: format")
       },
     },
     {
@@ -176,7 +166,7 @@ describe("Server", () => {
       path: "/validate?format=json",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Please use HTTP POST or provide query parameter 'url' or 'data'")
+        expect(res.body.message).to.equal("Please use HTTP POST or provide query parameter 'url' or 'data'")
       },
     },
     {
@@ -214,7 +204,7 @@ describe("Server", () => {
       post: "",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Missing HTTP POST request body")
+        expect(res.body.message).to.equal("Missing HTTP POST request body")
       },
     },
     {
@@ -223,7 +213,7 @@ describe("Server", () => {
       post: "",
       code: 400,
       response(res) {
-        res.body.message.should.equals("Missing query parameter: format")
+        expect(res.body.message).to.equal("Missing query parameter: format")
       },
     },
     {
@@ -232,7 +222,7 @@ describe("Server", () => {
       post: "",
       code: 404,
       response(res) {
-        res.body.message.should.equals("Format not found")
+        expect(res.body.message).to.equal("Format not found")
       },
     },
   ]
@@ -247,9 +237,9 @@ describe("Server", () => {
       }
       request
         .end((err, res) => {
-          res.should.have.status(error ? error.status : code)
+          expect(res.status).to.equal(error ? error.status : code)
           if (error) {
-            res.body.should.deep.equal(error)
+            expect(res.body).to.deep.equal(error)
           } else if (response) {
             response(res)
           }
@@ -285,7 +275,7 @@ describe("Server", () => {
     },
     { format: "json-schema", data: "[]", select: "$.*", result: [] },
     { format: "json-schema", data: "[]", result(r) {
-      r[0].should.be.an("array")
+      expect(r[0]).to.be.an("array")
     }},
     { format: "json-schema", data: "{}", result: [true] },
     { format: "json-schema", data: "[{}]", select: "$.*", result: [true] },
@@ -308,11 +298,11 @@ describe("Server", () => {
   validationTests.forEach(({format, version, data, select, code, type, result}) => {
     const resultCheck = done =>
       ((err, res) => {
-        res.should.have.status(code || 200)
+        expect(res.status).to.equal(code || 200)
         if (typeof result === "function") {
           result(res.body)
         } else {
-          res.body.should.deep.equal(result)
+          expect(res.body).to.deep.equal(result)
         }
         done()
       })
@@ -348,10 +338,10 @@ describe("Server", () => {
   it("should support file upload validation (1)", done => {
     chai.request(app)
       .post("/json")
-      .attach("file", path.resolve(__dirname, "../package.json"))
+      .attach("file", file("../package.json"))
       .end((err, res) => {
-        res.should.have.status(200)
-        res.body.should.deep.equal([true])
+        expect(res.status).to.equal(200)
+        expect(res.body).to.deep.equal([true])
         done()
       })
   })
@@ -359,10 +349,10 @@ describe("Server", () => {
   it("should support file upload validation (2)", done => {
     chai.request(app)
       .post("/json-schema")
-      .attach("file", path.resolve(__dirname, "../package.json"))
+      .attach("file", file("../package.json"))
       .end((err, res) => {
-        res.should.have.status(200)
-        res.body[0].should.be.an("array")
+        expect(res.status).to.equal(200)
+        expect(res.body[0]).to.be.an("array")
         done()
       })
   })
@@ -370,10 +360,10 @@ describe("Server", () => {
   it("should support file upload validation with select", done => {
     chai.request(app)
       .post("/jskos")
-      .attach("file", path.resolve(__dirname, "files/jskos.json"))
+      .attach("file", file("files/jskos.json"))
       .field("select", "$.*")
       .end((err, res) => {
-        res.body.should.deep.equal(readJSON("files/jskos-errors.json"))
+        expect(res.body).to.deep.equal(jsonFile("files/jskos-errors.json"))
         done()
       })
   })
