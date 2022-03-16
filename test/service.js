@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import { expect, jsonFile } from "./test.js"
+import { expect, readFile, jsonFile } from "./test.js"
 
 import { Readable } from "stream"
 import toArray from "stream-to-array"
@@ -124,7 +124,7 @@ describe("ValidationService", () => {
     xml: {
       valid: ["<x:y/>"],
       invalid: {
-        "<x>\n<y>\n</x>":     [{
+        "<x>\n<y>\n</x>": [{
           message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
           position: {
             rfc5147: "line=3",
@@ -146,6 +146,22 @@ describe("ValidationService", () => {
         }],
       },
     },
+    xsd: {
+      valid: [ readFile("../lib/schemas/XMLSchema1.1.xsd") ],
+      invalid: {
+        [`<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+        <xs:foo/>
+        </xs:schema>`]: errors => {
+          expect(errors[0].position).to.deep.equal({ rfc5147: "line=2" })
+        },
+        x: [{
+          message: "char 'x' is not expected.",
+          position: {
+            rfc5147: "line=1",
+          },
+        }],
+      },
+    },
   }
 
   Object.entries(serviceTests).forEach(([name, { valid, invalid }]) => {
@@ -161,14 +177,20 @@ describe("ValidationService", () => {
       it(`should detect invalid ${name}`, () =>
         Promise.all(Object.entries(invalid).map(([value, errs]) =>
           expect(format.valid(value)).to.be.rejected
-            .then(({errors}) => expect(errors).to.deep.equal(errs)),
+            .then(({errors}) => {
+              if (typeof errs == "function") {
+                errs(errors)
+              } else {
+                expect(errors).to.deep.equal(errs)
+              }
+            }),
         )),
       )
     }
   })
 
   it("should complain validate with selection if format doesn't support selection", () => {
-    return Promise.all(["regexp", "isbn", "isbn"].map(name => {
+    return Promise.all(["regexp", "isbn", "isbn", "xsd"].map(name => {
       const format = service.getFormat(name)
       return expect(format.validateAll("","")).to.be.rejected
         .then(e => expect(e.message).to.equal("Validator does not support selection"))
@@ -186,4 +208,5 @@ describe("ValidationService", () => {
     // return toArray(Readable.from(input).pipe(format.validateStream))
     //  .then(result => expect(result).to.deep.equal([ true, error ]))
   })
+
 })

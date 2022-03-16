@@ -21,6 +21,18 @@
         }
       }
     },
+    "ignored-because-xsd-validator-failed": {
+      "versions": {
+        "default": {
+          "schemas": [
+            {
+              "type": "xsd",
+              "value": "123"
+            }
+          ]
+        }
+      }
+    },
     "array": {
       "versions": {
         "default": {

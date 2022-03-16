@@ -9,6 +9,7 @@ import { URL } from "url"
 const __dirname = new URL(".", import.meta.url).pathname
 
 const file = name => path.resolve(__dirname, name)
-const jsonFile = path => JSON.parse(fs.readFileSync(file(path)))
+const readFile = path => fs.readFileSync(file(path))
+const jsonFile = path => JSON.parse(readFile(path))
 
-export { chai, expect, file, jsonFile }
+export { chai, expect, file, readFile, jsonFile }
