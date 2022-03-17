@@ -4,8 +4,7 @@ node_modules/
 config.json
 config/formats.json
 
-formats/
-!test/formats/
+cache/
 
 npm-debug.log*
 yarn-debug.log*

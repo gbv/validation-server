@@ -5,5 +5,5 @@
   "limit": "20MB",
   "verbosity": "warn",
   "formats": {},
-  "cachePath": "./formats"
+  "cachePath": "./cache"
 }

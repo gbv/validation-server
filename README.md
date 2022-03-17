@@ -76,6 +76,9 @@ The following schema languages are supported for validation of other formats. Th
   - Supports ECMAScript variant with Unicode flag enabled automatically and flags other than `i`, `m`, `s` ignored.
   - Can be given as plain pattern or in form `/${pattern}/${flags}`
 
+- XML Schema (`xsd`)
+  - Requires xmllint executable to be installed.
+
 ### See Also
 
 The format registry <http://format.gbv.de/> (mostly German) lists data formats relevant to cultural heritage institutions. The thesis described at <http://aboutdata.org> includes some theoretical background.
@@ -83,6 +86,12 @@ The format registry <http://format.gbv.de/> (mostly German) lists data formats r
 ## Install
 
 Requires at least Node v14.8.0.
+
+Support of XML Schema based formats requires `xmllint` to be installed:
+
+```bash
+sudo apt install libxml2-utils
+```
 
 ### From GitHub
 
@@ -106,7 +115,7 @@ The service must be customized via configuration files. By default, this configu
   "postLimit": "20MB",
   "verbosity": "info",
   "formats": [],
-  "cachePath": "./formats"
+  "cachePath": "./cache"
 }
 ```
 
