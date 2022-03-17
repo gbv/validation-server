@@ -147,7 +147,7 @@ describe("ValidationService", () => {
       },
     },
     xsd: {
-      valid: [ readFile("../lib/schemas/XMLSchema1.1.xsd") ],
+      valid: [ readFile("../lib/schemas/xml-schema-2009.xsd") ],
       invalid: {
         [`<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
         <xs:foo/>

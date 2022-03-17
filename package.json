@@ -12,6 +12,7 @@
     "validate": "./bin/validate.js"
   },
   "scripts": {
+    "xml": "node ./xml.js",
     "start": "nodemon --ignore formats -e js,ejs server.js",
     "update": "node bin/update.js",
     "test": "NODE_ENV=test mocha --exit --timeout 4000",
