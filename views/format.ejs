@@ -80,7 +80,12 @@
 </p>
 <% } %>
 
-<h3>Validation</h3>
+<h3 style="display: flex">
+  <div style="flex-grow: 1">Validation</div>
+  <div style="font-weight: normal">
+    <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
+  </div>
+</h3>
 <ul>
   <li>
     <code>GET /validate?format=<%= format.id %></code>
@@ -106,8 +111,5 @@
   Optional Request parameter <code>select=$.*</code> validates a JSON array of records.
 </p>
 <% } %>
-<p>
-  <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
-</p>
 
 <%- include("foot") %>
