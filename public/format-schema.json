@@ -30,6 +30,9 @@
     "description": {
       "type": "string"
     },
+    "fileExtension": {
+      "type": "string"
+    },
     "wikidata": {
       "type": "string",
       "pattern": "^Q[1-9][0-9]*$"
