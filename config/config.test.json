@@ -1,5 +1,6 @@
 {
   "verbosity": "info",
+  "cache": false,
   "formats": {
     "ignored-because-no-validator": {},
     "ignored-because-all-validator-failed": {

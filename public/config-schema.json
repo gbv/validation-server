@@ -25,8 +25,15 @@
         }
       ]
     },
-    "cachePath": {
-      "type": "string"
+    "cache": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "const": false
+        }
+      ]
     },
     "port": {
       "type": "integer"

@@ -115,7 +115,7 @@ The service must be customized via configuration files. By default, this configu
   "postLimit": "20MB",
   "verbosity": "info",
   "formats": [],
-  "cachePath": "./cache"
+  "cache": "../cache"
 }
 ```
 
@@ -141,7 +141,7 @@ npm run start
 NODE_ENV=production node ./server.js
 ```
 
-On startup all configured schemas are downloaded to `cachePath` and compiled. Addition and updates require to restart the server.
+On startup all configured schemas are downloaded and cached in directory configured with `cache` (set to `false` to use a temporary directory). Addition and updates require to restart the server.
 
 ### Deployment
 
