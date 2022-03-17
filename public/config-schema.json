@@ -21,6 +21,22 @@
           "additionalProperties": false
         },
         {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "format-schema.json"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "id"
+                ]
+              }
+            ]
+          }
+        },
+        {
           "type": "string"
         }
       ]

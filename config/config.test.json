@@ -3,7 +3,7 @@
   "cache": false,
   "formats": {
     "ignored-because-no-validator": {},
-    "ignored-because-all-validator-failed": {
+    "ignored-because-every-regexp-validator-failed": {
       "versions": {
         "1": {
           "schemas": [

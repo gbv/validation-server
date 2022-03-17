@@ -54,10 +54,4 @@ map(
   |select(.versions)
 )
 
-| map({
-  key: (.id | cleanid),
-  value: .
-})
-| from_entries
-
 # Usage: jq . -s ../format.gbv.de/formats.ndjson | jq -f bin/convert-formats.jq > format.gbv.de.json
