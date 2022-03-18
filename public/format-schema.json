@@ -18,6 +18,9 @@
     "base": {
       "$ref": "#/definitions/ids"
     },
+    "profiles": {
+      "$ref": "#/definitions/ids"
+    },
     "restricts": {
       "$ref": "#/definitions/ids"
     },
