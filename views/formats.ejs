@@ -1,0 +1,14 @@
+<ul>
+  <% for (let format of root) {
+    if (typeof format === "string") format = formats.find(f => f.id === format)
+  %>
+    <li>
+      <a href="./<%= format.id %>"><%= format.title || format.id %></a>
+      (<a href="formats?format=<%= format.id %>"><code><%= format.id %></code></a>)
+      <%= format.description %>
+      <% if (format.profiles) { %>
+        <%- include("formats", { root: format.profiles, formats }) %>
+      <% } %>
+    </li>
+  <% } %>
+</ul>
