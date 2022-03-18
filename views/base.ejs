@@ -6,15 +6,7 @@
 </p>
 
 <h2>Supported Data Formats</h2>
-<ul>
-  <% for (let format of formats) { %>
-    <li>
-      <a href="./<%= format.id %>"><%= format.title || format.id %></a>
-      (<a href="formats?format=<%= format.id %>"><code><%= format.id %></code></a>)
-      <%= format.description %>
-    </li>
-  <% } %>
-</ul>
+<%- include("formats", { root: formats.filter(f => !f.base) }) %>
 
 <h2>API Endpoints</h2>
 <dl>

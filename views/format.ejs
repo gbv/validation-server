@@ -112,4 +112,9 @@
 </p>
 <% } %>
 
+<% if (format.profiles) { %>
+<h3>Formats based on <%= short %></h3>
+<%- include("formats", { root: format.profiles }) %>
+<% } %>
+
 <%- include("foot") %>

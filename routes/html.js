@@ -1,11 +1,13 @@
 import express from "express"
 const router = express.Router()
 
+import { asArray } from "../lib/utils.js"
+
 function render(req, res, path, vars) {
   const config = req.app.get("validationConfig")
   const service = req.app.get("validationService")
   const formats = service.listFormats()
-  res.render(path, { ...service, ...config, formats, ...vars})
+  res.render(path, { ...service, ...config, formats, ...vars, asArray })
 }
 
 // root page
