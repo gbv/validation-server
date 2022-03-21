@@ -4,6 +4,7 @@
 
 - Support validing with XML Schema (based on xmllint)
 - UI: Support validating via GET request
+- UI: Support selection of version
 - UI: Ceanup and extension
 - Rename configuration `cachePath` to `cache` and allow `false` for non-persistent cache
 

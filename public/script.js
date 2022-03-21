@@ -9,6 +9,37 @@ Object.entries({
   }
 })
 
+const versionSelect = document.getElementById("versionSelect")
+if (versionSelect) {
+  function selectVersion() {
+    const version = versionSelect.value
+    const isDefaultVersion = version == "" || version == "default"
+
+    const validateData = document.forms.validateData
+    const validateFile = document.forms.validateFile
+
+    var dataAction = validateData.action.replace(/&version=.+$/,"")
+    var fileAction = validateFile.action.replace(/@[^@]+$/,"")
+
+    if (!isDefaultVersion) {
+      dataAction = dataAction + "&version=" + version
+      fileAction = fileAction + "@" + version
+    }
+    validateFile.action = fileAction
+    validateData.action = dataAction
+
+    document.querySelectorAll(".at-version").forEach(e => {
+      e.textContent = isDefaultVersion ? "" : "@" + version
+    })
+    document.querySelectorAll(".and-version").forEach(e => {
+      e.textContent = isDefaultVersion ? "" : "&version=" + version
+    })
+  }
+
+  versionSelect.addEventListener("change", selectVersion)
+  selectVersion()
+}
+
 function messageDiv(valid, content) {
   const div = document.createElement("div")
   div.className = valid ? "msg valid" : "msg invalid"
@@ -19,7 +50,6 @@ function messageDiv(valid, content) {
 function submitValidate(evnt, form, method) {
   if (typeof fetch === "undefined") return
 
-  console.log(document.getElementById("rawResult"))
   if (document.getElementById("rawResult").checked) return
   evnt.preventDefault()
 

@@ -44,11 +44,12 @@
       </ul>
     </dd>
   <% } %>
-  <% if (format.versions) { %>
+  <% versions = format.versions ? Object.keys(format.versions).sort().reverse() : null %>
+  <% if (versions) { %>
     <dt>versions and schemas</dt>
     <dd>
       <ul>
-        <% for (var v in format.versions) {
+        <% for (var v of versions) {
           let schemas = format.versions[v].schemas || []
             for (var schema of schemas) { %>
               <li>
@@ -83,25 +84,34 @@
 <h3 style="display: flex">
   <div style="flex-grow: 1">Validation</div>
   <div style="font-weight: normal">
+    <% if (versions && versions.length > 1) { %>
+      <label for="versionSelect">version </label>
+      <select name="version" id="versionSelect">
+        <option value="default">(default)</option>
+        <% for (let v of versions) { %>
+          <option value="<%=v%>"><%=v%></option>
+        <% } %>
+      </select>
+    <% } %>
     <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
   </div>
 </h3>
 <ul>
   <li>
-    <code>GET /validate?format=<%= format.id %></code>
+    <code>GET /validate?format=<%= format.id %><span class="and-version"/></code>
     ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
     <%- include("validate-data-form") %>
   </li>
   <li>
     <div>
-      <code>POST /<%= format.id %></code> multipart/form-data
+      <code>POST /<%= format.id %><span class="at-version"/></code> multipart/form-data
       ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
     </div>
     <%- include("validate-file-form") %>
    <div id="validationResult"></div>
   </li>
   <li>
-    <code>POST /<%= format.id %></code> request body
+    <code>POST /<%= format.id %><span class="at-version"/></code> request body
     ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
 <pre><code language="bash">curl -X POST <%= baseUrl + format.id %> -d @filename</code></pre>
   </li>
