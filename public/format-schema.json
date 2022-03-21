@@ -28,7 +28,8 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "minItems": 1
     },
     "description": {
       "type": "string"
@@ -54,7 +55,7 @@
   "definitions": {
     "id": {
       "type": "string",
-      "pattern": "^[0-9a-z_/-]+$"
+      "pattern": "^[0-9a-z_/.-]+$"
     },
     "ids": {
       "anyOf": [
@@ -65,7 +66,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/id"
-          }
+          },
+          "minItems": 1
         }
       ]
     },
@@ -84,7 +86,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/schema"
-          }
+          },
+          "minItems": 1
         }
       },
       "additionalProperties": true
