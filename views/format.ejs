@@ -84,16 +84,18 @@
 <h3 style="display: flex">
   <div style="flex-grow: 1">Validation</div>
   <div style="font-weight: normal">
-    <% if (versions && versions.length > 1) { %>
-      <label for="versionSelect">version </label>
-      <select name="version" id="versionSelect">
-        <option value="default">(default)</option>
-        <% for (let v of versions) { %>
-          <option value="<%=v%>"><%=v%></option>
-        <% } %>
-      </select>
-    <% } %>
-    <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
+    <small>
+      <% if (versions && versions.length > 1) { %>
+        <label for="versionSelect">version </label>
+        <select name="version" id="versionSelect">
+          <option value="default">(default)</option>
+          <% for (let v of versions) { %>
+            <option value="<%=v%>"><%=v%></option>
+          <% } %>
+        </select>
+      <% } %>
+      <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
+    </small>
   </div>
 </h3>
 <ul>
