@@ -1,4 +1,4 @@
-import formatFromQuery from "../lib/format-from-query.js"
+import { formatFromQuery } from "../lib/query.js"
 import knownFormats from "../lib/formats.js"
 
 async function schemaRoute (req, res, next) {

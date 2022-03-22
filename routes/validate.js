@@ -1,11 +1,11 @@
 import express from "express"
 const router = express.Router()
 
-import { MalformedRequest } from "../lib/errors.js"
 import { URL } from "url"
 import fetch from "node-fetch"
 
-import formatFromQuery from "../lib/format-from-query.js"
+import { MalformedRequest } from "../lib/errors.js"
+import { checkQueryValue, formatFromQuery } from "../lib/query.js"
 
 // HTTP GET
 async function prepareGetData(req) {
@@ -47,6 +47,12 @@ router.get("/validate", async (req, res, next) => {
     .catch(error => next(error))
 })
 
+router.post("/:format([0-9a-z_/-]+)@:version([0-9a-z_/.-]+)", async (req, res, next) => {
+  req.query.version = req.params.version
+  req.url = `/${req.params.format}`
+  next()
+})
+
 router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   req.query.format = req.params.format
   req.url = "/"
@@ -61,10 +67,14 @@ router.post("/", async (req, res, next) => {
     } else {
       req.rawBody = req.body.data
     }
-    req.query.version = req.body.version
+    try {
+      checkQueryValue(req.query, "format", req.body.format)
+      checkQueryValue(req.query, "version", req.body.version)
+    } catch(e) {
+      next(e)
+    }
     req.query.type = req.body.type
     req.query.select = req.body.select
-    req.query.format = req.query.format || req.body.format
   }
   formatFromQuery(req)
     .then(format => {

@@ -113,12 +113,12 @@
   <li>
     <code>POST /<%= format.id %><span class="at-version"/></code> request body
     ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
-<pre><code language="bash">curl -X POST <%= baseUrl + format.id %> -d @filename</code></pre>
+<pre><code language="bash">curl -X POST <%= baseUrl + format.id %><span class="at-version"></span><span> -d @filename</span></code></pre>
   </li>
 </ul>
 <% if (format.base === "json") { %>
 <p>
-  Optional Request parameter <code>select=$.*</code> validates a JSON array of records.
+  Optional Request parameter <code>select=$.*</code> validates records in a JSON array.
 </p>
 <% } %>
 

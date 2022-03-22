@@ -202,27 +202,30 @@ describe("Server", () => {
       what:"require a request body at POST /json",
       path: "/json",
       post: "",
-      code: 400,
-      response(res) {
-        expect(res.body.message).to.equal("Missing HTTP POST request body")
+      error: {
+        error: "MalformedRequest",
+        message: "Missing HTTP POST request body",
+        status: 400,
       },
     },
     {
       what:"require a format at POST /",
       path: "/",
       post: "",
-      code: 400,
-      response(res) {
-        expect(res.body.message).to.equal("Missing query parameter: format")
+      error: {
+        error: "MalformedRequest",
+        message: "Missing query parameter: format",
+        status: 400,
       },
     },
     {
       what:"complain about unknown format at POST /example",
       path: "/example",
       post: "",
-      code: 404,
-      response(res) {
-        expect(res.body.message).to.equal("Format not found")
+      error: {
+        error: "NotFound",
+        status: 404,
+        message: "Format not found",
       },
     },
   ]
@@ -288,6 +291,20 @@ describe("Server", () => {
         position: { jsonpointer: "/properties" },
       }]],
     },
+    {
+      format: "json-schema@draft-04",
+      data: "{\"id\":false}", result: [[{
+        message: "must be string",
+        position: { jsonpointer: "/id" },
+      }]],
+    },
+    {
+      format: "json-schema@draft-07",
+      data: "{\"$id\":false}", result: [[{
+        message: "must be string",
+        position: { jsonpointer: "/$id" },
+      }]],
+    },
     { format: "array", data: "[]", result: [true] },
     { format: "array", data: "{}", result: [[{
       message: "must be array",
@@ -295,7 +312,7 @@ describe("Server", () => {
     }]] },
   ]
 
-  validationTests.forEach(({format, version, data, select, code, type, result}) => {
+  validationTests.forEach(({format, data, select, code, type, result}) => {
     const resultCheck = done =>
       ((err, res) => {
         expect(res.status).to.equal(code || 200)
@@ -326,13 +343,23 @@ describe("Server", () => {
     it(`should validate ${format} data ${data} ${select} (POST multipart)`, done => {
       const fields = { data }
       if (select) fields.select = select
-      if (version) fields.version = version
       chai.request(app)
         .post(`/${format}`)
         .type("form")
         .field(fields)
         .end(resultCheck(done))
     })
+  })
+
+  it("should complain about version mismatch at POST / (multipart)", done => {
+    chai.request(app)
+      .post("/json@1")
+      .type("form")
+      .field({ version: "2" })
+      .end((err, res) => {
+        expect(res.status).to.equal(400)
+        done()
+      })
   })
 
   it("should support file upload validation (1)", done => {

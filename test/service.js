@@ -50,6 +50,17 @@ describe("ValidationService", () => {
     expect(Object.keys(result.versions)).to.deep.equal(["draft-07"])
   })
 
+  it("should reduce format versions to those useable for validation", () => {
+    const digits = service.getFormat("digits")
+    expect(Object.keys(digits.versions)).to.deep.equal(["default"])
+  })
+
+  it("should use specific schema version, if requested", () => {
+    const jsonSchema = service.getFormat("json-schema", { version: "draft-04" })
+    const [ schema ] = jsonSchema.versions["draft-04"].schemas
+    expect(jsonSchema.validateAll).equal(schema.validateAll)
+  })
+
   it("should include regexp as format", async () => {
     const format = service.getFormat("regexp")
     const errors = [ { message: "Invalid regular expression: /?/: Nothing to repeat" } ]
@@ -83,6 +94,22 @@ describe("ValidationService", () => {
             position: { jsonpointer: "" },
           },
         ],
+      },
+    },
+    "json-schema@draft-07": {
+      invalid: {
+        "{\"$id\":false}": [{
+          message: "must be string",
+          position: { jsonpointer: "/$id" },
+        }],
+      },
+    },
+    "json-schema@draft-04": {
+      invalid: {
+        "{\"id\":false}": [{
+          message: "must be string",
+          position: { jsonpointer: "/id" },
+        }],
       },
     },
     regexp: {
@@ -165,7 +192,8 @@ describe("ValidationService", () => {
   }
 
   Object.entries(serviceTests).forEach(([name, { valid, invalid }]) => {
-    const format = service.getFormat(name)
+    const [ id, version ] = name.split("@")
+    const format = service.getFormat(id, { version })
     if (valid) {
       it(`should pass valid ${name}`, () =>
         Promise.all(valid.map(value =>

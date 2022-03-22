@@ -15,18 +15,14 @@ if (versionSelect) {
     const version = versionSelect.value
     const isDefaultVersion = version == "" || version == "default"
 
-    const validateData = document.forms.validateData
+    document.forms.validateData.elements.version.value = version
+
     const validateFile = document.forms.validateFile
 
-    var dataAction = validateData.action.replace(/&version=.+$/,"")
-    var fileAction = validateFile.action.replace(/@[^@]+$/,"")
-
+    validateFile.action = validateFile.action.replace(/@[^@]+$/,"")
     if (!isDefaultVersion) {
-      dataAction = dataAction + "&version=" + version
-      fileAction = fileAction + "@" + version
+      validateFile.action += "@" + version
     }
-    validateFile.action = fileAction
-    validateData.action = dataAction
 
     document.querySelectorAll(".at-version").forEach(e => {
       e.textContent = isDefaultVersion ? "" : "@" + version

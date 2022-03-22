@@ -48,6 +48,8 @@
     },
     "digits": {
       "versions": {
+        "skipped": {
+        },
         "default": {
           "schemas": [
             {
