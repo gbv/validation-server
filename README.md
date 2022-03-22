@@ -310,6 +310,8 @@ Validate records like [GET /validate](#validate) but data is send via HTTP POST 
 
 * `format` format identifier. Can also be specified in the URL path, e.g. `/json` is identical to `/?format=json`.
 
+* `version` optional version identifier. Can also be given as part of format as `format@version`
+
 * `select` Optional selection of records within the posted data.
 
 * `file` File to be validated (form data only)
@@ -394,7 +396,7 @@ Lists all [data formats](#data-formats), optionally filtered by identifier, vers
 
 * `format=[id]` select format with given format identifier
 
-* `version=[string]` version to filter for
+* `version=[id]` version to filter for
 
 * `type=[string]` schema type filter for
 
