@@ -292,7 +292,7 @@ curl -g 'http://format.gbv.de/validate/validate?format=json&data=[x]'
   [
     {
       "message": "Unexpected token x in JSON at position 1",
-      "position": { "rfc5147": "char=1" }
+      "position": { "rfc5147": "char=1", "linecol": "1:2" }
     }
   ]
 ]

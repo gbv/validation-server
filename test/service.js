@@ -85,7 +85,7 @@ describe("ValidationService", () => {
         "[": [
           {
             message: "Unexpected end of JSON input",
-            position: { rfc5147: "char=1" },
+            position: { rfc5147: "char=1", linecol: "1:2" },
           },
         ],
         "[]": [
@@ -140,11 +140,11 @@ describe("ValidationService", () => {
       invalid: {
         "{": [{
           message: "Unexpected end of JSON input",
-          position: { rfc5147: "char=1" },
+          position: { rfc5147: "char=1", linecol: "1:2" },
         }],
-        "{ 1": [{
+        "{\n1": [{
           message: "Unexpected number in JSON at position 2",
-          position: { rfc5147: "char=2" },
+          position: { rfc5147: "char=2", linecol: "2:1" },
         }],
       },
     },
@@ -153,9 +153,7 @@ describe("ValidationService", () => {
       invalid: {
         "<x>\n<y>\n</x>": [{
           message: "Expected closing tag 'y' (opened in line 2, col 1) instead of closing tag 'x'.",
-          position: {
-            rfc5147: "line=3",
-          },
+          position: { rfc5147: "line=3" },
         }],
       },
     },

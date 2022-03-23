@@ -266,14 +266,14 @@ describe("Server", () => {
       format: "json", data: "{",
       result: [[{
         message: "Unexpected end of JSON input",
-        position: { rfc5147: "char=1" },
+        position: { rfc5147: "char=1", linecol: "1:2" },
       }]],
     },
     {
-      format: "json", data: "{ 1",
+      format: "json", data: "{\n1",
       result: [[{
         message: "Unexpected number in JSON at position 2",
-        position: { rfc5147: "char=2" },
+        position: { rfc5147: "char=2", linecol: "2:1" },
       }]],
     },
     { format: "json-schema", data: "[]", select: "$.*", result: [] },
@@ -325,14 +325,15 @@ describe("Server", () => {
       })
 
     select = select || ""
+    const niceData = data.replaceAll("\n","\\n")
 
-    it(`should validate ${format} data ${data} ${select} (GET)`, done => {
+    it(`should validate ${format} data ${niceData} ${select} (GET)`, done => {
       chai.request(app)
         .get(`/validate?format=${format}&data=${data}` + (select ? `&select=${select}` : ""))
         .end(resultCheck(done))
     })
 
-    it(`should validate ${format} data ${data} ${select} (POST body)`, done => {
+    it(`should validate ${format} data ${niceData} ${select} (POST body)`, done => {
       chai.request(app)
         .post(`/${format}` + (select ? `?select=${select}` : ""))
         .set("content-type", type || "application/x-www-form-urlencoded")
@@ -340,7 +341,7 @@ describe("Server", () => {
         .end(resultCheck(done))
     })
 
-    it(`should validate ${format} data ${data} ${select} (POST multipart)`, done => {
+    it(`should validate ${format} data ${niceData} ${select} (POST multipart)`, done => {
       const fields = { data }
       if (select) fields.select = select
       chai.request(app)
