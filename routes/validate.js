@@ -2,7 +2,8 @@ import express from "express"
 const router = express.Router()
 
 import { URL } from "url"
-import fetch from "node-fetch"
+import axios from "axios"
+import bytes from "bytes"
 
 import { MalformedRequest } from "../lib/errors.js"
 import { checkQueryValue, formatFromQuery } from "../lib/query.js"
@@ -10,22 +11,26 @@ import { checkQueryValue, formatFromQuery } from "../lib/query.js"
 // HTTP GET
 async function prepareGetData(req) {
   const service = req.app.get("validationService")
+  const config = req.app.get("validationConfig")
+  const maxBodyLength = bytes.parse(config.limit)
+
   const { query } = req
 
   if (query.url) {
     // Get data from URL
     try {
       const url = new URL(query.url)
-      const res = await fetch(url.toString())
-      if (!res.ok) throw new Error()
 
-      query.data = await res.text()
+      // TODO: timeout?
+      const res = await axios(url.toString(), {
+        maxBodyLength,
+        responseType: "text",
+      })
 
-      const type = res.headers.get("content-type")
-      const format = service.guessFromContentType(type)
-      if (format && !query.format) {
-        query.format = format
-      }
+      query.data = res.data
+
+      const type = res.headers["content-type"]
+      query.format ||= service.guessFromContentType(type)
 
     } catch(e) {
       if (e instanceof TypeError) {
