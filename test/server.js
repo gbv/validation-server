@@ -1,5 +1,6 @@
 /* eslint-env node, mocha */
 import { chai, expect, file, jsonFile } from "./test.js"
+import moxios from "moxios"
 import chaiHttp from "chai-http"
 chai.use(chaiHttp)
 
@@ -11,6 +12,10 @@ const formats = await createService(config)
 import app from "../server.js" // TODO: await start
 app.set("formats", formats)
 
+moxios.install()
+moxios.stubRequest("http://example.org/xml", { headers: {}, responseText: "<x/>" })
+moxios.stubRequest("http://example.org/missing", { status: 404 })
+
 describe("Server", () => {
 
   const requestTests = [
@@ -19,7 +24,6 @@ describe("Server", () => {
     {
       what: "show HTML on base URL",
       path: "/",
-      code: 200,
       response(res) {
         expect(res.text).to.match(/<body/)
       },
@@ -27,7 +31,6 @@ describe("Server", () => {
     {
       what: "show HTML on format page",
       path: "/json",
-      code: 200,
       response(res) {
         expect(res.text).to.match(/<h2/)
       },
@@ -35,19 +38,16 @@ describe("Server", () => {
     {
       what: "config-schema.json",
       path: "/config-schema.json",
-      code: 200,
     },
     {
       what: "format-schema.json",
       path: "/format-schema.json",
-      code: 200,
     },
 
     // GET /formats
     {
       what: "list formats at /formats",
       path: "/formats",
-      code: 200,
       response(res) {
         expect(res.body).to.be.a("array")
         expect(res.body.map(format => format.id).sort()).to.deep.equal([
@@ -65,27 +65,20 @@ describe("Server", () => {
       },
     },
     {
-      what:"allow unknown format name at /formats",
+      what: "allow unknown format name at /formats",
       path: "/formats?format=xxxx",
-      code: 200,
-      response(res) {
-        expect(res.body).to.deep.equal([])
-      },
+      response: [],
     },
     {
-      what:"allow unknown format name at /formats",
+      what: "allow unknown format name at /formats",
       path: "/formats?format=xxxx",
-      code: 200,
-      response(res) {
-        expect(res.body).to.deep.equal([])
-      },
+      response: [],
     },
 
     // GET /types
     {
-      what:"list schema languages at /languages",
+      what: "list schema languages at /languages",
       path: "/languages",
-      code: 200,
       response(res) {
         expect(res.body).to.be.a("array")
       },
@@ -93,7 +86,7 @@ describe("Server", () => {
 
     // GET /schema
     {
-      what:"require a format parameter at /schema",
+      what: "require a format parameter at /schema",
       path: "/schema",
       code: 400,
       response(res) {
@@ -101,22 +94,19 @@ describe("Server", () => {
       },
     },
     {
-      what:"return a schema at /schema",
+      what: "return a schema at /schema",
       path: "/schema?format=json-schema&version=draft-07",
-      code: 200,
-      response(res) {
-        expect(res.body).to.deep.equal(jsonFile("../lib/schemas/json-schema-draft-07.json"))         },
+      response: jsonFile("../lib/schemas/json-schema-draft-07.json"),
     },
     {
-      what:"return a default schema at /schema",
+      what: "return a default schema at /schema",
       path: "/schema?format=digits",
-      code: 200,
       response(res) {
         expect(res.text).to.equal("^([0-9]+\n)*$")
       },
     },
     {
-      what:"return 404 if schema version not found at /schema",
+      what: "return 404 if schema version not found at /schema",
       path: "/schema?format=json-schema&version=notexist",
       error: {
         error: "NotFound",
@@ -125,7 +115,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"return 404 if format has no schemas at /schema",
+      what: "return 404 if format has no schemas at /schema",
       path: "/schema?format=regexp",
       error: {
         error: "NotFound",
@@ -134,7 +124,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"detect invalid format parameter at /schema",
+      what: "detect invalid format parameter at /schema",
       path: "/schema?format=$",
       error: {
         error: "MalformedRequest",
@@ -143,7 +133,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"detect invalid version parameter at /schema",
+      what: "detect invalid version parameter at /schema",
       path: "/schema?format=json&version=$",
       error: {
         error: "MalformedRequest",
@@ -154,7 +144,7 @@ describe("Server", () => {
 
     // GET /validate
     {
-      what:"require a format parameter at /validate",
+      what: "require a format parameter at /validate",
       path: "/validate?data=0",
       code: 400,
       response(res) {
@@ -162,7 +152,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"require a data or url parameter at /validate",
+      what: "require a data or url parameter at /validate",
       path: "/validate?format=json",
       code: 400,
       response(res) {
@@ -170,7 +160,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"return 404 if format not found at /validate",
+      what: "return 404 if format not found at /validate",
       path: "/validate?format=notexist&data=x",
       error: {
         error: "NotFound",
@@ -179,7 +169,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"return 400 for invalid select",
+      what: "return 400 for invalid select",
       path: "/validate?format=json-schema&data=[]&select=_",
       error: {
         error: "MalformedRequest",
@@ -188,7 +178,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"return 400 for unsupported select",
+      what: "return 400 for unsupported select",
       path: "/validate?format=json&data=[]&select=$.*",
       error: {
         error: "MalformedRequest",
@@ -196,10 +186,32 @@ describe("Server", () => {
         status: 400,
       },
     },
+    {
+      what: "validate retrieved from url (valid)",
+      path: "/validate?format=xml&url=http://example.org/xml",
+      response: [ true ],
+    },
+    {
+      what: "validate retrieved from url (invalid)",
+      path: "/validate?format=json&url=http://example.org/xml",
+      response: [[{
+        message: "Unexpected token < in JSON at position 0",
+        position: { linecol: "1:1", rfc5147: "char=0" },
+      }]],
+    },
+    {
+      what: "validate retrieved from url (failed to fetch)",
+      path: "/validate?format=xml&url=http://example.org/missing",
+      error: {
+        error: "Error",
+        message: "Requesting data from url failed!",
+        status: 500,
+      },
+    },
 
     // POST /
     {
-      what:"require a request body at POST /json",
+      what: "require a request body at POST /json",
       path: "/json",
       post: "",
       error: {
@@ -209,7 +221,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"require a format at POST /",
+      what: "require a format at POST /",
       path: "/",
       post: "",
       error: {
@@ -219,7 +231,7 @@ describe("Server", () => {
       },
     },
     {
-      what:"complain about unknown format at POST /example",
+      what: "complain about unknown format at POST /example",
       path: "/example",
       post: "",
       error: {
@@ -240,11 +252,15 @@ describe("Server", () => {
       }
       request
         .end((err, res) => {
-          expect(res.status).to.equal(error ? error.status : code)
+          expect(res.status).to.equal(error ? error.status : code || 200)
           if (error) {
             expect(res.body).to.deep.equal(error)
           } else if (response) {
-            response(res)
+            if (typeof response === "function") {
+              response(res)
+            } else {
+              expect(res.body).to.deep.equal(response)
+            }
           }
           done()
         })
@@ -396,4 +412,12 @@ describe("Server", () => {
       })
   })
 
+  it("should validate file retrieved via URL", done => {
+    chai.request(app)
+      .get("/validate?format=xml&url=http://example.org/xml")
+      .end((err, res) => {
+        expect(res.body).to.deep.equal([true])
+        done()
+      })
+  })
 })

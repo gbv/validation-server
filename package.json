@@ -52,6 +52,7 @@
     "lint-staged": "^12.3.3",
     "mocha": "^9.2.1",
     "mocha-eslint": "^7.0.0",
+    "moxios": "^0.4.0",
     "portfinder": "^1.0.28",
     "pre-commit": "^1.2.2",
     "standard-readme": "^2.0.4",

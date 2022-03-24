@@ -22,7 +22,7 @@ async function prepareGetData(req) {
       const url = new URL(query.url)
 
       // TODO: timeout?
-      const res = await axios(url.toString(), {
+      const res = await axios.get(url.toString(), {
         maxBodyLength,
         responseType: "text",
       })
@@ -34,9 +34,9 @@ async function prepareGetData(req) {
 
     } catch(e) {
       if (e instanceof TypeError) {
-        throw new MalformedRequest("malformed query parameter: url")
+        throw new MalformedRequest("Malformed query parameter: url")
       } else {
-        throw new Error("requesting data from url failed!")
+        throw new Error("Requesting data from url failed!")
       }
     }
   } else if (!query.data) {
