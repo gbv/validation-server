@@ -113,6 +113,7 @@ The service must be customized via configuration files. By default, this configu
   "port": 3700,
   "proxies": [],
   "postLimit": "20MB",
+  "httpTimeout": 2000,
   "verbosity": "info",
   "formats": [],
   "cache": "../cache"

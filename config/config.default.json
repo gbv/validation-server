@@ -3,6 +3,7 @@
   "port": 3700,
   "proxies": [],
   "limit": "20MB",
+  "httpTimeout": 2000,
   "verbosity": "warn",
   "formats": {},
   "cache": "../cache"

@@ -12,6 +12,7 @@ import { checkQueryValue, formatFromQuery } from "../lib/query.js"
 async function prepareGetData(req) {
   const service = req.app.get("validationService")
   const config = req.app.get("validationConfig")
+  const timeout = config.httpTimeout
   const maxBodyLength = bytes.parse(config.limit)
 
   const { query } = req
@@ -21,16 +22,16 @@ async function prepareGetData(req) {
     try {
       const url = new URL(query.url)
 
-      // TODO: timeout?
       const res = await axios.get(url.toString(), {
         maxBodyLength,
+        timeout,
         responseType: "text",
       })
 
       query.data = res.data
 
       const type = res.headers["content-type"]
-      query.format ||= service.guessFromContentType(type)
+      query.format = query.format || service.guessFromContentType(type)
 
     } catch(e) {
       if (e instanceof TypeError) {
