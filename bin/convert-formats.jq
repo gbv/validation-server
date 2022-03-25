@@ -27,6 +27,7 @@ map(
     short,
     base: (.base|cleanids),
     restricts: (.for|cleanids),
+    description: (if .description then .description.en else null end),
     url: .homepage,
   }
   + if .schemas then
@@ -52,6 +53,7 @@ map(
   end
   |del(..|nulls)
   |select(.versions)
+  |select(.id != "lido") # FIXME
 )
 
 # Usage: jq . -s ../format.gbv.de/formats.ndjson | jq -f bin/convert-formats.jq > format.gbv.de.json
