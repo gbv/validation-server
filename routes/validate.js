@@ -12,7 +12,7 @@ import { checkQueryValue, formatFromQuery } from "../lib/query.js"
 async function prepareGetData(req) {
   const service = req.app.get("validationService")
   const config = req.app.get("validationConfig")
-  const timeout = config.httpTimeout
+  const { timeout } = config
   const maxBodyLength = bytes.parse(config.limit)
 
   const { query } = req

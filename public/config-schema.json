@@ -51,7 +51,7 @@
         }
       ]
     },
-    "httpTimeout": {
+    "timeout": {
       "type": "integer"
     },
     "port": {
