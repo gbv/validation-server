@@ -24,6 +24,7 @@ map(
   {
     id: (.id|cleanid),
     title,
+    wikidata,
     short,
     base: (.base|cleanids),
     restricts: (.for|cleanids),
