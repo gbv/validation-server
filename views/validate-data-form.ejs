@@ -6,7 +6,7 @@
   <label for="url"><code>url=</code></label>
   <input type="text" name="url">
   <input type="submit" value="validate">
-  <% if (format.base === "json") { %>
+  <% if (bases.indexOf("json") > -1) { %>
     <input type="checkbox" name="select" value="$.*">
     <label for="select">JSON array</label>
   <% } %>

@@ -1,7 +1,7 @@
 <form method="POST" enctype="multipart/form-data" id="validateFile" action="<%=root + format.id %>">
   <input type="file" name="file">
   <input type="submit" value="validate file">
-  <% if (format.base === "json") { %>
+  <% if (bases.indexOf("json") > -1) { %>
     <input type="checkbox" name="select" value="$.*">
     <label for="select">JSON array</label>
   <% } %>
