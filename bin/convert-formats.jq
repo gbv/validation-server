@@ -54,7 +54,6 @@ map(
   end
   |del(..|nulls)
   |select(.versions)
-  |select(.id != "lido") # FIXME
 )
 
 # Usage: jq . -s ../format.gbv.de/formats.ndjson | jq -f bin/convert-formats.jq > format.gbv.de.json

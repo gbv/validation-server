@@ -36,9 +36,9 @@ if (versionSelect) {
   selectVersion()
 }
 
-function messageDiv(valid, content) {
+function messageDiv(type, content) {
   const div = document.createElement("div")
-  div.className = valid ? "msg valid" : "msg invalid"
+  div.className = "msg " + type
   div.innerText = content
   return div
 }
@@ -49,6 +49,9 @@ function submitValidate(evnt, form, method) {
   if (document.getElementById("rawResult").checked) return
   evnt.preventDefault()
 
+  const result = document.getElementById("validationResult")
+  result.replaceChildren(messageDiv("", "loading..."))
+
   var request
   if (method === "GET") {
     const url = form.action + "?" + new URLSearchParams(new FormData(form))
@@ -58,8 +61,6 @@ function submitValidate(evnt, form, method) {
   }
 
   const format = document.querySelector("#format-title").textContent
-  const result = document.getElementById("validationResult")
-  result.innerHTML = ""
 
   request
     .then(res => res.json())
@@ -67,7 +68,7 @@ function submitValidate(evnt, form, method) {
       if (!Array.isArray(res)) throw(res)
 
       if (res.every(record => record === true)) {
-        result.replaceChildren(messageDiv(true, `✌ Data is valid ${format}`))
+        result.replaceChildren(messageDiv("valid", `✌ Data is valid ${format}`))
       } else {
         // TODO: if number of records is too large don't show all
         var i=0
@@ -81,12 +82,12 @@ function submitValidate(evnt, form, method) {
                message = `${message} (${pos})`
             }
 
-            return messageDiv(false, `☹  #${i}: ${message}`)
+            return messageDiv("invalid", `☹  #${i}: ${message}`)
           })
         }).flat().filter(Boolean))
       }
     })
     .catch(function(e) {
-      result.replaceChildren(messageDiv(false, e.message))
+      result.replaceChildren(messageDiv("invalid", e.message))
     })
 }
