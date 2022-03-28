@@ -218,7 +218,7 @@ describe("ValidationService", () => {
   it("should complain validate with selection if format doesn't support selection", () => {
     return Promise.all(["regexp", "isbn", "isbn", "xsd"].map(name => {
       const format = service.getFormat(name)
-      return expect(format.validateAll("","")).to.be.rejected
+      return expect(format.validateAll("","0")).to.be.rejected
         .then(e => expect(e.message).to.equal("Validator does not support selection"))
     }))
   })
