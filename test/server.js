@@ -341,7 +341,7 @@ describe("Server", () => {
       })
 
     select = select || ""
-    const niceData = data.replaceAll("\n","\\n")
+    const niceData = data.replace(/\n/g,"\\n")
 
     it(`should validate ${format} data ${niceData} ${select} (GET)`, done => {
       chai.request(app)
