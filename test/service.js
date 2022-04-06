@@ -191,7 +191,7 @@ describe("ValidationService", () => {
       ],
       invalid: {
         "{\n,}": [{
-          message: "Flow map contains an unexpected , at line 2, column 1:\n\n,}\n^\n",
+          message: "Unexpected , in flow map at line 2, column 1:\n\n{\n,}\n^\n",
           position: { linecol: "2:1", rfc5147: "char=2" },
         }],
       },
@@ -247,9 +247,16 @@ describe("ValidationService", () => {
   it("should support validating YAML with multiple documents", () => {
     const yaml = service.getFormat("yaml")
     const errors = [{
-      message: "Aliased anchor not found:  at line 3, column 1:\n\n*\n^\n",
+      message: "Alias cannot be an empty string at line 3, column 1:\n\n...\n*\n^\n",
       position: { linecol: "3:1", rfc5147: "char=8" },
     }]
-    return expect(yaml.validateAll("a:1\n...\n*")).to.eventually.deep.equal([true, errors])
+    return expect(yaml.validateAll("a:1\n...\n*")).eventually.deep.equal([true, errors])
+  })
+
+  it("should tell encoding (used internally so far)", () => {
+    const yaml = service.getFormat("yaml")
+    const aboutData = service.getFormat("about/data")
+    expect(service.canEncode(yaml, aboutData)).to.be.true
+    expect(service.canEncode(yaml, yaml)).not.to.be.true
   })
 })

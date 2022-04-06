@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.7.1
+
+- Support validating YAML and NDJSON
+- Allow formats file to be YAML or NDJSON
+- Extend about/data with field `encodes`
+- CLI: change option name query => select
+- CLI: add option `as` (e.g. parsing json-schema as YAML)
+
+## 0.7.0
+
+- UI extension
+- extend error positions
+- Fix and extend HTTP fetching
+- Support validating JSKOS
+
 ## 0.6.0
 
 - Support validing with XML Schema (based on xmllint)

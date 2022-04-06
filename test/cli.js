@@ -36,6 +36,6 @@ describe("validate CLI", () => {
 
   it("validate a file", () => {
     return cli("json-schema","./public/format-schema.json")
-      .then(out => expect(out).to.deep.equal(["ok"]))
+      .then(out => expect(out).to.deep.equal(["true"]))
   })
 })
