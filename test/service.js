@@ -219,7 +219,7 @@ describe("ValidationService", () => {
     return Promise.all(["regexp", "isbn", "isbn", "xsd"].map(name => {
       const format = service.getFormat(name)
       return expect(format.validateAll("","0")).to.be.rejected
-        .then(e => expect(e.message).to.equal("Validator does not support selection"))
+        .then(e => expect(e.message).to.equal(`${name} validator does not support selection`))
     }))
   })
 
@@ -235,4 +235,12 @@ describe("ValidationService", () => {
     //  .then(result => expect(result).to.deep.equal([ true, error ]))
   })
 
+  it("should support validating YAML with multiple documents", () => {
+    const yaml = service.getFormat("yaml")
+    const errors = [{
+      message: "Aliased anchor not found:  at line 3, column 1:\n\n*\n^\n",
+      position: { linecol: "3:1", rfc5147: "char=8" },
+    }]
+    return expect(yaml.validateAll("a:1\n...\n*")).to.eventually.deep.equal([true, errors])
+  })
 })

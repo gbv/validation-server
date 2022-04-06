@@ -171,7 +171,7 @@ describe("Server", () => {
       path: "/validate?format=json&data=[]&select=$.*",
       error: {
         error: "MalformedRequest",
-        message: "Validator does not support selection",
+        message: "json validator does not support selection",
         status: 400,
       },
     },
