@@ -137,6 +137,15 @@ describe("ValidationService", () => {
         }],
       },
     },
+    ndjson: {
+      valid: ["42\n{}"],
+      invalid: {
+        "null\n\n": [{
+          message: "Line 2 is no valid JSON",
+          position: { rfc5147: "line=2" },
+        }],
+      },
+    },
     xml: {
       valid: ["<x:y/>"],
       invalid: {

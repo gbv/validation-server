@@ -20,6 +20,7 @@ const formatIds = [
   "jskos",
   "json",
   "json-schema",
+  "ndjson",
   "regexp",
   "xml",
   "xsd",
