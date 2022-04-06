@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import { expect, readFile, jsonFile } from "./test.js"
+import { expect, readFile, jsonFile, formatIds } from "./test.js"
 
 import { Readable } from "stream"
 import toArray from "stream-to-array"
@@ -13,18 +13,7 @@ describe("ValidationService", () => {
 
   it("should listFormats", () => {
     const formats = service.listFormats()
-    expect(formats.map(f => f.id)).deep.equal([
-      "about/data",
-      "array",
-      "digits",
-      "isbn",
-      "jskos",
-      "json",
-      "json-schema",
-      "regexp",
-      "xml",
-      "xsd",
-    ])
+    expect(formats.map(f => f.id)).deep.equal(formatIds)
   })
 
   it("should listLanguages", () => {
@@ -184,6 +173,17 @@ describe("ValidationService", () => {
           position: {
             rfc5147: "line=1",
           },
+        }],
+      },
+    },
+    yaml: {
+      valid: [
+        "a: 1",
+      ],
+      invalid: {
+        "{\n,}": [{
+          message: "Flow map contains an unexpected , at line 2, column 1:\n\n,}\n^\n",
+          position: { linecol: "2:1", rfc5147: "char=2" },
         }],
       },
     },

@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import { chai, expect, file, jsonFile } from "./test.js"
+import { chai, expect, file, jsonFile, formatIds } from "./test.js"
 import moxios from "moxios"
 import chaiHttp from "chai-http"
 chai.use(chaiHttp)
@@ -50,18 +50,7 @@ describe("Server", () => {
       path: "/formats",
       response(res) {
         expect(res.body).to.be.a("array")
-        expect(res.body.map(format => format.id).sort()).to.deep.equal([
-          "about/data",
-          "array",
-          "digits",
-          "isbn",
-          "jskos",
-          "json",
-          "json-schema",
-          "regexp",
-          "xml",
-          "xsd",
-        ])
+        expect(res.body.map(format => format.id).sort()).to.deep.equal(formatIds)
       },
     },
     {

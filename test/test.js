@@ -12,4 +12,18 @@ const file = name => path.resolve(__dirname, name)
 const readFile = path => fs.readFileSync(file(path))
 const jsonFile = path => JSON.parse(readFile(path))
 
-export { chai, expect, file, readFile, jsonFile }
+const formatIds = [
+  "about/data",
+  "array",
+  "digits",
+  "isbn",
+  "jskos",
+  "json",
+  "json-schema",
+  "regexp",
+  "xml",
+  "xsd",
+  "yaml",
+]
+
+export { chai, expect, file, readFile, jsonFile, formatIds }

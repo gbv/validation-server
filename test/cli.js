@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-import { expect } from "./test.js"
+import { expect, formatIds } from "./test.js"
 
 import formats from "../lib/formats.js"
 import validate from "../lib/cli.js"
@@ -30,17 +30,7 @@ describe("validate CLI", () => {
 
   it("list formats from config file with -l", () => {
     return cli("-l","-c","./config/config.test.json").then(out => {
-      expect(out).to.deep.equal([
-        "about/data",
-        "array",
-        "digits",
-        "isbn",
-        "jskos",
-        "json",
-        "json-schema",
-        "regexp",
-        "xml",
-        "xsd"])
+      expect(out).to.deep.equal(formatIds)
     })
   })
 
