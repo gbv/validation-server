@@ -34,6 +34,18 @@
       </ul>
     </dd>
   <% } %>
+  <%
+    const encodes = Array.isArray(format.encodes) ? format.encodes : [ format.encodes ].filter(Boolean)
+    if (encodes.length) { %>
+    <dt>also encodes</dt>
+    <dd>
+      <ul>
+        <% for (var id of encodes) { %>
+          <li><%- include("id", { id }) %></li>
+        <% } %>
+      </ul>
+    </dd>
+  <% } %>
   <% if (format.restricts) {
        restricts = Array.isArray(format.restricts) ? format.restricts : [ format.restricts ] %>
     <dt>schema format for</dt>
