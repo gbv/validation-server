@@ -128,7 +128,7 @@
   <li>
     <code>POST /<%= format.id %><span class="at-version"/></code> request body
     ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
-<pre><code language="bash">curl -X POST <%= baseUrl + format.id %><span class="at-version"></span><span> -d @filename</span></code></pre>
+<pre><code language="bash">curl <%= baseUrl + format.id %><span class="at-version"></span><span> --data-binary @filename</span></code></pre>
   </li>
 </ul>
 <% if (bases.indexOf("json")>=0) { %>

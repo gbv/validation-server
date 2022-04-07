@@ -15,7 +15,7 @@
     "xml": "node ./xml.js",
     "start": "nodemon --ignore formats -e js,ejs server.js",
     "update": "node bin/update.js",
-    "test": "NODE_ENV=test mocha --exit --timeout 4000",
+    "test": "NODE_ENV=test mocha --exit --timeout 5000",
     "debug": "NODE_ENV=debug mocha --exit",
     "coverage": "NODE_ENV=debug c8 --skip-full mocha --exit",
     "validate": "node bin/validate.js",

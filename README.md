@@ -256,15 +256,17 @@ The response status code should always be 200 (possibly including [validation er
 
 Endpoint to validate records passed via query parameter or URL.
 
-**URL Params**
+**Query parameters**
 
-`format=[string]`
+* `format` format identifier
 
-`url=[url]` Optional URL to load data from
+* `url` Optional URL to load data from
 
-`data=[string]` Serialized data to be validated. Ignored when parameter `url` is given.
+* `data` Data to be validated. Ignored when parameter `url` is given.
 
-`select=[string]` Optional selection of records within the data. Only supported for JSON-based formats with JSONPath `select=$` (default: data is one record) and `select=$.*` (records are array or object elements).
+* `select` Optional selection of records within the posted data. Only supported for JSON-based formats with JSONPath `select=$` (default: data is one record) and `select=$.*` (records are array or object elements).
+
+* `as` Optional alternative encoding for (experimental). Supports `yaml` and `ndjson` for json-based formats, so far.
 
 **Response**
 
@@ -313,11 +315,13 @@ Validate records like [GET /validate](#validate) but data is send via HTTP POST 
 
 * `version` optional version identifier. Can also be given as part of format as `format@version`
 
-* `select` Optional selection of records within the posted data.
+* `select` optional selection of records within the posted data.
 
 * `file` File to be validated (form data only)
 
 * `data` Data to be validated (form data only)
+
+* `as` Optional alternative encoding (experimental)
 
 **Response**
 

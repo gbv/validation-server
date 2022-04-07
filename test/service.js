@@ -254,9 +254,6 @@ describe("ValidationService", () => {
   })
 
   it("should tell encoding (used internally so far)", () => {
-    const yaml = service.getFormat("yaml")
-    const aboutData = service.getFormat("about/data")
-    expect(service.canEncode(yaml, aboutData)).to.be.true
-    expect(service.canEncode(yaml, yaml)).not.to.be.true
+    expect(service.getEncoding("yaml", "about/data").title).to.equal("YAML")
   })
 })

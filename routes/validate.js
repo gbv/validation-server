@@ -33,6 +33,8 @@ async function prepareGetData(req) {
       const type = res.headers["content-type"]
       query.format = query.format || service.guessFromContentType(type)
 
+      // TODO: guess encoding (as) from filename and/or content type?
+
     } catch(e) {
       if (e instanceof TypeError) {
         throw new MalformedRequest("Malformed query parameter: url")
@@ -48,7 +50,7 @@ async function prepareGetData(req) {
 router.get("/validate", async (req, res, next) => {
   prepareGetData(req)
     .then(() => formatFromQuery(req))
-    .then(format => format.validateAll(req.query.data, req.query.select))
+    .then(format => validateAction(format, req))
     .then(result => res.send(result))
     .catch(error => next(error))
 })
@@ -64,6 +66,24 @@ router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
   req.url = "/"
   next()
 })
+
+function validateAction(format, req) {
+  var { data, select, as } = req.query
+  if (as) {
+    const service = req.app.get("validationService")
+    const encodingFormat = service.getEncoding(as, format.id)
+    if (as === "ndjson" || as === "yaml") {
+      // TODO: what if select is already set?
+      select = "$.*"
+    }
+    try {
+      data = encodingFormat.parse(data)
+    } catch (e) {
+      return [[e]]
+    }
+  }
+  return format.validateAll(data, select)
+}
 
 router.post("/", async (req, res, next) => {
   // from multipart
@@ -81,11 +101,13 @@ router.post("/", async (req, res, next) => {
     }
     req.query.type = req.body.type
     req.query.select = req.body.select
+    req.query.as = req.body.as
   }
   formatFromQuery(req)
     .then(format => {
       if (req.rawBody) {
-        return format.validateAll(req.rawBody, req.query.select)
+        req.query.data = req.rawBody
+        return validateAction(format, req)
       } else {
         throw new MalformedRequest("Missing HTTP POST request body")
       }
