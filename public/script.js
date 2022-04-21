@@ -18,22 +18,7 @@ function setText(selector, text) {
   document.querySelectorAll(selector).forEach(e => { e.textContent = text })
 }
 
-onChange("versionSelect", element => {
-  const version = element.value
-  const isDefaultVersion = version == "" || version == "default"
-
-  validateData.elements.version.value = version
-
-  validateFile.action = validateFile.action.replace(/@[^@]+$/,"")
-  if (!isDefaultVersion) {
-    validateFile.action += "@" + version
-  }
-
-  setText(".at-version", isDefaultVersion ? "" : "@" + version)
-  setText(".and-version", isDefaultVersion ? "" : "&version=" + version)
-})
-
-const query = { select: "", encoding: "" }
+const query = { encoding: "", select: "" }
 function setQueryOption(key, value) {
   query[key] = value
   const fields = Object.keys(query).filter(key => query[key] !== "")
@@ -47,6 +32,30 @@ onChange("jsonArray", ({checked}) => {
   setText(".and-select", checked ? "&select=$.*" : "")
   setQueryOption("select", value)
 })
+
+onChange("encodingSelect", ({value}) => {
+  const encoding = value && value !== "default" ? value : ""
+  validateData.elements.encoding.value = encoding
+  validateFile.elements.encoding.value = encoding
+  setText(".and-encoding", encoding ? "&encoding=" + encoding : "")
+  setQueryOption("encoding", encoding)
+})
+
+onChange("versionSelect", element => {
+  const version = element.value
+  const isDefault = version == "" || version == "default"
+
+  validateData.elements.version.value = version
+
+  validateFile.action = validateFile.action.replace(/@[^@]+$/,"")
+  if (!isDefault) {
+    validateFile.action += "@" + version
+  }
+
+  setText(".at-version", isDefault ? "" : "@" + version)
+  setText(".and-version", isDefault ? "" : "&version=" + version)
+})
+
 
 function messageDiv(type, content) {
   const div = document.createElement("div")

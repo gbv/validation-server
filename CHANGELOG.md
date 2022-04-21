@@ -5,9 +5,9 @@
 - Support validating YAML and NDJSON
 - Support sending json based formats in YAML or NDJSON (parameter `encoding`)
 - Allow formats file to be YAML or NDJSON
-- Extend about/data with field `encodes`
+- Extend about/data with fields `encodes` and `encodings`
 - CLI: change option name query => select
-- CLI: add option `as` (e.g. parsing json-schema as YAML)
+- CLI: add option `encoding` (e.g. parsing json-schema as YAML)
 
 ## 0.7.0
 

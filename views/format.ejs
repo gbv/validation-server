@@ -79,8 +79,17 @@ if (bases.length || encodes.length || encodings.length || restricts.length) { %>
           </select>
           <% } %>
         </li>
+        <!-- TODO: get from API instead of hardcoding json -->
         <% if (bases.indexOf("json") > -1) { %>
-        <!-- TODO: encodings -->
+        <li>
+          <label for="encodingSelect">encoding </label>
+          <select name="encoding" id="encodingSelect">
+            <option value="default">(default)</option>
+            <% for (let id of ["ndjson","yaml"]) { %>
+              <option value="<%=id%>"><%=id%></option>
+            <% } %>
+          </select>
+        </li>
         <li>
           <input type="checkbox" id="jsonArray"> <label for="jsonArray">JSON array</label>
         </li>
@@ -92,9 +101,10 @@ if (bases.length || encodes.length || encodings.length || restricts.length) { %>
     </small>
   </div>
 </h3>
+
 <ul>
   <li>
-    <code>GET /validate?format=<%= format.id %><span class="and-version"></span><span class="and-select"></span></code>
+    <code>GET /validate?format=<%= format.id %><span class="and-version"></span><span class="and-select"></span><span class="and-encoding"></span></code>
     ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
     <%- include("validate-data-form", { bases }) %>
   </li>
