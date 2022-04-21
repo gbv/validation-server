@@ -98,44 +98,51 @@
   <div style="flex-grow: 1">Validation</div>
   <div style="font-weight: normal">
     <small>
-      <% if (versions && versions.length > 1) { %>
-        <label for="versionSelect">version </label>
-        <select name="version" id="versionSelect">
-          <option value="default">(default)</option>
-          <% for (let v of versions) { %>
-            <option value="<%=v%>"><%=v%></option>
+      <ul class="inline">
+        <% if (versions && versions.length > 1) { %>
+        <li>
+          <label for="versionSelect">version </label>
+          <select name="version" id="versionSelect">
+            <option value="default">(default)</option>
+            <% for (let v of versions) { %>
+              <option value="<%=v%>"><%=v%></option>
+            <% } %>
+          </select>
           <% } %>
-        </select>
-      <% } %>
-      <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
+        </li>
+        <% if (bases.indexOf("json") > -1) { %>
+        <!-- TODO: encodings -->
+        <li>
+          <input type="checkbox" id="jsonArray"> <label for="jsonArray">JSON array</label>
+        </li>
+        <% } %>
+        <li>
+         <input type="checkbox" id="rawResult"> <label for="rawResult">raw response</label>
+       </li>
+      </ul>
     </small>
   </div>
 </h3>
 <ul>
   <li>
-    <code>GET /validate?format=<%= format.id %><span class="and-version"/></code>
+    <code>GET /validate?format=<%= format.id %><span class="and-version"></span><span class="and-select"></span></code>
     ☞ <a href="https://github.com/gbv/validation-server#get-validate" target="_blank">documentation</a>
     <%- include("validate-data-form", { bases }) %>
   </li>
   <li>
     <div>
-      <code>POST /<%= format.id %><span class="at-version"/></code> multipart/form-data
+      <code>POST /<%= format.id %><span class="at-version"></span><span class="query"></span></code> multipart/form-data
       ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
     </div>
     <%- include("validate-file-form", { bases }) %>
    <div id="validationResult"></div>
   </li>
   <li>
-    <code>POST /<%= format.id %><span class="at-version"/></code> request body
+    <code>POST /<%= format.id %><span class="at-version"></span><span class="query"></span></code> request body
     ☞ <a href="https://github.com/gbv/validation-server#post-format" target="_blank">documentation</a>
-<pre><code language="bash">curl <%= baseUrl + format.id %><span class="at-version"></span><span> --data-binary @filename</span></code></pre>
+<pre><code language="bash">curl '<%= baseUrl + format.id %><span class="at-version"></span><span class="query"></span>'<span> --data-binary @filename</span></code></pre>
   </li>
 </ul>
-<% if (bases.indexOf("json")>=0) { %>
-<p>
-  Optional Request parameter <code>select=$.*</code> validates records in a JSON array.
-</p>
-<% } %>
 
 <% if (format.profiles) { %>
 <h3>Formats based on <%= short %></h3>

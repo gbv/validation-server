@@ -1,40 +1,52 @@
 /* eslint-disable */
-Object.entries({
-  validateFile: "POST",
-  validateData: "GET"
-}).forEach(([id, method]) => {
-  const form = document.forms[id]
+const { validateFile, validateData } = document.forms
+for (let [form, method] of [[validateFile,"POST"],[validateData,"GET"]]) {
   if (form) {
     form.addEventListener("submit", e => submitValidate(e, form, method))
   }
-})
+}
 
-const versionSelect = document.getElementById("versionSelect")
-if (versionSelect) {
-  function selectVersion() {
-    const version = versionSelect.value
-    const isDefaultVersion = version == "" || version == "default"
+function onChange(element, listener) {
+  element = document.getElementById(element)
+  if (element) {
+    element.addEventListener("change", () => listener(element))
+    listener(element)
+  }
+}
 
-    document.forms.validateData.elements.version.value = version
+function setText(selector, text) {
+  document.querySelectorAll(selector).forEach(e => { e.textContent = text })
+}
 
-    const validateFile = document.forms.validateFile
+onChange("versionSelect", element => {
+  const version = element.value
+  const isDefaultVersion = version == "" || version == "default"
 
-    validateFile.action = validateFile.action.replace(/@[^@]+$/,"")
-    if (!isDefaultVersion) {
-      validateFile.action += "@" + version
-    }
+  validateData.elements.version.value = version
 
-    document.querySelectorAll(".at-version").forEach(e => {
-      e.textContent = isDefaultVersion ? "" : "@" + version
-    })
-    document.querySelectorAll(".and-version").forEach(e => {
-      e.textContent = isDefaultVersion ? "" : "&version=" + version
-    })
+  validateFile.action = validateFile.action.replace(/@[^@]+$/,"")
+  if (!isDefaultVersion) {
+    validateFile.action += "@" + version
   }
 
-  versionSelect.addEventListener("change", selectVersion)
-  selectVersion()
+  setText(".at-version", isDefaultVersion ? "" : "@" + version)
+  setText(".and-version", isDefaultVersion ? "" : "&version=" + version)
+})
+
+const query = { select: "", encoding: "" }
+function setQueryOption(key, value) {
+  query[key] = value
+  const fields = Object.keys(query).filter(key => query[key] !== "")
+  setText(".query", fields.length ? "?" + fields.map(key => key + "=" + query[key]).join("&") : "")
 }
+
+onChange("jsonArray", ({checked}) => {
+  const value = checked ? "$.*" : ""
+  validateData.elements.select.value = value
+  validateFile.elements.select.value = value
+  setText(".and-select", checked ? "&select=$.*" : "")
+  setQueryOption("select", value)
+})
 
 function messageDiv(type, content) {
   const div = document.createElement("div")

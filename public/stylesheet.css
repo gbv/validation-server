@@ -31,6 +31,15 @@ ul {
 li {
   margin: 0.5em;
 }
+ul.inline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+ul.inline > li {
+  display: inline-block;
+  margin: 0em 0em 0em 0.5em;
+}
 h1 {
   font-size: 2.5em;
 }
