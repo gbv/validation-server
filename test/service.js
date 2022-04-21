@@ -227,7 +227,7 @@ describe("ValidationService", () => {
   it("should complain validate with selection if format doesn't support selection", () => {
     return Promise.all(["regexp", "isbn", "isbn", "xsd"].map(name => {
       const format = service.getFormat(name)
-      return expect(format.validateAll("","0")).to.be.rejected
+      return expect(format.validateAll("",{ select: "0" })).to.be.rejected
         .then(e => expect(e.message).to.equal(`${name} validator does not support selection`))
     }))
   })
@@ -237,7 +237,7 @@ describe("ValidationService", () => {
 
     const input = jsonFile("files/jskos.json")
     const errors = jsonFile("files/jskos-errors.json")
-    return expect(format.validateAll(input, "$.*")).to.eventually.deep.equal(errors)
+    return expect(format.validateAll(input, { select: "$.*" })).to.eventually.deep.equal(errors)
 
     // FIXME: validateStream stream is not persistent
     // return toArray(Readable.from(input).pipe(format.validateStream))

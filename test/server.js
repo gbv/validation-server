@@ -200,6 +200,14 @@ describe("Server", () => {
       path: "/validate?format=about/data&data={}%0A{}&encoding=ndjson",
       response: [ true, true ],
     },
+    {
+      what: "detect invalid encoding",
+      path: "/validate?format=about/data&data={&encoding=ndjson",
+      response: [[{
+        message: "Line 1 is no valid JSON",
+        position: { rfc5147: "line=1" },
+      }]],
+    },
 
     // url=
     {

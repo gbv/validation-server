@@ -82,7 +82,7 @@ function validateAction(format, req) {
       return [[e]]
     }
   }
-  return format.validateAll(data, select)
+  return format.validateAll(data, { select })
 }
 
 router.post("/", async (req, res, next) => {
@@ -90,6 +90,7 @@ router.post("/", async (req, res, next) => {
   if (req.body && !(req.body instanceof Buffer)) {
     if (req.file) {
       req.rawBody = req.file.buffer.toString()
+      // TODO: guess format from file.originalname or file.mimetype
     } else {
       req.rawBody = req.body.data
     }
