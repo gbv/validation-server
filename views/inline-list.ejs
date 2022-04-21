@@ -1,0 +1,9 @@
+<% if (items.length) { %>
+<span><%= text %>
+  <ul class="inline commas">
+    <% for (var id of items) {
+      %><li><%- include("id", { id }) -%></li><%
+    } %>
+  </ul><% if (locals?.suffix) { %> <%= suffix %><% }%>.
+</span>
+<% } %>

@@ -2,12 +2,19 @@
 <% short = format.short ?? format.title %>
 <h1 class="back"><a href="./<%=root%>"><%= title %></a></h1>
 
-<h2 style="display: flex">
-  <div style="flex-grow: 1" id="format-title"><%= format.title %></div>
-  <div>
-    <a href="<%=root%>formats?format=<%=format.id%>"><code><%= format.id %></code></a>
-  </div>
-</h2>
+<h2 id="format-title"><%= format.title %></h2>
+
+<div class="infobox">
+  <h2><a href="<%=root%>formats?format=<%=format.id%>"><code><%= format.id %></code></a></h2>
+  <% if (format.mimetypes) { %>
+    <ul>
+      <% for (var type of format.mimetypes) { %>
+        <li><code><%= type %></code></li>
+      <% } %>
+    </ul>
+  <% } %>
+</div>
+
 <% if (format.description || format.wikidata) { %>
   <p>
     <% if (format.description) { %>
@@ -18,87 +25,49 @@
   <% } %>
   </p>
 <% } %>
+
+<%
+const bases = asArray(format.base).filter(Boolean)
+const encodes = asArray(format.encodes).filter(Boolean)
+const encodings = asArray(format.encodings).filter(Boolean)
+const restricts = asArray(format.restricts).filter(Boolean)
+if (bases.length || encodes.length || encodings.length || restricts.length) { %>
+<div>
+  <%- include("inline-list", { text: "Based on", items: bases }) %>
+  <%- include("inline-list", { text: "Can encode", items: encodes }) %>
+  <%- include("inline-list", { text: "Has encoding", items: encodings }) %>
+  <%- include("inline-list", { text: "Schema format for", items: restricts, suffix: format.createValidator ? `(supported by ${title} to define other formats)` : "" }) %>
+</div>
+<% } %>
+
 <% if (format.url) { %>
   <p><a href="<%= format.url %>"><%= format.url %></a></p>
 <% } %>
-<dl>
-  <%
-    const bases = Array.isArray(format.base) ? format.base : [ format.base ].filter(Boolean)
-    if (bases.length) { %>
-    <dt>base format</dt>
-    <dd>
-      <ul>
-        <% for (var id of bases) { %>
-          <li><%- include("id", { id }) %></li>
-        <% } %>
-      </ul>
-    </dd>
-  <% } %>
-  <%
-    const encodes = Array.isArray(format.encodes) ? format.encodes : [ format.encodes ].filter(Boolean)
-    if (encodes.length) { %>
-    <dt>also encodes</dt>
-    <dd>
-      <ul>
-        <% for (var id of encodes) { %>
-          <li><%- include("id", { id }) %></li>
-        <% } %>
-      </ul>
-    </dd>
-  <% } %>
-  <% if (format.restricts) {
-       restricts = Array.isArray(format.restricts) ? format.restricts : [ format.restricts ] %>
-    <dt>schema format for</dt>
-    <dd>
-      <ul>
-        <% for (var id of restricts) { %>
-          <li><%- include("id", { id }) %></li>
-        <% } %>
-      </ul>
-    </dd>
-  <% } %>
-  <% versions = format.versions ? Object.keys(format.versions).sort().reverse() : null %>
-  <% if (versions) { %>
-    <dt>versions and schemas</dt>
-    <dd>
-      <ul>
-        <% for (var v of versions) {
-          let schemas = format.versions[v].schemas || []
-            for (var schema of schemas) { %>
-              <li>
-                <a href="<%=root%>schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><code><%= v %></code></a>
-                a <%- include("./id", { id: schema.type }) %>
-                <% if (schema.url) { %>
-                  from <a href="<%= schema.url %>"><%= schema.url %></a>
-                <% } %>
-              </li>
-          <% }
-         } %>
-      </ul>
-    </dd>
-  <% } %>
-  <% if (format.mimetypes) { %>
-    <dt>mimetypes</dt>
-    <dd>
-      <ul>
-        <% for (var type of format.mimetypes) { %>
-          <li><%= type %></li>
-        <% } %>
-      </ul>
-    </dd>
-  <% } %>
-</dl>
-<% if (format.createValidator) { %>
-<p>
-  <%= title %> supports <%= short %> for definition of other formats.
-</p>
+
+<% versions = format.versions ? Object.keys(format.versions).sort().reverse() : null %>
+<% if (versions) { %>
+<h3>versions and schemas</h3>
+  <ul>
+    <% for (var v of versions) {
+      let schemas = format.versions[v].schemas || []
+        for (var schema of schemas) { %>
+          <li>
+            <a href="<%=root%>schema?format=<%= format.id %>&version=<%= v %>&type=<%= schema.type %>"><code><%= v %></code></a>
+            a <%- include("./id", { id: schema.type }) %>
+            <% if (schema.url) { %>
+              from <a href="<%= schema.url %>"><%= schema.url %></a>
+            <% } %>
+          </li>
+      <% }
+     } %>
+  </ul>
 <% } %>
 
 <h3 style="display: flex">
   <div style="flex-grow: 1">Validation</div>
   <div style="font-weight: normal">
     <small>
-      <ul class="inline">
+      <ul class="inline spaced">
         <% if (versions && versions.length > 1) { %>
         <li>
           <label for="versionSelect">version </label>
