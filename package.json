@@ -17,7 +17,7 @@
     "update": "node bin/update.js",
     "test": "NODE_ENV=test mocha --exit --timeout 5000",
     "debug": "NODE_ENV=debug mocha --exit",
-    "coverage": "NODE_ENV=debug c8 --skip-full mocha --exit",
+    "coverage": "NODE_ENV=debug c8 --skip-full mocha --exit --timeout 5000",
     "validate": "node bin/validate.js",
     "lint": "eslint './**/*.js';",
     "fix": "eslint --fix './**/*.js'",

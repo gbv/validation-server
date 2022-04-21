@@ -266,7 +266,7 @@ Endpoint to validate records passed via query parameter or URL.
 
 * `select` Optional selection of records within the posted data. Only supported for JSON-based formats with JSONPath `select=$` (default: data is one record) and `select=$.*` (records are array or object elements).
 
-* `as` Optional alternative encoding for (experimental). Supports `yaml` and `ndjson` for json-based formats, so far.
+* `encoding` Optional alternative encoding for (experimental). Supports `yaml` and `ndjson` for json-based formats, so far.
 
 **Response**
 
@@ -321,7 +321,7 @@ Validate records like [GET /validate](#validate) but data is send via HTTP POST 
 
 * `data` Data to be validated (form data only)
 
-* `as` Optional alternative encoding (experimental)
+* `encoding` Optional alternative encoding (experimental)
 
 **Response**
 

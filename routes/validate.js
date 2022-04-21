@@ -33,7 +33,7 @@ async function prepareGetData(req) {
       const type = res.headers["content-type"]
       query.format = query.format || service.guessFromContentType(type)
 
-      // TODO: guess encoding (as) from filename and/or content type?
+      // TODO: guess encoding from filename and/or content type?
 
     } catch(e) {
       if (e instanceof TypeError) {
@@ -68,11 +68,11 @@ router.post("/:format([0-9a-z_/-]+)", async (req, res, next) => {
 })
 
 function validateAction(format, req) {
-  var { data, select, as } = req.query
-  if (as) {
+  var { data, select, encoding } = req.query
+  if (encoding) {
     const service = req.app.get("validationService")
-    const encodingFormat = service.getEncoding(as, format.id)
-    if (as === "ndjson" || as === "yaml") {
+    const encodingFormat = service.getEncoding(encoding, format.id)
+    if (encoding === "ndjson" || encoding === "yaml") {
       // TODO: what if select is already set?
       select = "$.*"
     }

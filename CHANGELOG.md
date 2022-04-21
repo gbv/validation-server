@@ -3,7 +3,7 @@
 ## 0.7.1
 
 - Support validating YAML and NDJSON
-- Support sending json based formats in YAML or NDJSON (parameter `as`)
+- Support sending json based formats in YAML or NDJSON (parameter `encoding`)
 - Allow formats file to be YAML or NDJSON
 - Extend about/data with field `encodes`
 - CLI: change option name query => select

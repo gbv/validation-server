@@ -175,6 +175,42 @@ describe("Server", () => {
         status: 400,
       },
     },
+
+    // encoding=
+    {
+      what: "return 404 if encoding not found",
+      path: "/validate?format=xml&data=.&encoding=x",
+      error: {
+        error: "NotFound",
+        message: "Encoding not found: x",
+        status: 404,
+      },
+    },
+    {
+      what: "return 404 if encoding not found",
+      path: "/validate?format=xml&data=.&encoding=ndjson",
+      error: {
+        error: "NotFound",
+        message: "Encoding not found: xml as ndjson",
+        status: 404,
+      },
+    },
+    {
+      what: "about/data encoded as ndjson",
+      path: "/validate?format=about/data&data={}%0A{}&encoding=ndjson",
+      response: [ true, true ],
+    },
+
+    // url=
+    {
+      what: "detect malformed query parameter url",
+      path: "/validate?format=xml&url=.",
+      error: {
+        error: "MalformedRequest",
+        message: "Malformed query parameter: url",
+        status: 400,
+      },
+    },
     {
       what: "validate retrieved from url (valid)",
       path: "/validate?format=xml&url=http://example.org/xml",
