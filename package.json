@@ -18,7 +18,7 @@
     "compile": "node bin/compile-schemas.js",
     "test": "NODE_ENV=test mocha --exit --timeout 4000",
     "debug": "NODE_ENV=debug mocha --exit",
-    "coverage": "NODE_ENV=debug c8 --skip-full mocha --exit --timeout 4000",
+    "coverage": "NODE_ENV=debug c8 --skip-full mocha -x lib/compiled-schemas.js --exit --timeout 4000",
     "validate": "node bin/validate.js",
     "lint": "eslint './**/*.js';",
     "fix": "eslint --fix './**/*.js'",

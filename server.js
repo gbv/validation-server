@@ -72,6 +72,7 @@ app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
     message: error.message,
     status: error.statusCode || 500,
   }
+  /* c8 ignore next 3 */
   if (config.env === "development" && error.stack) {
     response.stack = error.stack.split("\n")
   }

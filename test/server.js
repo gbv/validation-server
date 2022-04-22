@@ -1,8 +1,14 @@
 /* eslint-env node, mocha */
-import { chai, expect, file, jsonFile, formatIds } from "./test.js"
+import { chai, expect, file, readFile, jsonFile, formatIds } from "./test.js"
 import moxios from "moxios"
 import chaiHttp from "chai-http"
 chai.use(chaiHttp)
+
+moxios.install()
+moxios.stubRequest("http://example.org/xml", { headers: {}, responseText: "<x/>" })
+moxios.stubRequest("http://example.org/missing", { status: 404 })
+moxios.stubRequest("http://example.org/schema.xsd", { headers: {}, responseText: readFile("files/schema.xsd") })
+moxios.stubRequest("http://example.org/include.xsd", { headers: {}, responseText: readFile("files/include.xsd") })
 
 import { loadConfig, createService } from "../index.js"
 
@@ -11,10 +17,6 @@ const formats = await createService(config)
 
 import app from "../server.js" // TODO: await start
 app.set("formats", formats)
-
-moxios.install()
-moxios.stubRequest("http://example.org/xml", { headers: {}, responseText: "<x/>" })
-moxios.stubRequest("http://example.org/missing", { status: 404 })
 
 describe("Server", () => {
 
@@ -38,10 +40,17 @@ describe("Server", () => {
     {
       what: "config-schema.json",
       path: "/config-schema.json",
+      response(res) {
+        expect(res.headers["access-control-allow-origin"]).to.equal("*")
+      },
     },
     {
       what: "format-schema.json",
+      headers: { Origin: "http://example.org/" },
       path: "/format-schema.json",
+      response(res) {
+        expect(res.headers["access-control-allow-origin"]).to.equal("http://example.org/")
+      },
     },
 
     // GET /formats
@@ -201,6 +210,11 @@ describe("Server", () => {
       response: [ true, true ],
     },
     {
+      what: "about/data encoded as yaml",
+      path: "/validate?format=about/data&data=---%20{}%0A...%0Aid:%201&encoding=yaml",
+      response: [ true, [{ message: "must be string", position: {jsonpointer: "/id"} }] ],
+    },
+    {
       what: "detect invalid encoding",
       path: "/validate?format=about/data&data={&encoding=ndjson",
       response: [[{
@@ -275,7 +289,7 @@ describe("Server", () => {
     },
   ]
 
-  requestTests.forEach(({what, path, code, response, error, post}) => {
+  requestTests.forEach(({what, path, headers, code, response, error, post}) => {
     it(`should ${what}`, done => {
       var request = chai.request(app)
       if (post !== undefined) {
@@ -283,6 +297,7 @@ describe("Server", () => {
       } else {
         request = request.get(path)
       }
+      Object.entries(headers || {}).forEach(([key,value]) => request.set(key,value))
       request
         .end((err, res) => {
           expect(res.status).to.equal(error ? error.status : code || 200)
@@ -358,6 +373,11 @@ describe("Server", () => {
     { format: "array", data: "{}", result: [[{
       message: "must be array",
       position: { jsonpointer: "" },
+    }]] },
+    { format: "myxml", data: "<x/>", result: [true] },
+    { format: "myxml", data: "<x>12</x>", result: [[{
+      message: "element x: Schemas validity error : Element 'x': [facet 'maxLength'] The value has a length of '2'; this exceeds the allowed maximum length of '1'.",
+      position: { rfc5147: "line=1" },
     }]] },
   ]
 

@@ -1,5 +1,5 @@
 {
-  "verbosity": "info",
+  "verbosity": "debug",
   "cache": false,
   "formats": {
     "ignored-because-no-validator": {},
@@ -59,6 +59,18 @@
             {
               "type": "unknown-type",
               "value": "ignored-anyway"
+            }
+          ]
+        }
+      }
+    },
+    "myxml": {
+      "versions": {
+        "default": {
+          "schemas": [
+            {
+              "type": "xsd",
+              "url": "http://example.org/schema.xsd"
             }
           ]
         }

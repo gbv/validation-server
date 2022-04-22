@@ -1,0 +1,20 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- TODO: Recursive imports are allowed but should not break the validator -->
+  <!--xs:import schemaLocation="schema.xsd" namespace="http://example.org/" /-->
+
+  <xs:simpleType name="restrictedString">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="x">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="restrictedString"/>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
