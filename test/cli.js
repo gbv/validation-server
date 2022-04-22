@@ -15,11 +15,13 @@ describe("validate CLI", () => {
   }
 
   it("should not accept invalid options/arguments", () => {
-    expect(cli()).to.be.rejectedWith("Missing first argument <format>")
-    expect(cli("-x")).to.be.rejected
-    expect(cli("-v","x")).to.be.rejectedWith("Invalid verbosity level")
-    expect(cli("-c","mising-file.json")).to.be.rejected
-    expect(cli("xxx","y")).to.be.rejectedWith("Format not found: xxx")
+    return Promise.all([
+      expect(cli()).to.be.rejectedWith("Missing first argument <format>"),
+      expect(cli("-x")).to.be.rejected,
+      expect(cli("-v","x")).to.be.rejectedWith("Invalid verbosity level"),
+      expect(cli("-c","mising-file.json")).to.be.rejected,
+      expect(cli("xxx","y")).to.be.rejectedWith("Format not found: xxx"),
+    ])
   })
 
   it("list known formats without config file", () => {
