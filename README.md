@@ -26,7 +26,7 @@ Large parts of practical data science or other data processing work is spent by 
   - [Run Tests](#run-tests)
 - [API](#api)
   - [GET /validate](#get-validate)
-  - [POST /:format](#post-format)
+  - [POST /{format}](#post-format)
   - [GET /formats](#get-formats)
   - [GET /languages](#get-languages)
   - [GET /schema](#get-schema)
@@ -305,7 +305,7 @@ JSON parsing errors are returned with character position in [RFC 5147](https://d
 
 The service does not guarantee to return all validation errors but it may stop at the first error.
 
-### POST /:format
+### POST /{format}
 
 Validate records like [GET /validate](#validate) but data is send via HTTP POST payload or as `multipart/form-data`.
 
@@ -435,7 +435,7 @@ An [API error](#api-errors) with status code 404 is returned in no corresponding
 
 ### Validation Errors
 
-Validation results (see [GET /validate](#get-validate) and [POST /:format](#post-format)) can include validation errors. Each error is a JSON object with
+Validation results (see [GET /validate](#get-validate) and [POST /{format}](#post-format)) can include validation errors. Each error is a JSON object with
 
 * `message` mandatory error message
 * `error` optional type of error
