@@ -13,6 +13,7 @@ Large parts of practical data science or other data processing work is spent by 
 - [Background](#background)
   - [Data Formats](#data-formats)
   - [Schema Languages](#schema-languages)
+  - [Locator Languages](#locator-languages)
   - [See Also](#see-also)
 - [Install](#install)
   - [From GitHub](#from-github)
@@ -72,12 +73,24 @@ The following schema languages are supported for validation of other formats. Th
   - Supports `draft-04`, `draft-06`, and `draft-07`
   - Supports format keywords from <https://github.com/ajv-validator/ajv-formats> and <https://github.com/luzlab/ajv-formats-draft2019>
 
+- XML Schema (`xsd`)
+  - Requires `xmllint` executable to be installed.
+
 - Regular Expressions (`regexp`)
   - Supports ECMAScript variant with Unicode flag enabled automatically and flags other than `i`, `m`, `s` ignored.
   - Can be given as plain pattern or in form `/${pattern}/${flags}`
 
-- XML Schema (`xsd`)
-  - Requires xmllint executable to be installed.
+### Locator Languages
+
+Locator languages such as XPath and JSON Pointer are used to reference parts of a document. Validation server supports the following languages to locate [validation errors](#validation-errors) and/or to select which parts of a document to validate:
+
+- [JSON Pointer](https://datatracker.ietf.org/doc/html/rfc6901) (`jsonpointer`) for error locations in JSON documents
+
+- Line & Column (`linecol`) for error locations in documents: e.g. `3:7` for line 3 column 7
+
+- Character position (`rfc5147`) for error locations given by character position as defined in [RFC 5147](https://datatracker.ietf.org/doc/html/rfc5147): e.g. `char=23`
+
+- JSONPath (`jsonpath`) limited to value `$.*` to select to validate elements of a JSON array
 
 ### See Also
 
@@ -301,7 +314,7 @@ curl -g 'http://format.gbv.de/validate/validate?format=json&data=[x]'
 ]
 ```
 
-JSON parsing errors are returned with character position in [RFC 5147](https://datatracker.ietf.org/doc/html/rfc5147) format.
+JSON parsing errors are returned with [location](#locator-languages).
 
 The service does not guarantee to return all validation errors but it may stop at the first error.
 
@@ -338,7 +351,7 @@ This file `schema.json` contains valid JSON but not a valid JSON Schema:
 ```
 
 ```sh
-curl -X POST 'http://format.gbv.de/validate/json-schema' -d @schema.json
+curl -X POST 'http://format.gbv.de/validate/json-schema' --data-binary @schema.json
 ```
 
 ```json
@@ -376,7 +389,7 @@ This file `articles.json` contains two records in `vzg-article` format, one inva
 To validate both records in one query, parameter `select=$.*` must be added:
 
 ```sh
-curl -X POST 'http://format.gbv.de/validate/vzg-article?select=$.*' -d @articles.json
+curl -X POST 'http://format.gbv.de/validate/vzg-article?select=$.*' --data-binary @articles.json
 ```
 
 ```json
@@ -439,7 +452,7 @@ Validation results (see [GET /validate](#get-validate) and [POST /{format}](#pos
 
 * `message` mandatory error message
 * `error` optional type of error
-* `position` optional object mapping locator formats to locators (e.g.`rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
+* `position` optional object mapping locator formats to [locators](#locator-languages) (e.g.`rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
 
 Errors may contain additional keys but these may change with future versions of the service.
 
