@@ -1,5 +1,10 @@
 /* eslint-env node, mocha */
-import { expect, formatIds } from "./test.js"
+import { expect, formatIds, readFile } from "./test.js"
+import moxios from "moxios"
+
+moxios.install()
+moxios.stubRequest("http://example.org/schema.xsd", { headers: {}, responseText: readFile("files/schema.xsd") })
+moxios.stubRequest("http://example.org/include.xsd", { headers: {}, responseText: readFile("files/include.xsd") })
 
 import formats from "../lib/formats.js"
 import validate from "../lib/cli.js"
