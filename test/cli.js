@@ -6,7 +6,7 @@ moxios.install()
 moxios.stubRequest("http://example.org/schema.xsd", { headers: {}, responseText: readFile("files/schema.xsd") })
 moxios.stubRequest("http://example.org/include.xsd", { headers: {}, responseText: readFile("files/include.xsd") })
 
-import formats from "../lib/formats.js"
+import { knownFormats } from "../lib/formats.js"
 import validate from "../lib/cli.js"
 
 // make sure local default config file is not load accidentally
@@ -31,7 +31,7 @@ describe("validate CLI", () => {
 
   it("list known formats without config file", () => {
     return cli("-l").then(out => {
-      expect(out).to.deep.equal(Object.keys(formats).sort())
+      expect(out).to.deep.equal(Object.keys(knownFormats).sort())
     })
   })
 

@@ -1,5 +1,5 @@
 import { formatFromQuery } from "../lib/query.js"
-import knownFormats from "../lib/formats.js"
+import { schemaFormat } from "../lib/formats.js"
 
 async function schemaRoute (req, res, next) {
   const service = req.app.get("validationService")
@@ -9,7 +9,7 @@ async function schemaRoute (req, res, next) {
     .then(schema => {
       if (schema.file) {
         const headers = schema.file.metadata.headers || {}
-        const validator = knownFormats[schema.type] /* c8 ignore next */ || {}
+        const validator = schemaFormat[schema.type] /* c8 ignore next */ || {}
         headers["content-type"] = validator.mimetypes[0] || headers["content-type"] /* c8 ignore next */ || "text/plain"
         res.sendFile(schema.file.path, { headers })
       } else {
