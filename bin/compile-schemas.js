@@ -9,11 +9,10 @@ const jsonFile = name => JSON.parse(fs.readFileSync(file(name)))
 
 const configSchema = jsonFile("../public/config-schema.json")
 const formatSchema = jsonFile("../public/format-schema.json")
-configSchema.properties.formats.anyOf[0].patternProperties["^[0-9a-z_/-]+$"] = formatSchema
 
 const formats = { uri: /^(?:[a-z][a-z0-9+\-.]*:)(?:\/?\/)?[^\s]*$/i }
 const ajv = new Ajv({
-  schemas: [configSchema],
+  schemas: [configSchema, formatSchema],
   formats,
   code: {
     source: true,
@@ -26,7 +25,7 @@ const ajv = new Ajv({
 const moduleCode = standaloneCode(ajv, {
   configValidation: "https://format.gbv.de/validate/config-schema.json",
   formatValidation: "https://format.gbv.de/validate/format-schema.json",
-  // TODO: json-schema meta-schemas
+  // TODO: json-schema meta-schemas?
 })
 
 const target = "../lib/compiled-schemas.js"

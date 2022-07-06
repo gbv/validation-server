@@ -5,6 +5,6 @@
   "limit": "20MB",
   "timeout": 2000,
   "verbosity": "warn",
-  "formats": {},
+  "formats": [],
   "cache": "../cache"
 }
