@@ -40,7 +40,7 @@
           "schemas": [
             {
               "type": "json-schema",
-              "value": "{\"type\":\"array\"}"
+              "value": "{\"type\":\"array\",\"items\":{\"type\":\"object\",\"additionalProperties\":false}}"
             }
           ]
         }

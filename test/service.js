@@ -64,6 +64,16 @@ describe("ValidationService", () => {
   })
 
   const serviceTests = {
+    array: {
+      invalid: {
+        "[{\" \":1}]": [
+          {
+            message: "must NOT have additional properties ' '",
+            position: { jsonpointer: "/0" },
+          },
+        ],
+      },
+    },
     "json-schema": {
       valid: [
         "{\"type\":\"array\"}",             // pass JSON string
