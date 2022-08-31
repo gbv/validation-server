@@ -51,6 +51,9 @@
         }
       ]
     },
+    "allErrors": {
+      "type": "boolean"
+    },
     "timeout": {
       "type": "integer"
     },
