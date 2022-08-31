@@ -163,9 +163,9 @@ describe("ValidationService", () => {
         {prefLabel:{en:"x"},type:["http://www.w3.org/2004/02/skos/core#Concept"]},
       ],
       invalid: {
-        "{\"uri\":0}": [{
-          message: "must be string",
-          position: { jsonpointer: "/uri" },
+        "{\"type\":0}": [{
+          message: "must be array",
+          position: { jsonpointer: "/type" },
         }],
       },
     },

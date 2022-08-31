@@ -11,6 +11,7 @@ const file = name => path.resolve(__dirname, name)
 const readFile = path => fs.readFileSync(file(path))
 const jsonFile = path => JSON.parse(readFile(path))
 
+// format identifiers from test configuration
 const formatIds = [
   "about/data",
   "array",
@@ -27,4 +28,10 @@ const formatIds = [
   "yaml",
 ]
 
-export { chai, expect, file, readFile, jsonFile, formatIds }
+// Mock HTTP responses
+import moxios from "moxios"
+moxios.install()
+moxios.stubRequest("http://example.org/schema.xsd", { headers: {}, responseText: readFile("files/schema.xsd") })
+moxios.stubRequest("http://example.org/include.xsd", { headers: {}, responseText: readFile("files/include.xsd") })
+
+export { chai, expect, file, readFile, jsonFile, formatIds, moxios }

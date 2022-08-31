@@ -7,7 +7,7 @@
   ],
   [
     {
-      "message": "must NOT have additional properties",
+      "message": "must NOT have additional properties 'x'",
       "position": {
         "jsonpointer": ""
       }
