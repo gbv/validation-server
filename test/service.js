@@ -206,6 +206,28 @@ describe("ValidationService", () => {
         }],
       },
     },
+    ntriples: {
+      valid: [
+        "<x:foo> <x:bar> \"doz\"@en .",
+      ],
+      invalid: {
+        "<x:foo> @": [{
+          message: "Unexpected \"@\" on line 1.",
+          position: { rfc5147: "line=1", linecol: "1:9" },
+        }],
+      },
+    },
+    turtle: {
+      valid: [
+        "@prefix x: <http://example.org/> .\n <x:y> x:a 23, 42 .",
+      ],
+      invalid: {
+        "@prefix 123": [{
+          message: "Expected prefix to follow @prefix on line 1.",
+          position: { rfc5147: "line=1", linecol: "1:8" },
+        }],
+      },
+    },
   }
 
   Object.entries(serviceTests).forEach(([name, { valid, invalid }]) => {
