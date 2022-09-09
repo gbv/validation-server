@@ -70,7 +70,7 @@
     "express": "^4.17.3",
     "fast-xml-parser": "^4.0.3",
     "get-stdin": "^9.0.0",
-    "isbn3": "^1.1.19",
+    "isbn3": "^1.1.26",
     "jskos-validate": "^0.5.5",
     "json-schema-migrate": "^2.0.0",
     "meow": "^10.1.2",
