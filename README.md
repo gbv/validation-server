@@ -258,6 +258,8 @@ validate --help             # if installed via npm
 
 ### Run Tests
 
+Tests requires `xmlint` to be installed. Then:
+
 ```bash
 npm test
 npm run debug    # test with logging enabled
@@ -481,6 +483,8 @@ Non-validation errors such as wrong request parameters or unexpected internal fa
   "message": "Missing query parameter: format"
 }
 ```
+
+API error types include `MalformedRequest` and `NotFound`.
 
 A stack trace is included in development mode.
 

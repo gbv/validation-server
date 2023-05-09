@@ -82,7 +82,7 @@ app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
 // Start service
 const start = async () => {
 
-  // Find available port on test
+  // Find available port on test and debug
   let port = config.port
   if (config.env == "test" || config.env === "debug") {
     portfinder.basePort = config.port

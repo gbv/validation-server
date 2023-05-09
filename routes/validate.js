@@ -5,7 +5,7 @@ import { URL } from "url"
 import axios from "axios"
 import bytes from "bytes"
 
-import { MalformedRequest } from "../lib/errors.js"
+import { MalformedRequest } from "../lib/api-error.js"
 import { checkQueryValue, formatFromQuery } from "../lib/query.js"
 
 // HTTP GET
