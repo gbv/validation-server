@@ -456,10 +456,10 @@ An [API error](#api-errors) with status code 404 is returned in no corresponding
 Validation results (see [GET /validate](#get-validate) and [POST /{format}](#post-format)) can include validation errors. Each error is a JSON object with
 
 * `message` mandatory error message
-* `error` optional type of error
+* `type` optional type of error, given as IRI
 * `position` optional object mapping locator formats to [locators](#locator-languages) (e.g.`rfc5147` to locate character positions in a string or `jsonpointer` to reference elements in a JSON document)
 
-Errors may contain additional keys but these may change with future versions of the service.
+Errors may contain additional keys but these may change with future versions of the service!
 
 For instance the following validation error indicates that value of JSON key `authors` was not given as array:
 
@@ -479,7 +479,7 @@ Non-validation errors such as wrong request parameters or unexpected internal fa
 ```json
 {
   "error": "MalformedRequest",
-  "status": 400,
+  "code": 400,
   "message": "Missing query parameter: format"
 }
 ```

@@ -70,13 +70,13 @@ app.use((error, req, res, next) => {  // eslint-disable-line no-unused-vars
   const response = {
     error: error.constructor.name,
     message: error.message,
-    status: error.statusCode || 500,
+    code: error.code || 500,
   }
   /* c8 ignore next 3 */
   if (config.env === "development" && error.stack) {
     response.stack = error.stack.split("\n")
   }
-  res.status(response.status).send(response)
+  res.status(response.code).send(response)
 })
 
 // Start service
